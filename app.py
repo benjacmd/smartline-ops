@@ -1,6 +1,10 @@
 import streamlit as st
 import math
 from datetime import datetime, timedelta
+import pytz
+
+# Configuración de zona horaria de Chile
+CHILE_TZ = pytz.timezone('America/Santiago')
 
 # Configuración de la página para celulares
 st.set_page_config(
@@ -19,13 +23,13 @@ PRODUCTOS_PRESET = {
     "Personalizado (Manual)": {"factor": 7.125, "ml": 600, "bph": 60000},
     "Bilz 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
     "Pap 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
+
 }
 
 # --- SECCIÓN 1: SELECCIÓN RÁPIDA DE PRODUCTO ---
 st.subheader("1. Selección de Producto")
 producto_seleccionado = st.selectbox("Elige el producto para cargar valores automáticos:", list(PRODUCTOS_PRESET.keys()))
 
-# Extraer valores del preset elegido
 preset_actual = PRODUCTOS_PRESET[producto_seleccionado]
 
 st.subheader("2. Parámetros de Mezcla y Línea")
@@ -35,6 +39,7 @@ col1, col2 = st.columns(2)
 with col1:
     jarabe = st.number_input("Litros de Jarabe (L)", value=16000, step=500)
     factor = st.number_input("Factor de Mezcla (Mixer)", value=preset_actual["factor"], format="%.3f")
+    merma_pct = st.number_input("% Merma Operativa (Seguridad)", value=1.5, step=0.5, format="%.1f")
 
 with col2:
     formato_ml = st.number_input("Tamaño Botella (ml)", value=preset_actual["ml"], step=50)
@@ -71,13 +76,17 @@ litros_bebida = jarabe * factor
 litros_envase = formato_ml / 1000.0
 botellas_teoricas = litros_bebida / litros_envase if litros_envase > 0 else 1
 
+# Factor de merma aplicado a insumos
+factor_merma = 1 + (merma_pct / 100.0)
+botellas_con_merma = botellas_teoricas * factor_merma
+
 # Tiempo de producción
 horas_prod = botellas_teoricas / velocidad_bph if velocidad_bph > 0 else 1
 minutos_totales = horas_prod * 60
 
-# Cálculos de Insumos Totales
-cajas_preformas_totales = math.ceil(botellas_teoricas / cap_preformas) if cap_preformas > 0 else 0
-cajas_tapas_totales = math.ceil(botellas_teoricas / cap_tapas) if cap_tapas > 0 else 0
+# Cálculos de Insumos Totales (con merma)
+cajas_preformas_totales = math.ceil(botellas_con_merma / cap_preformas) if cap_preformas > 0 else 0
+cajas_tapas_totales = math.ceil(botellas_con_merma / cap_tapas) if cap_tapas > 0 else 0
 rollos_film_totales = math.ceil(minutos_totales / duracion_film_min) if duracion_film_min > 0 else 0
 
 # Faltantes por pedir
@@ -140,15 +149,33 @@ st.markdown(f"""
 
 st.divider()
 
-# --- SECCIÓN 4: RECOMENDACIÓN PROACTIVA ---
-st.subheader("💡 Alertas y Acciones de Turno")
+# --- SECCIÓN 4: RECOMENDACIÓN PROACTIVA CON HORA DE CHILE ---
+st.subheader("💡 Alertas de Turno (Hora Chile)")
 
-ahora = datetime.now()
-hora_fin = ahora + timedelta(minutes=minutos_totales)
+# Hora actual real de Chile
+ahora_chile = datetime.now(CHILE_TZ)
+hora_fin = ahora_chile + timedelta(minutes=minutos_totales)
 hora_alerta_revision = hora_fin - timedelta(minutes=60)
 
 st.info(f"""
-* **Fin estimado de corrida:** {hora_fin.strftime('%H:%M')} hrs.
-* **🔔 Alerta de Solicitud:** Pide las cajas de tapas y rollos de film faltantes antes de que la línea baje del 30% de stock actual.
-* **⏰ Conteo Final:** A las **{hora_alerta_revision.strftime('%H:%M')} hrs**, verifica el remanente en tolva para frenar la carga a tiempo antes del cambio de formato.
+* 🕐 **Hora actual en Chile:** {ahora_chile.strftime('%H:%M')} hrs.
+* 🏁 **Fin estimado de corrida:** {hora_fin.strftime('%H:%M')} hrs.
+* ⏰ **Conteo Final de Tolva:** A las **{hora_alerta_revision.strftime('%H:%M')} hrs** (1 hora antes), verifica remanente para frenar la carga antes del cambio de producto.
 """)
+
+# --- SECCIÓN 5: REPORTE PARA WHATSAPP ---
+st.subheader("📱 Reporte Rápido de Línea")
+
+reporte_text = f"""📊 *REPORTE DE LÍNEA - {producto_seleccionado}*
+🕐 Inicio/Actual: {ahora_chile.strftime('%H:%M')} hrs | Fin Est.: {hora_fin.strftime('%H:%M')} hrs
+🥤 Bebida Total: {litros_bebida:,.0f} L ({int(botellas_teoricas):,} botellas)
+🪵 Pallets Totales: {total_pallets} pallets ({total_packs:,} packs)
+
+📦 *PEDIDOS A BODEGA:*
+- Preformas: {'✅ OK' if faltan_preformas == 0 else f'Faltan {faltan_preformas} cajas'}
+- Tapas: {'✅ OK' if faltan_tapas == 0 else f'Faltan {faltan_tapas} cajas'}
+- Film Vario: {'✅ OK' if faltan_film == 0 else f'Faltan {faltan_film} rollos'}
+⏰ *Hora límite conteo tolva:* {hora_alerta_revision.strftime('%H:%M')} hrs"""
+
+st.code(reporte_text, language="text")
+st.caption("Copiar y pegar este bloque directo en el grupo de WhatsApp de la línea.")
