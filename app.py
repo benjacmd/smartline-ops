@@ -18,9 +18,7 @@ st.divider()
 PRODUCTOS_PRESET = {
     "Personalizado (Manual)": {"factor": 7.125, "ml": 600, "bph": 60000},
     "Bilz 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
-    "Bilz 1.5 Litros": {"factor": 4.500, "ml": 1500, "bph": 35000},
     "Pap 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
-    "Pap 350 ml (Lata/Botella)": {"factor": 6.800, "ml": 350, "bph": 50000}
 }
 
 # --- SECCIÓN 1: SELECCIÓN RÁPIDA DE PRODUCTO ---
