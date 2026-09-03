@@ -179,3 +179,45 @@ reporte_text = f"""📊 *REPORTE DE LÍNEA - {producto_seleccionado}*
 
 st.code(reporte_text, language="text")
 st.caption("Copiar y pegar este bloque directo en el grupo de WhatsApp de la línea.")
+
+st.divider()
+
+# --- SECCIÓN 6: CALCULADORA INVERSA (AJUSTE POR PRODUCCIÓN PARCIAL) ---
+st.subheader("🔄 Calculadora Inversa: ¿Cuánto Jarabe me queda?")
+st.caption("Usa esta sección si ya se produjo una parte del lote y necesitas saber el saldo de jarabe restante en tanque.")
+
+with st.expander("🔍 Ingresar Packs o Cajas Producidas Ayer", expanded=True):
+    col_inv1, col_inv2 = st.columns(2)
+    
+    with col_inv1:
+        jarabe_inicial = st.number_input("Jarabe Inicial en Tanque (L)", value=16000, step=500, key="j_in")
+        packs_producidos = st.number_input("Packs o Cajas Producidas Ayer", value=0, step=100)
+    
+    with col_inv2:
+        # Usar los valores seleccionados arriba en el preset
+        bot_pack_inv = botellas_por_pack
+        ml_inv = formato_ml
+        factor_inv = factor
+    
+    # Cálculos Inversos
+    botellas_hechas = packs_producidos * bot_pack_inv
+    litros_bebida_hechos = (botellas_hechas * ml_inv) / 1000.0
+    jarabe_consumido = litros_bebida_hechos / factor_inv if factor_inv > 0 else 0
+    jarabe_restante = max(0.0, jarabe_inicial - jarabe_consumido)
+    
+    # Saldo de producción futura con el jarabe restante
+    bebida_restante = jarabe_restante * factor_inv
+    botellas_restantes = bebida_restante / (ml_inv / 1000.0) if ml_inv > 0 else 0
+    packs_restantes = math.ceil(botellas_restantes / bot_pack_inv) if bot_pack_inv > 0 else 0
+    pallets_restantes = math.ceil(packs_restantes / packs_por_pallet) if packs_por_pallet > 0 else 0
+    
+    st.markdown("---")
+    res_col1, res_col2, res_col3 = st.columns(3)
+    res_col1.metric("Jarabe Consumido", f"{jarabe_consumido:,.0f} L")
+    res_col2.metric("Jarabe Restante en Tanque", f"{jarabe_restante:,.0f} L")
+    res_col3.metric("Pallets por Producir", f"{pallets_restantes} pallets")
+
+    if jarabe_restante > 0:
+        st.info(f"💡 Con los **{jarabe_restante:,.0f} Litros** de jarabe que te quedan, aún puedes fabricar **{int(botellas_restantes):,} botellas** ({packs_restantes:,} packs).")
+    else:
+        st.warning("⚠️ El jarabe inicial ya fue consumido en su totalidad según las cajas reportadas.")
