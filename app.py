@@ -94,26 +94,72 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- DICCIONARIO OFICIAL LÍNEA 2 CCU ---
+# --- DICCIONARIO OFICIAL DE PRODUCTOS ---
 PRODUCTOS_PRESET = {
-    "Bilz Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pap Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Kem Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Regular 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Zero 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "7Up Regular 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Limón Soda 600ml": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Crush Naranja 600ml": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Rockstar Original 500ml": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "Rockstar Mango 500ml": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "POP Huevo 500ml": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
-    "Bilz 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Pap 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Kem 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Pepsi 1.5L": {"factor": 6.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "1.75 L Cisne": {"factor": 7.125, "ml": 1750, "bph": 34000, "pref_caja": 10000},
+    "Bilz Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Bilz Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pap Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pap Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Kem Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Kem Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Kem Piña": {"factor": 7.125, "ml": 350, "bph": 60000, "pref_caja": 15000},
+    "Pepsi Regular": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pepsi Zero": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "7Up Regular": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "7Up Zero": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Limón Soda": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Limón Soda Zero": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Crush Naranja": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Crush Zero": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Rockstar Original": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
+    "Rockstar Mango": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
+    "Watts Durazno reducido": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
+    "Más Citrus C/G": {"factor": 7.125, "ml": 2000, "bph": 38000, "pref_caja": 10000},
+    "Más Uva": {"factor": 7.125, "ml": 1600, "bph": 38000, "pref_caja": 10000},
+    "Limonada Frambuesa": {"factor": 7.125, "ml": 2000, "bph": 38000, "pref_caja": 10000},
+    "POP Huevo": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
 }
+
+# --- LISTAS SEPARADAS PARA EL DESPLEGABLE DE NOTIFICACIÓN ---
+LISTA_SABORES = [
+    "Bilz",
+    "Bilz Zero",
+    "Pap",
+    "Pap Zero",
+    "Kem",
+    "Kem Zero",
+    "Kem piña",
+    "Pepsi",
+    "Pepsi Zero",
+    "7Up",
+    "7Up Zero",
+    "Limón Soda",
+    "Limón Soda Zero",
+    "Crush",
+    "Crush Zero",
+    "Rockstar Original",
+    "Rockstar Mango",
+    "Watts Durazno reducido",
+    "Más Citrus C/G",
+    "Más Uva",
+    "Limonada Frambuesa",
+    "POP Huevo",
+    "Otro (Escribir manualmente)"
+]
+
+LISTA_FORMATOS = [
+    "600ml",
+    "500ml",
+    "350ml",
+    "1,5",
+    "1.5 lts",
+    "1.6 lts",
+    "2 lts",
+    "1.25 L",
+    "1.75 L Cisne",
+    "Otro (Escribir manualmente)"
+]
 
 # --- ENCABEZADO ---
 st.title("⚡ Control de Producción e Insumos - Línea 2 CCU")
@@ -294,23 +340,14 @@ with tab3:
     st.subheader("📲 Generador de Notificación de Turno / Producción")
     st.caption("Crea el mensaje estandarizado exacto según el historial del grupo de WhatsApp.")
 
-    # Auto-detección inicial según hora
-    hora_actual = datetime.now().hour
-    if 6 <= hora_actual < 12:
-        saludo_def = "Buenos días\nFavor notificar."
-    elif 12 <= hora_actual < 20:
-        saludo_def = "Buenas tardes, favor notificar"
-    else:
-        saludo_def = "Buenas noches\nFavor notificar."
-
     col_n1, col_n2 = st.columns(2)
     
     with col_n1:
-        # Selector de Saludo con opciones típicas del grupo
+        # Selector de Saludo
         opcion_saludo = st.selectbox(
             "Opción de Saludo",
             [
-                "Buenos días\nFavor notificar.",
+                "Buenos días\nFavor notificar:",
                 "Buenas tardes, favor notificar",
                 "Buenas noches\nFavor notificar.",
                 "Favor notificar",
@@ -320,13 +357,33 @@ with tab3:
         )
         
         if opcion_saludo == "Personalizado":
-            saludo_txt = st.text_input("Escribe tu saludo", value="Buenos días")
+            saludo_txt = st.text_input("Escribe tu saludo personalizado", value="Buenos días")
         else:
             saludo_txt = opcion_saludo
 
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
         linea_sel = st.text_input("Línea", value="línea 2")
-        prod_notif = st.text_input("Producto y Formato", value=prod_nombre)
+
+        # MENÚS DESPLEGABLES SEPARADOS PARA PRODUCTO Y FORMATO
+        st.markdown("---")
+        st.markdown("### 🥤 Selección de Producto y Formato")
+        
+        prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False, help="Agrega 'Sabor:' antes del producto (Ej: Sabor: Pap 350ml)")
+
+        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
+        if sabor_sel == "Otro (Escribir manualmente)":
+            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
+        else:
+            sabor_txt = sabor_sel
+
+        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
+        if fmt_sel == "Otro (Escribir manualmente)":
+            fmt_txt = st.text_input("Escribe el formato", value="600ml")
+        else:
+            fmt_txt = fmt_sel
+
+        # Combinación de Producto y Formato
+        prod_completo = f"{'Sabor: ' if prefijo_sabor else ''}{sabor_txt} {fmt_txt}".strip()
 
     with col_n2:
         op_num = st.text_input("Orden de Producción (OP)", value="6600225198", help="Número de OP de SAP")
@@ -345,9 +402,9 @@ with tab3:
 
     # Estructuración exacta del mensaje estilo WhatsApp
     if "Buenas tardes" in saludo_txt:
-        mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+        mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
     else:
-        mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+        mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
     st.markdown("---")
     st.subheader("📄 Mensaje Listo para Enviar:")
