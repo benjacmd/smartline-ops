@@ -10,49 +10,73 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ESTILOS CSS EN TEMA CLARO ---
+# --- ESTILOS CSS REFORZADOS PARA CELULAR Y MODO OSCURO ---
 st.markdown("""
     <style>
-    .stApp {
-        background-color: #f8f9fa;
-        color: #212529;
+    /* Forzar fondo blanco y texto oscuro global */
+    html, body, [data-testid="stAppViewContainer"], .main {
+        background-color: #ffffff !important;
+        color: #212529 !important;
     }
+    
+    /* Asegurar texto en inputs y labels para móvil */
+    label, .stMarkdown, p, span, h1, h2, h3, h4, h5, h6 {
+        color: #212529 !important;
+    }
+
+    /* Inputs y Selectboxes en blanco con texto visible */
+    div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
+    input {
+        color: #212529 !important;
+    }
+
+    /* Targetas de métricas */
     .metric-card {
-        background-color: #ffffff;
+        background-color: #ffffff !important;
         border-radius: 10px;
         padding: 16px;
-        border: 1px solid #e9ecef;
-        border-left: 5px solid #0d6efd;
+        border: 1px solid #dee2e6;
+        border-left: 5px solid #0d6efd !important;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         margin-bottom: 12px;
     }
     .metric-value {
         font-size: 24px;
         font-weight: bold;
-        color: #0d6efd;
+        color: #0d6efd !important;
     }
     .metric-label {
         font-size: 12px;
-        color: #6c757d;
+        color: #495057 !important;
         text-transform: uppercase;
         font-weight: 600;
     }
+
+    /* Tarjetas de Insumos */
     .insumo-card {
-        background-color: #eef2f7;
+        background-color: #f1f3f5 !important;
         border-radius: 8px;
         padding: 12px;
-        border-left: 4px solid #198754;
+        border-left: 4px solid #198754 !important;
         margin-bottom: 10px;
     }
     .insumo-title {
         font-weight: bold;
-        color: #198754;
+        color: #198754 !important;
         font-size: 14px;
     }
     .insumo-qty {
         font-size: 20px;
         font-weight: bold;
-        color: #212529;
+        color: #212529 !important;
+    }
+    .insumo-sub {
+        color: #6c757d !important;
+        font-size: 12px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -97,7 +121,7 @@ with st.sidebar:
 
     st.subheader("📦 Capacidades Estándar de Bodega")
     std_preforma_caja = st.number_input("Preformas x Caja", value=preset["pref_caja"], step=1000)
-    std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)  # Actualizado a 5,000 por caja
+    std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)
     std_etiqueta_rollo = st.number_input("Etiquetas x Rollo", value=10000, step=1000)
     std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=1200, step=100)
     std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=500, step=50)
@@ -161,16 +185,16 @@ with tab1:
 
     ic1, ic2, ic3 = st.columns(3)
     with ic1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><small>({int(botellas_con_merma):,} un. @ {std_preforma_caja:,}/caja)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><small>(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">({int(botellas_con_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
 
     with ic2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><small>({int(botellas_con_merma):,} tapas @ 5,000/caja)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><small>(Empaquetadora Variopac)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">({int(botellas_con_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac)</div></div>', unsafe_allow_html=True)
 
     with ic3:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton} Pallet(s)</div><small>({int(total_pallets)} planchas)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><small>(Envolvedora Stretch W.)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton} Pallet(s)</div><div class="insumo-sub">({int(total_pallets)} planchas)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
 
 # ==========================================
 # PESTAÑA 2: LITROS FINALES E INSUMOS REMANENTES
@@ -188,7 +212,7 @@ with tab2:
         st.caption(f"➜ Equivale a **{int(bebida_de_jarabe):,} L** de bebida.")
 
     with col_b:
-        st.markdown("### 🎛️ 2. Mixer")
+        st.markdown("### 🎛️ 2. Mixer / Carbonatador")
         litros_mixer = st.number_input("Producto Terminado en Mixer (L)", value=200, step=20)
         st.caption("Normalmente ~200 Litros.")
 
@@ -236,13 +260,13 @@ with tab2:
 
     ric1, ric2, ric3 = st.columns(3)
     with ric1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><small>({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><small>(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><div class="insumo-sub">(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
 
     with ric2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><small>({int(botellas_rem_merma):,} tapas @ 5,000/caja)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><small>(Empaquetadora Variopac)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac)</div></div>', unsafe_allow_html=True)
 
     with ric3:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><small>({pallets_sistema:.1f} planchas)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><small>(Envolvedora Stretch W.)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><div class="insumo-sub">({pallets_sistema:.1f} planchas)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
