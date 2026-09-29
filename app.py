@@ -193,16 +193,16 @@ tab1, tab2, tab3 = st.tabs([
 packs_totales_calculados = 0
 
 # ==========================================
-# PESTAÑA 1: PROGRAMACIÓN DESDE JARABE (MEJORADA)
+# PESTAÑA 1: PROGRAMACIÓN DESDE JARABE (SIN MERMA)
 # ==========================================
 with tab1:
     st.markdown("### 🧪 Planificación de Lote según Jarabe Preparado")
-    st.caption("Calcula el rendimiento total del tanque, tiempos de embotellado e insumos requeridos con margen de merma ajustable.")
+    st.caption("Calcula el rendimiento exacto del tanque, tiempos de embotellado e insumos requeridos.")
 
     # --- CONTENEDOR DE PARÁMETROS DE ENTRADA ---
     with st.container():
         st.markdown("#### 📥 1. Parámetros del Tanque y Lote")
-        col_in1, col_in2, col_in3 = st.columns(3)
+        col_in1, col_in2 = st.columns(2)
         
         with col_in1:
             jarabe_disponible = st.number_input("🧪 Jarabe Disponible en Tanque (L)", value=7000, step=500, help="Litros medidos en el tanque de jarabe terminado")
@@ -212,7 +212,7 @@ with tab1:
             botellas_por_pack = st.number_input("📦 Botellas por Pack", value=6, step=1, key="pack_t1", help="Ejemplo: 6 para formato 3x2")
             packs_por_pallet = st.number_input("🏗️ Packs por Pallet", value=100, step=10, key="pallet_t1")
 
-    # --- CÁLCULOS PRINCIPALES ---
+    # --- CÁLCULOS PRINCIPALES (100% DIRECTOS) ---
     litros_bebida_total = jarabe_disponible * factor_mezcla
     total_botellas = (litros_bebida_total * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
@@ -227,7 +227,7 @@ with tab1:
 
     st.markdown("---")
 
-    # --- METRICAS DE RENDIMIENTO DEL LOTE ---
+    # --- MÉTRICAS DE RENDIMIENTO DEL LOTE ---
     st.markdown("#### 📊 2. Proyección de Producción")
     
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
@@ -265,19 +265,15 @@ with tab1:
 
     st.markdown("---")
 
-    # --- CÁLCULOS DE INSUMOS CON MERMA PERSONALIZADA ---
-    factor_merma = 1 + (pct_merma / 100.0)
-    botellas_con_merma = total_botellas * factor_merma
-    packs_con_merma = total_packs * factor_merma
-
-    cajas_preforma = math.ceil(botellas_con_merma / std_preforma_caja)
-    cajas_tapa = math.ceil(botellas_con_merma / std_tapa_caja)
-    rollos_etiqueta = math.ceil(botellas_con_merma / std_etiqueta_rollo)
-    rollos_film = math.ceil(packs_con_merma / std_film_pack_rollo)
+    # --- CÁLCULOS DE INSUMOS DIRECTOS ---
+    cajas_preforma = math.ceil(total_botellas / std_preforma_caja)
+    cajas_tapa = math.ceil(total_botellas / std_tapa_caja)
+    rollos_etiqueta = math.ceil(total_botellas / std_etiqueta_rollo)
+    rollos_film = math.ceil(total_packs / std_film_pack_rollo)
     pallets_carton = math.ceil(total_pallets / std_carton_pallet)
     rollos_stretcher = math.ceil(total_pallets / std_pallet_stretcher)
 
-    st.markdown(f"#### 📋 3. Insumos y Materiales a Solicitar a Bodega (Incluye {pct_merma}% merma)")
+    st.markdown("#### 📋 3. Insumos y Materiales a Solicitar a Bodega")
 
     ic1, ic2, ic3 = st.columns(3)
     
@@ -286,7 +282,7 @@ with tab1:
         <div class="insumo-card" style="border-left: 5px solid #0d6efd !important;">
             <div class="insumo-title">🧪 Cajas de Preforma</div>
             <div class="insumo-qty">{cajas_preforma} Cajas</div>
-            <div class="insumo-sub">Requerido: {int(botellas_con_merma):,} un.<br>Format: {std_preforma_caja:,} u/caja</div>
+            <div class="insumo-sub">Exacto: {int(total_botellas):,} un.<br>Format: {std_preforma_caja:,} u/caja</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -303,7 +299,7 @@ with tab1:
         <div class="insumo-card" style="border-left: 5px solid #198754 !important;">
             <div class="insumo-title">🔘 Cajas de Tapa</div>
             <div class="insumo-qty">{cajas_tapa} Cajas</div>
-            <div class="insumo-sub">Requerido: {int(botellas_con_merma):,} tapas<br>Format: {std_tapa_caja:,} u/caja</div>
+            <div class="insumo-sub">Exacto: {int(total_botellas):,} tapas<br>Format: {std_tapa_caja:,} u/caja</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -330,7 +326,8 @@ with tab1:
             <div class="insumo-qty">{rollos_stretcher} Rollos</div>
             <div class="insumo-sub">Format: {std_pallet_stretcher} pallets/rollo</div>
         </div>
-        """, unsafe_allow_html=True)# ==========================================
+        """, unsafe_allow_html=True)
+# ==========================================
 # PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ==========================================
 with tab2:
