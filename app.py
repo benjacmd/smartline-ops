@@ -356,38 +356,35 @@ with tab3:
     with col2:
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
 
-    # Fila 2: Línea y Opción de Prefijo
+    # Fila 2: Línea y Producto / Sabor
     col3, col4 = st.columns(2)
     with col3:
         linea_sel = st.text_input("Línea", value="línea 2")
     with col4:
-        st.write("") # Espaciador para alinear con la casilla
-        st.write("") 
-        prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False)
-
-    # Fila 3: Producto y Formato
-    col5, col6 = st.columns(2)
-    with col5:
         sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
         if sabor_sel == "Otro (Escribir manualmente)":
             sabor_txt = st.text_input("Escribe el sabor", value="Pap")
         else:
             sabor_txt = sabor_sel
 
-    with col6:
+    # Fila 3: Formato y Orden de Producción (OP)
+    col5, col6 = st.columns(2)
+    with col5:
         fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
         if fmt_sel == "Otro (Escribir manualmente)":
             fmt_txt = st.text_input("Escribe el formato", value="600ml")
         else:
             fmt_txt = fmt_sel
 
-    prod_completo = f"{'Sabor: ' if prefijo_sabor else ''}{sabor_txt} {fmt_txt}".strip()
+    with col6:
+        op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
 
-    # Fila 4: Orden de Producción (OP) y Cajas Producidas
+    # Armar combinación directa de Producto + Formato
+    prod_completo = f"{sabor_txt} {fmt_txt}".strip()
+
+    # Fila 4: Cajas Producidas y Fecha
     col7, col8 = st.columns(2)
     with col7:
-        op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
-    with col8:
         cajas_cant = st.number_input(
             "Cajas / Packs Producidos", 
             value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
@@ -395,12 +392,8 @@ with tab3:
         )
         cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
 
-    # Fila 5: Fecha
-    col9, col10 = st.columns(2)
-    with col9:
+    with col8:
         fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
-    with col10:
-        pass  # Columna vacía para mantener la proporción de 2 por fila
 
     # Construcción del mensaje final
     if "Buenas tardes" in saludo_txt:
