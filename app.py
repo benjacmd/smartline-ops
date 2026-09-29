@@ -174,7 +174,7 @@ with st.sidebar:
     bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000)
     
     st.subheader("Eficiencia de Línea")
-    oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=85)
+    oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=100)
     bph_real = bph_nominal * (oee / 100.0)
     st.info(f"Velocidad Real: **{int(bph_real):,} BPH**")
 
