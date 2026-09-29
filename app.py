@@ -130,7 +130,7 @@ LISTA_SABORES = [
     "Kem",
     "Kem Zero",
     "Kem piña",
-    "Pepsi",
+    "Pepsi Reducida",
     "Pepsi Zero",
     "7Up",
     "7Up Zero",
@@ -139,11 +139,8 @@ LISTA_SABORES = [
     "Crush",
     "Crush Zero",
     "Rockstar Original",
+    "Rockstar Sandía",
     "Rockstar Mango",
-    "Watts Durazno reducido",
-    "Más Citrus C/G",
-    "Más Uva",
-    "Limonada Frambuesa",
     "POP Huevo",
     "Otro (Escribir manualmente)"
 ]
@@ -337,82 +334,66 @@ with tab2:
 # PESTAÑA 3: NOTIFICACIÓN RÁPIDA DE WHATSAPP
 # ==========================================
 with tab3:
-    st.subheader("📲 Generador de Notificación de Turno / Producción")
-    st.caption("Crea el mensaje estandarizado exacto según el historial del grupo de WhatsApp.")
+    st.subheader("📲 Generador de Notificación de Turno")
+    st.caption("Completa los datos para generar el mensaje estandarizado.")
 
-    col_n1, col_n2 = st.columns(2)
+    # 1. SALUDO Y LÍNEA
+    opcion_saludo = st.selectbox(
+        "Saludo inicial",
+        [
+            "Buenos días\nFavor notificar:",
+            "Buenas tardes\n favor notificar",
+            "Buenas noches\nFavor notificar.",
+        ]
+    )
     
-    with col_n1:
-        # Selector de Saludo
-        opcion_saludo = st.selectbox(
-            "Opción de Saludo",
-            [
-                "Buenos días\nFavor notificar:",
-                "Buenas tardes, favor notificar",
-                "Buenas noches\nFavor notificar.",
-                "Favor notificar",
-                "Buenas favor notificar",
-                "Personalizado"
-            ]
-        )
-        
-        if opcion_saludo == "Personalizado":
-            saludo_txt = st.text_input("Escribe tu saludo personalizado", value="Buenos días")
-        else:
-            saludo_txt = opcion_saludo
+    if opcion_saludo == "Personalizado":
+        saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días")
+    else:
+        saludo_txt = opcion_saludo
 
-        turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
-        linea_sel = st.text_input("Línea", value="línea 2")
+    turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
+    linea_sel = st.text_input("Línea", value="línea 2")
 
-        # MENÚS DESPLEGABLES SEPARADOS PARA PRODUCTO Y FORMATO
-        st.markdown("---")
-        st.markdown("### 🥤 Selección de Producto y Formato")
-        
-        prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False, help="Agrega 'Sabor:' antes del producto (Ej: Sabor: Pap 350ml)")
+    # 2. SELECCIÓN DE PRODUCTO Y FORMATO
+    prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False)
 
-        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
-        if sabor_sel == "Otro (Escribir manualmente)":
-            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
-        else:
-            sabor_txt = sabor_sel
+    sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
+    if sabor_sel == "Otro (Escribir manualmente)":
+        sabor_txt = st.text_input("Escribe el sabor", value="Pap")
+    else:
+        sabor_txt = sabor_sel
 
-        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
-        if fmt_sel == "Otro (Escribir manualmente)":
-            fmt_txt = st.text_input("Escribe el formato", value="600ml")
-        else:
-            fmt_txt = fmt_sel
+    fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
+    if fmt_sel == "Otro (Escribir manualmente)":
+        fmt_txt = st.text_input("Escribe el formato", value="600ml")
+    else:
+        fmt_txt = fmt_sel
 
-        # Combinación de Producto y Formato
-        prod_completo = f"{'Sabor: ' if prefijo_sabor else ''}{sabor_txt} {fmt_txt}".strip()
+    prod_completo = f"{'Sabor: ' if prefijo_sabor else ''}{sabor_txt} {fmt_txt}".strip()
 
-    with col_n2:
-        op_num = st.text_input("Orden de Producción (OP)", value="6600225198", help="Número de OP de SAP")
-        
-        # Conteo de Cajas con valor por defecto o autocompletado
-        cajas_cant = st.number_input(
-            "Cajas / Packs Producidos", 
-            value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
-            step=100
-        )
-        
-        # FORMATO EXACTO DE CAJAS CON PUNTO DE MILES (Ej: 15.724)
-        cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
-        
-        fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
+    # 3. DATOS DE PRODUCCIÓN Y FECHA
+    op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
+    
+    cajas_cant = st.number_input(
+        "Cajas / Packs Producidos", 
+        value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
+        step=100
+    )
+    cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
+    
+    fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
 
-    # Estructuración exacta del mensaje estilo WhatsApp
+    # CONSTRUCCIÓN Y MUESTRA DEL MENSAJE FINAL
     if "Buenas tardes" in saludo_txt:
         mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
     else:
         mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
-    st.markdown("---")
-    st.subheader("📄 Mensaje Listo para Enviar:")
-    
-    # Vista previa del mensaje en cuadro tipo WhatsApp
+    st.markdown("### 📄 Mensaje Generado:")
     st.markdown(f'<div class="whatsapp-box">{mensaje_final}</div>', unsafe_allow_html=True)
 
-    # Enlace/Botón dinámico a WhatsApp
+    # BOTÓN DE WHATSAPP
     mensaje_encoded = urllib.parse.quote(mensaje_final)
     whatsapp_url = f"https://api.whatsapp.com/send?text={mensaje_encoded}"
 
