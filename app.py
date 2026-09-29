@@ -71,7 +71,7 @@ PRODUCTOS_PRESET = {
     "Bilz / Pap / Kem (1.5 L)": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
     "Pepsi / 7Up (1.5 L)": {"factor": 6.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
     "Crush (1.5 L)": {"factor": 5.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "1.75 L Cisne": {"factor": 7.125, "ml": 1750, "bph": 34000, "pref_caja": 8000},
+    "1.75 L Cisne": {"factor": 7.125, "ml": 1750, "bph": 34000, "pref_caja": 10000},
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
 }
 
@@ -95,12 +95,12 @@ with st.sidebar:
     bph_real = bph_nominal * (oee / 100.0)
     st.info(f"Velocidad Real: **{int(bph_real):,} BPH**")
 
-    st.subheader("📦 Capacidades de Empaque")
+    st.subheader("📦 Capacidades Estándar de Bodega")
     std_preforma_caja = st.number_input("Preformas x Caja", value=preset["pref_caja"], step=1000)
-    std_tapa_caja = st.number_input("Tapas x Caja", value=25000, step=1000)
+    std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)  # Actualizado a 5,000 por caja
     std_etiqueta_rollo = st.number_input("Etiquetas x Rollo", value=10000, step=1000)
     std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=1200, step=100)
-    std_carton_pallet = st.number_input("Cartones x Pallet Cartón", value=500, step=50)
+    std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=500, step=50)
     std_pallet_stretcher = st.number_input("Pallets x Rollo Stretcher", value=35, step=5)
 
 # --- PESTAÑAS PRINCIPALES ---
@@ -161,11 +161,11 @@ with tab1:
 
     ic1, ic2, ic3 = st.columns(3)
     with ic1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><small>({int(botellas_con_merma):,} un.)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><small>(BOPP / Body / Sleeve)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><small>({int(botellas_con_merma):,} un. @ {std_preforma_caja:,}/caja)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><small>(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</small></div>', unsafe_allow_html=True)
 
     with ic2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><small>({int(botellas_con_merma):,} tapas)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><small>({int(botellas_con_merma):,} tapas @ 5,000/caja)</small></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><small>(Empaquetadora Variopac)</small></div>', unsafe_allow_html=True)
 
     with ic3:
@@ -236,11 +236,11 @@ with tab2:
 
     ric1, ric2, ric3 = st.columns(3)
     with ric1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><small>({int(botellas_rem_merma):,} un.)</small></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><small>(BOPP / Body / Sleeve)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><small>({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><small>(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</small></div>', unsafe_allow_html=True)
 
     with ric2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><small>({int(botellas_rem_merma):,} tapas)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><small>({int(botellas_rem_merma):,} tapas @ 5,000/caja)</small></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><small>(Empaquetadora Variopac)</small></div>', unsafe_allow_html=True)
 
     with ric3:
