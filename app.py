@@ -34,7 +34,7 @@ st.markdown("""
         color: #212529 !important;
     }
 
-    /* Targetas de métricas */
+    /* Tarjetas de métricas */
     .metric-card {
         background-color: #ffffff !important;
         border-radius: 10px;
@@ -106,12 +106,12 @@ st.caption("Calculadora en tiempo real para Ergobloc L, Mixer y Pedido a Bodega"
 # --- BARRA LATERAL: SELECCIÓN Y CONFIGURACIÓN DE INSUMOS ---
 with st.sidebar:
     st.header("⚙️ Configuración del Turno")
-    prod_nombre = st.selectbox("Producto en Máquina", list(PRODUCTOS_PRESET.keys()))
+    prod_nombre = st.selectbox("Producto a Producir", list(PRODUCTOS_PRESET.keys()))
     preset = PRODUCTOS_PRESET[prod_nombre]
 
     st.subheader("Parámetros del Producto")
     vol_ml = st.number_input("Volumen Botella (ml)", value=preset["ml"], step=50)
-    factor_mezcla = st.number_input("Factor de Mezcla", value=preset["factor"], step=0.1)
+    factor_mezcla = st.number_input("Factor de Mezcla (Jarabe → Bebida)", value=preset["factor"], step=0.1)
     bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000)
     
     st.subheader("Eficiencia de Línea")
@@ -129,30 +129,30 @@ with st.sidebar:
 
 # --- PESTAÑAS PRINCIPALES ---
 tab1, tab2 = st.tabs([
-    "📦 1. Programación y Pedido a Bodega", 
-    "🌊 2. Litros Finales e Insumos Restantes"
+    "🧪 1. Programación por Jarabe Disponible", 
+    "🌊 2. Balance Final de Cierre de Lote"
 ])
 
 # ==========================================
-# PESTAÑA 1: PROGRAMACIÓN E INSUMOS TOTALES
+# PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
 # ==========================================
 with tab1:
-    st.subheader("Planificación de Orden y Materiales Requeridos")
-    col1, col2 = st.columns(2)
+    st.subheader("Planificación de Lote según Jarabe Preparado")
     
+    col1, col2 = st.columns(2)
     with col1:
-        litros_obj = st.number_input("Litros Totales a Producir", value=50000, step=5000)
+        jarabe_disponible = st.number_input("Jarabe Disponible en Tanque (L)", value=7000, step=500)
         botellas_por_pack = st.number_input("Botellas por Pack (Ej. 6 para 3x2)", value=6, step=1, key="pack_t1")
         packs_por_pallet = st.number_input("Packs por Pallet", value=100, step=10, key="pallet_t1")
     
     with col2:
         hora_inicio = st.time_input("Hora de Inicio / Actual", value=datetime.now().time())
 
-    # Cálculos Principales Tab 1
-    total_botellas = (litros_obj * 1000) / vol_ml
+    # Cálculos Principales desde Jarabe
+    litros_bebida_total = jarabe_disponible * factor_mezcla
+    total_botellas = (litros_bebida_total * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
     total_pallets = total_packs / packs_por_pallet
-    jarabe_necesario = litros_obj / factor_mezcla
     
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
     tiempo_fin = datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=horas_prod)
@@ -160,16 +160,16 @@ with tab1:
     # Métricas Principales Tab 1
     m1, m2, m3, m4 = st.columns(4)
     with m1:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Pallets Totales</div><div class="metric-value">{total_pallets:.1f}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Bebida Final Total</div><div class="metric-value">{int(litros_bebida_total):,} L</div></div>', unsafe_allow_html=True)
     with m2:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Packs Totales</div><div class="metric-value">{int(total_packs):,}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Pallets Totales</div><div class="metric-value">{total_pallets:.1f}</div></div>', unsafe_allow_html=True)
     with m3:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Jarabe Necesario</div><div class="metric-value">{jarabe_necesario:.0f} L</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Packs Totales</div><div class="metric-value">{int(total_packs):,}</div></div>', unsafe_allow_html=True)
     with m4:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Hora Término Est.</div><div class="metric-value">{tiempo_fin.strftime("%H:%M")}</div></div>', unsafe_allow_html=True)
 
     st.markdown("---")
-    st.subheader("📋 Pedido de Insumos y Materiales a Bodega")
+    st.subheader("📋 Insumos y Materiales a Pedir a Bodega")
     st.caption("Calculado con un 2% adicional para mermas de arranque y pruebas de línea.")
 
     # Cálculos Insumos (+2% Mermas) Tab 1
@@ -197,17 +197,17 @@ with tab1:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
 
 # ==========================================
-# PESTAÑA 2: LITROS FINALES E INSUMOS REMANENTES
+# PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ==========================================
 with tab2:
-    st.subheader("🌊 Balance Total de Producto en Línea (Elaboración + Tuberías + Mixer)")
-    st.caption("Usa esta pestaña al final del lote para saber exactamente cuánto producto y material necesitas para terminar.")
+    st.subheader("🌊 Balance Total de Producto en Línea (Tanque + Mixer + Tuberías)")
+    st.caption("Usa esta pestaña cuando te quede poco jarabe para saber exactamente cuántos pallets finales sacarás y qué insumos necesitas para terminar.")
 
     col_a, col_b, col_c = st.columns(3)
     
     with col_a:
         st.markdown("### 🛢️ 1. Tanque Elaboración")
-        jarabe_tanque = st.number_input("Jarabe Restante en Tanque (L)", value=2000, step=100, key="j_t2")
+        jarabe_tanque = st.number_input("Jarabe Restante en Tanque (L)", value=1500, step=100, key="j_t2")
         bebida_de_jarabe = jarabe_tanque * factor_mezcla
         st.caption(f"➜ Equivale a **{int(bebida_de_jarabe):,} L** de bebida.")
 
@@ -241,6 +241,7 @@ with tab2:
     with res4:
         st.metric("Tiempo de Llenado", f"{int(tiempo_sistema_min)} min")
 
+    st.success(f"💡 **Resumen para el Supervisor:** Quedan exactamente **{pallets_sistema:.1f} Pallets** de producción total. La línea parará por falta de producto en **{int(tiempo_sistema_min)} minutos** a la velocidad actual.")
 
     # CALCULADORA DE INSUMOS PARA EL REMANENTE
     st.markdown("---")
