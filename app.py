@@ -83,6 +83,7 @@ PRODUCTOS_PRESET = {
     "Bilz Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
     "Pap Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
     "Pap Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Lipton": {"factor": 4.000, "ml": 1500, "bph": 60000, "pref_caja": 15000},
     "Kem Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
     "Kem Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
     "Kem Piña": {"factor": 7.125, "ml": 350, "bph": 60000, "pref_caja": 15000},
