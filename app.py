@@ -220,14 +220,18 @@ with tab1:
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
     tiempo_fin = datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=horas_prod)
 
+    # Variables formateadas para visualización limpia
+    litros_str = f"{int(litros_bebida_total):,}"
+    packs_str = f"{int(total_packs):,}"
+
     # Métricas Principales
     m1, m2, m3, m4 = st.columns(4)
     with m1:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Bebida Final Total</div><div class="metric-value">{int(litros_bebida_total):,} L</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Bebida Final Total</div><div class="metric-value">{litros_str} L</div></div>', unsafe_allow_html=True)
     with m2:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Pallets Totales</div><div class="metric-value">{total_pallets:.1f}</div></div>', unsafe_allow_html=True)
     with m3:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Packs Totales</div><div class="metric-value">{int(total_packs):,}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Packs Totales</div><div class="metric-value">{packs_str}</div></div>', unsafe_allow_html=True)
     with m4:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Hora Término Est.</div><div class="metric-value">{tiempo_fin.strftime("%H:%M")}</div></div>', unsafe_allow_html=True)
 
@@ -235,6 +239,7 @@ with tab1:
     st.subheader("📋 Insumos y Materiales a Pedir a Bodega")
     st.caption("Calculado con un 2% adicional para mermas de arranque y pruebas de línea.")
 
+    # Cálculos de Insumos con Merma
     botellas_con_merma = total_botellas * 1.02
     packs_con_merma = total_packs * 1.02
 
@@ -245,19 +250,25 @@ with tab1:
     pallets_carton = math.ceil(total_pallets / std_carton_pallet)
     rollos_stretcher = math.ceil(total_pallets / std_pallet_stretcher)
 
+    # Formateo de unidades para HTML
+    botellas_merma_str = f"{int(botellas_con_merma):,}"
+    preforma_std_str = f"{std_preforma_caja:,}"
+    tapa_std_str = f"{std_tapa_caja:,}"
+    etiqueta_std_str = f"{std_etiqueta_rollo:,}"
+    film_std_str = f"{std_film_pack_rollo:,}"
+
     ic1, ic2, ic3 = st.columns(3)
     with ic1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">({int(botellas_con_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">({botellas_merma_str} un. @ {preforma_std_str}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">(BOPP / Body / Sleeve @ {etiqueta_std_str}/rollo)</div></div>', unsafe_allow_html=True)
 
     with ic2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">({int(botellas_con_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac @ 2,900 packs)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">({botellas_merma_str} tapas @ {tapa_std_str}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac @ {film_std_str} packs)</div></div>', unsafe_allow_html=True)
 
     with ic3:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton} Pallet(s)</div><div class="insumo-sub">({int(total_pallets)} planchas)</div></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
-
 # ==========================================
 # PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ==========================================
