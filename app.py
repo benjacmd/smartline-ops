@@ -188,7 +188,7 @@ with tab2:
         st.caption(f"➜ Equivale a **{int(bebida_de_jarabe):,} L** de bebida.")
 
     with col_b:
-        st.markdown("### 🎛️ 2. Mixer / Carbonatador")
+        st.markdown("### 🎛️ 2. Mixer")
         litros_mixer = st.number_input("Producto Terminado en Mixer (L)", value=200, step=20)
         st.caption("Normalmente ~200 Litros.")
 
