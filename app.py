@@ -16,11 +16,26 @@ st.set_page_config(
 st.title("⚡ SmartLine Ops")
 st.caption("Control Rápido de Producción e Insumos")
 
-# --- DICCIONARIO DE PRODUCTOS ---
+# --- DICCIONARIO EXCLUSIVO LÍNEA 2 CCU ---
 PRODUCTOS_PRESET = {
-    "Bilz 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
-    "Pap 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
-    "Bilz 1.5 Litros": {"factor": 4.500, "ml": 1500, "bph": 35000},
+    # --- FORMATOS 500 ml / 600 ml ---
+    "Bilz / Pap / Kem Regular (600 ml)": {"factor": 7.125, "ml": 600, "bph": 60000},
+    "Bilz / Pap / Kem Zero (600 ml)": {"factor": 7.125, "ml": 600, "bph": 60000},
+    "Pepsi Regular / Zero (600 ml)": {"factor": 6.000, "ml": 600, "bph": 60000},
+    "Seven Up / Tónica / Ginger Ale (600 ml)": {"factor": 6.000, "ml": 600, "bph": 60000},
+    "Limón Soda Regular / Zero (600 ml)": {"factor": 5.000, "ml": 600, "bph": 60000},
+    "Crush Regular / Zero (600 ml)": {"factor": 5.000, "ml": 600, "bph": 60000},
+    "Rockstar (500 ml)": {"factor": 6.000, "ml": 500, "bph": 60000},
+    "POP Huevo (500 ml)": {"factor": 7.125, "ml": 500, "bph": 42000},
+
+    # --- FORMATOS FAMILIARES (1.5 L / 1.75 L / 1.25 L) ---
+    "Bilz / Pap / Kem (1.5 L)": {"factor": 7.125, "ml": 1500, "bph": 38000},
+    "Pepsi / 7Up (1.5 L Carolina/Genérica)": {"factor": 6.000, "ml": 1500, "bph": 38000},
+    "Crush (1.5 L)": {"factor": 5.000, "ml": 1500, "bph": 38000},
+    "1.75 L Cisne": {"factor": 7.125, "ml": 1750, "bph": 34000},
+    "Formato 1.25 L": {"factor": 7.125, "ml": 1250, "bph": 38000},
+
+    # --- AJUSTE MANUAL ---
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000}
 }
 
