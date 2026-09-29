@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime, timedelta
 import math
+import urllib.parse
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
@@ -78,6 +79,20 @@ st.markdown("""
         color: #6c757d !important;
         font-size: 12px;
     }
+
+    /* Caja de mensaje WhatsApp */
+    .whatsapp-box {
+        background-color: #e7f7ee !important;
+        border: 1px solid #25d366 !important;
+        border-left: 6px solid #25d366 !important;
+        padding: 16px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 15px;
+        color: #111b21 !important;
+        white-space: pre-wrap;
+        margin-bottom: 15px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -115,7 +130,7 @@ with st.sidebar:
     bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000)
     
     st.subheader("Eficiencia de Línea")
-    oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=100)
+    oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=85)
     bph_real = bph_nominal * (oee / 100.0)
     st.info(f"Velocidad Real: **{int(bph_real):,} BPH**")
 
@@ -123,15 +138,19 @@ with st.sidebar:
     std_preforma_caja = st.number_input("Preformas x Caja", value=preset["pref_caja"], step=1000)
     std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)
     std_etiqueta_rollo = st.number_input("Etiquetas x Rollo", value=10000, step=1000)
-    std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=2600, step=100)
+    std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=2900, step=100)
     std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=500, step=50)
     std_pallet_stretcher = st.number_input("Pallets x Rollo Stretcher", value=35, step=5)
 
 # --- PESTAÑAS PRINCIPALES ---
-tab1, tab2 = st.tabs([
+tab1, tab2, tab3 = st.tabs([
     "🧪 1. Programación por Jarabe Disponible", 
-    "🌊 2. Balance Final de Cierre de Lote"
+    "🌊 2. Balance Final de Cierre de Lote",
+    "📲 3. Notificación WhatsApp"
 ])
+
+# Variables compartidas para auto-completar pestaña 3
+packs_totales_tab1 = 0
 
 # ==========================================
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -152,6 +171,7 @@ with tab1:
     litros_bebida_total = jarabe_disponible * factor_mezcla
     total_botellas = (litros_bebida_total * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
+    packs_totales_tab1 = int(total_packs)
     total_pallets = total_packs / packs_por_pallet
     
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
@@ -190,7 +210,7 @@ with tab1:
 
     with ic2:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">({int(botellas_con_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac @ 2,900 packs)</div></div>', unsafe_allow_html=True)
 
     with ic3:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton} Pallet(s)</div><div class="insumo-sub">({int(total_pallets)} planchas)</div></div>', unsafe_allow_html=True)
@@ -265,8 +285,76 @@ with tab2:
 
     with ric2:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac @ 2,900 packs)</div></div>', unsafe_allow_html=True)
 
     with ric3:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><div class="insumo-sub">({pallets_sistema:.1f} planchas)</div></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
+
+# ==========================================
+# PESTAÑA 3: NOTIFICACIÓN RÁPIDA DE WHATSAPP
+# ==========================================
+with tab3:
+    st.subheader("📲 Generador de Notificación de Turno / Producción")
+    st.caption("Crea el texto estandarizado para enviar al grupo de WhatsApp en segundos.")
+
+    # Auto-detectar saludo según la hora
+    hora_actual = datetime.now().hour
+    if 6 <= hora_actual < 12:
+        saludo_auto = "Buenos días"
+    elif 12 <= hora_actual < 20:
+        saludo_auto = "Buenas tardes"
+    else:
+        saludo_auto = "Buenas noches"
+
+    col_n1, col_n2 = st.columns(2)
+    
+    with col_n1:
+        saludo = st.text_input("Saludo", value=f"{saludo_auto}, favor notificar.")
+        turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
+        linea_sel = st.text_input("Línea", value="Línea 2")
+        prod_notif = st.text_input("Producto", value=prod_nombre)
+
+    with col_n2:
+        op_num = st.text_input("Orden de Producción (OP)", value="6600225198", help="Número de OP de SAP")
+        
+        # Formato de cajas con punto de miles (Ej: 5.700)
+        cajas_cant = st.number_input("Cajas / Packs Producidos", value=packs_totales_tab1 if packs_totales_tab1 > 0 else 5700, step=100)
+        cajas_formateadas = f"{cajas_cant:,.0f}".replace(",", ".")
+        
+        fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
+
+    # CONSTRUCCIÓN DEL MENSAJE OFICIAL
+    mensaje_final = f"{saludo}\n{turno_sel} - {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+
+    st.markdown("---")
+    st.subheader("📄 Mensaje Generado:")
+    
+    # Mostrar el mensaje con estilo de chat
+    st.markdown(f'<div class="whatsapp-box">{mensaje_final}</div>', unsafe_allow_html=True)
+
+    # Botón dinámico para abrir WhatsApp con el mensaje ya cargado
+    mensaje_encoded = urllib.parse.quote(mensaje_final)
+    whatsapp_url = f"https://api.whatsapp.com/send?text={mensaje_encoded}"
+
+    st.markdown(f'''
+        <a href="{whatsapp_url}" target="_blank" style="text-decoration: none;">
+            <button style="
+                background-color: #25d366;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                📲 Abrir en WhatsApp con este Mensaje
+            </button>
+        </a>
+    ''', unsafe_allow_html=True)
