@@ -27,17 +27,6 @@ st.markdown("""
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         margin-bottom: 12px;
     }
-    .metric-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #0d6efd;
-    }
-    .metric-label {
-        font-size: 12px;
-        color: #495057;
-        text-transform: uppercase;
-        font-weight: 600;
-    }
     .insumo-card {
         background-color: #f8f9fa;
         border-radius: 8px;
@@ -77,29 +66,73 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- DICCIONARIO OFICIAL DE PRODUCTOS ---
-PRODUCTOS_PRESET = {
-    "Bilz Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Bilz Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pap Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pap Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Lipton": {"factor": 4.000, "ml": 1500, "bph": 60000, "pref_caja": 15000},
-    "Kem Regular": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Kem Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Kem Piña": {"factor": 7.125, "ml": 350, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Regular": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Zero": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "7Up Regular": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "7Up Zero": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Limón Soda": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Limón Soda Zero": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Crush Naranja": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Crush Zero": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Rockstar Original": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "Rockstar Mango": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "Rockstar Sandía": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "POP Huevo": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
-    "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
+# --- BASE DE DATOS OFICIAL LÍNEA 2 CCU (SEGÚN MATRIZ MATRIZ DE FORMATOS) ---
+MATRIZ_CCU = {
+    "1. 500 ml Rockstar": {
+        "ml": 500, "factor": 4.0, "co2": 3.10, "peso_pref": 19.5, "temp": 20, 
+        "etiq": "Sleeve Fullbody", "sleevematic": True, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "2. 500 ml POP (Huevo)": {
+        "ml": 500, "factor": 7.125, "co2": 3.20, "peso_pref": 19.5, "temp": 20, 
+        "etiq": "Sleeve Fullbody", "sleevematic": True, "packs_opt": [6, 12],
+        "bph_ergobloc": 42000, "bph_variopac": 48300, "pref_caja": 15000
+    },
+    "3. 600 ml BGP": {
+        "ml": 600, "factor": 7.125, "co2": 4.20, "peso_pref": 19.5, "temp": 15, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "4. 600 ml AXL": {
+        "ml": 600, "factor": 7.125, "co2": 4.20, "peso_pref": 19.5, "temp": 15, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "5. 600 ml Ripples (BOPP)": {
+        "ml": 600, "factor": 7.125, "co2": 4.20, "peso_pref": 19.5, "temp": 15, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "5.1. 600 ml Ripples (Sleeve)": {
+        "ml": 600, "factor": 7.125, "co2": 4.20, "peso_pref": 19.5, "temp": 15, 
+        "etiq": "Sleeve Halfbody", "sleevematic": True, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "6. 600 ml B&P": {
+        "ml": 600, "factor": 7.125, "co2": 3.75, "peso_pref": 19.5, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6, 12],
+        "bph_ergobloc": 60000, "bph_variopac": 69000, "pref_caja": 15000
+    },
+    "7.1. 1,5 l Carolina (BOPP)": {
+        "ml": 1500, "factor": 7.125, "co2": 4.20, "peso_pref": 37.0, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6],
+        "bph_ergobloc": 38000, "bph_variopac": 43700, "pref_caja": 8000
+    },
+    "7.2. 1,5 l Carolina (Sleeve)": {
+        "ml": 1500, "factor": 7.125, "co2": 4.20, "peso_pref": 37.0, "temp": 20, 
+        "etiq": "Sleeve Halfbody", "sleevematic": True, "packs_opt": [6],
+        "bph_ergobloc": 36000, "bph_variopac": 41400, "pref_caja": 8000
+    },
+    "8. 1,5 l Genérica": {
+        "ml": 1500, "factor": 7.125, "co2": 3.95, "peso_pref": 37.0, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6],
+        "bph_ergobloc": 38000, "bph_variopac": 43700, "pref_caja": 8000
+    },
+    "9. 1,5 l Crush": {
+        "ml": 1500, "factor": 5.0, "co2": 3.95, "peso_pref": 37.0, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6],
+        "bph_ergobloc": 38000, "bph_variopac": 43700, "pref_caja": 8000
+    },
+    "10. 1,5 l B&P": {
+        "ml": 1500, "factor": 7.125, "co2": 3.75, "peso_pref": 37.0, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6],
+        "bph_ergobloc": 38000, "bph_variopac": 42560, "pref_caja": 8000
+    },
+    "11. 1,75 l Cisne": {
+        "ml": 1750, "factor": 7.125, "co2": 4.20, "peso_pref": 47.6, "temp": 20, 
+        "etiq": "BOPP", "sleevematic": False, "packs_opt": [6],
+        "bph_ergobloc": 34000, "bph_variopac": 39100, "pref_caja": 6000
+    }
 }
 
 LISTA_SABORES = [
@@ -109,52 +142,31 @@ LISTA_SABORES = [
     "Rockstar Sandía", "Rockstar Mango", "POP Huevo", "Otro (Escribir manualmente)"
 ]
 
-LISTA_FORMATOS = [
-    "350ml", "500ml", "600ml", "1 L", "1.25 L", "1.5 L", "1.75 L Cisne", "Otro (Escribir manualmente)"
-]
-
-# --- MAPEO DE FORMATOS ESTÁNDAR DE BOTELLA (ML) ---
-FORMATOS_MAP = {
-    "350 ml": 350,
-    "500 ml": 500,
-    "600 ml": 600,
-    "1.0 L": 1000,
-    "1.25 L": 1250,
-    "1.5 L": 1500,
-    "1.75 L": 1750
-}
-
 # --- ENCABEZADO ---
 st.title("⚡ Control de Producción e Insumos - Línea 2 CCU")
-st.caption("Calculadora en tiempo real para Ergobloc L, Mixer y Pedido a Bodega")
+st.caption("Estandarizado según Matriz Oficial de Formatos y Equipos Línea 2")
 
 # --- BARRA LATERAL ---
 with st.sidebar:
-    st.header("⚙️ Configuración del Turno")
-    prod_nombre = st.selectbox("Producto a Producir", list(PRODUCTOS_PRESET.keys()))
-    preset = PRODUCTOS_PRESET[prod_nombre]
+    st.header("⚙️ Configuración del Formato")
+    envase_sel = st.selectbox("Seleccionar Envase Matriz", list(MATRIZ_CCU.keys()))
+    data_format = MATRIZ_CCU[envase_sel]
 
-    st.subheader("Parámetros del Producto")
-    
-    # Selección de formato predefinido
-    preset_ml = preset["ml"]
-    lista_opciones_fmt = list(FORMATOS_MAP.keys())
-    
-    idx_defecto = 2  # 600 ml por defecto
-    for i, (label, val_ml) in enumerate(FORMATOS_MAP.items()):
-        if val_ml == preset_ml:
-            idx_defecto = i
-            break
+    st.subheader("📌 Datos Técnicos de Matriz")
+    col_sb1, col_sb2 = st.columns(2)
+    with col_sb1:
+        st.write(f"**Volumen:** {data_format['ml']} ml")
+        st.write(f"**Preforma:** {data_format['peso_pref']} g")
+        st.write(f"**Temp. Llenado:** {data_format['temp']} °C")
+    with col_sb2:
+        st.write(f"**Etiqueta:** {data_format['etiq']}")
+        st.write(f"**CO₂ Target:** {data_format['co2']} v/v")
+        if data_format['sleevematic']:
+            st.warning("⚠️ Requiere Sleevematic")
 
-    fmt_seleccionado = st.selectbox(
-        "Formato Botella", 
-        options=lista_opciones_fmt, 
-        index=idx_defecto
-    )
-    vol_ml = FORMATOS_MAP[fmt_seleccionado]
-
-    factor_mezcla = st.number_input("Factor de Mezcla (Jarabe → Bebida)", value=preset["factor"], step=0.1)
-    bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000)
+    st.subheader("⚡ Parámetros Operativos")
+    factor_mezcla = st.number_input("Factor de Mezcla", value=data_format["factor"], step=0.1)
+    bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=data_format["bph_ergobloc"], step=1000)
     
     st.subheader("Eficiencia de Línea")
     oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=100)
@@ -162,9 +174,9 @@ with st.sidebar:
     st.info(f"Velocidad Real: **{int(bph_real):,} BPH**")
 
     st.subheader("📦 Capacidades Estándar de Bodega")
-    std_preforma_caja = st.number_input("Preformas x Caja", value=preset["pref_caja"], step=1000)
+    std_preforma_caja = st.number_input("Preformas x Caja", value=data_format["pref_caja"], step=500)
     std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)
-    std_etiqueta_rollo = st.number_input("Etiquetas x Rollo", value=10000, step=1000)
+    std_etiqueta_rollo = st.number_input("Etiquetas/Sleeves x Rollo", value=10000, step=1000)
     std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=2700, step=100)
     std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=400, step=50)
     std_pallet_stretcher = st.number_input("Pallets x Rollo Stretcher", value=35, step=5)
@@ -181,8 +193,7 @@ tab1, tab2, tab3 = st.tabs([
 # ==========================================
 with tab1:
     st.markdown("### 🧪 Planificación de Lote según Jarabe Preparado")
-    st.caption("Calcula el rendimiento exacto del tanque, tiempos de embotellado e insumos requeridos.")
-
+    
     with st.container():
         st.markdown("#### 📥 1. Parámetros del Tanque y Lote")
         col_in1, col_in2 = st.columns(2)
@@ -192,16 +203,25 @@ with tab1:
             hora_inicio = st.time_input("⏰ Hora de Inicio / Actual", value=datetime.now().time())
 
         with col_in2:
-            botellas_por_pack = st.number_input("📦 Botellas por Pack", value=6, step=1, key="pack_t1")
-            packs_por_pallet = st.number_input("🏗️ Packs por Pallet", value=100, step=10, key="pallet_t1")
+            opciones_pack = data_format["packs_opt"]
+            if len(opciones_pack) > 1:
+                botellas_por_pack = st.radio("📦 Formato de Empaquetado (Variopac)", opciones_pack, format_func=lambda x: "3x2 (6 bot/pack)" if x==6 else "4x3 (12 bot/pack)")
+            else:
+                botellas_por_pack = opciones_pack[0]
+                st.info(f"📦 Empaquetado fijo para este envase: **3x2 ({botellas_por_pack} bot/pack)**")
+
+            packs_por_pallet = st.number_input("🏗️ Packs por Pallet", value=100 if data_format['ml']<=600 else 60, step=5, key="pallet_t1")
 
     # Cálculos principales
     litros_bebida_total = jarabe_disponible * factor_mezcla
-    total_botellas = (litros_bebida_total * 1000) / vol_ml
+    total_botellas = (litros_bebida_total * 1000) / data_format["ml"]
     total_packs = total_botellas / botellas_por_pack
     st.session_state.packs_calculados = int(total_packs)
     total_pallets = total_packs / packs_por_pallet
     
+    # Consumo de Resina
+    kilos_pet = (total_botellas * data_format["peso_pref"]) / 1000.0
+
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
     minutos_totales = int(horas_prod * 60)
     horas_format = minutos_totales // 60
@@ -221,7 +241,7 @@ with tab1:
     with kpi4:
         st.metric("⏱️ Hora Término Est.", tiempo_fin.strftime("%H:%M hrs"), delta=f"Duración: {horas_format}h {min_format}m", delta_color="normal")
 
-    st.info(f"💡 **Resumen del Lote:** A una velocidad real de **{int(bph_real):,} BPH** (OEE: {oee}%), el embotellado de este tanque tomará **{horas_format} horas y {min_format} minutos**.")
+    st.info(f"💡 **Masa de Resina:** Este lote consumirá **{kilos_pet:,.1f} kg** de PET en preformas ({data_format['peso_pref']}g/u). Tiempo de llenado: **{horas_format}h {min_format}m**.")
 
     st.markdown("---")
     st.markdown("#### 📋 3. Insumos y Materiales a Solicitar a Bodega")
@@ -235,11 +255,11 @@ with tab1:
 
     ic1, ic2, ic3 = st.columns(3)
     with ic1:
-        st.markdown(f'<div class="insumo-card" style="border-left-color: #0d6efd;"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} un.<br>Format: {std_preforma_caja:,} u/caja</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card" style="border-left-color: #6f42c1;"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">Format: {std_etiqueta_rollo:,} etiquetas/rollo</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #0d6efd;"><div class="insumo-title">🧪 Cajas Preforma ({data_format["peso_pref"]}g)</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} un. ({std_preforma_caja:,} u/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #6f42c1;"><div class="insumo-title">🏷️ Rollos ({data_format["etiq"]})</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">Format: {std_etiqueta_rollo:,} un/rollo</div></div>', unsafe_allow_html=True)
 
     with ic2:
-        st.markdown(f'<div class="insumo-card" style="border-left-color: #198754;"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} tapas<br>Format: {std_tapa_caja:,} u/caja</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #198754;"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} tapas ({std_tapa_caja:,} u/caja)</div></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="insumo-card" style="border-left-color: #fd7e14;"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">Format: {std_film_pack_rollo:,} packs/rollo</div></div>', unsafe_allow_html=True)
 
     with ic3:
@@ -251,7 +271,6 @@ with tab1:
 # ==========================================
 with tab2:
     st.subheader("🌊 Balance Total de Producto en Línea (Tanque + Mixer + Tuberías)")
-    st.caption("Usa esta pestaña cuando te quede poco jarabe para calcular el remanente exacto.")
 
     col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
@@ -265,7 +284,7 @@ with tab2:
         pct_merma = st.number_input("Merma Est. (%)", value=2.0, step=0.5)
 
     litros_totales_sistema = bebida_de_jarabe + litros_mixer + litros_tuberias
-    botellas_sistema = (litros_totales_sistema * 1000) / vol_ml
+    botellas_sistema = (litros_totales_sistema * 1000) / data_format["ml"]
     packs_sistema = botellas_sistema / botellas_por_pack
     pallets_sistema = packs_sistema / packs_por_pallet
     tiempo_sistema_min = (botellas_sistema / bph_real) * 60 if bph_real > 0 else 0
@@ -297,8 +316,8 @@ with tab2:
 
     ric1, ric2, ric3 = st.columns(3)
     with ric1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><div class="insumo-sub">(@ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas Preforma ({data_format["peso_pref"]}g)</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos {data_format["etiq"]}</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><div class="insumo-sub">(@ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
 
     with ric2:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} tapas @ {std_tapa_caja:,}/caja)</div></div>', unsafe_allow_html=True)
@@ -335,15 +354,8 @@ with tab3:
         sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES)
         sabor_txt = st.text_input("Escribe el sabor", value="Pap") if sabor_sel == "Otro (Escribir manualmente)" else sabor_sel
     with col6:
-        # Formato predeterminado según el elegido en la barra lateral
-        idx_fmt_notif = 2
-        for idx, f_item in enumerate(LISTA_FORMATOS):
-            if f_item.replace(" ", "").lower() == fmt_seleccionado.replace(" ", "").lower():
-                idx_fmt_notif = idx
-                break
-
-        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS, index=idx_fmt_notif)
-        fmt_txt = st.text_input("Escribe el formato", value="600ml") if fmt_sel == "Otro (Escribir manualmente)" else fmt_sel
+        fmt_txt = f"{data_format['ml']}ml" if data_format['ml'] < 1000 else f"{data_format['ml']/1000}L"
+        st.text_input("Formato Detectado Matriz", value=fmt_txt, disabled=True)
 
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
 
