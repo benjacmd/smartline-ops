@@ -113,10 +113,7 @@ PRODUCTOS_PRESET = {
     "Crush Zero": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
     "Rockstar Original": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
     "Rockstar Mango": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "Watts Durazno reducido": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Más Citrus C/G": {"factor": 7.125, "ml": 2000, "bph": 38000, "pref_caja": 10000},
-    "Más Uva": {"factor": 7.125, "ml": 1600, "bph": 38000, "pref_caja": 10000},
-    "Limonada Frambuesa": {"factor": 7.125, "ml": 2000, "bph": 38000, "pref_caja": 10000},
+    "Rockstar Sandía": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
     "POP Huevo": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
 }
@@ -214,9 +211,6 @@ with tab1:
         with col_in2:
             botellas_por_pack = st.number_input("📦 Botellas por Pack", value=6, step=1, key="pack_t1", help="Ejemplo: 6 para formato 3x2")
             packs_por_pallet = st.number_input("🏗️ Packs por Pallet", value=100, step=10, key="pallet_t1")
-
-        with col_in3:
-            pct_merma = st.slider("⚠️ Merma Estimada de Insumos (%)", min_value=0.0, max_value=10.0, value=2.0, step=0.5, help="Porcentaje extra de seguridad para pruebas de arranque y mermas")
 
     # --- CÁLCULOS PRINCIPALES ---
     litros_bebida_total = jarabe_disponible * factor_mezcla
