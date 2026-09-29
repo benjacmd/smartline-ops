@@ -6,218 +6,164 @@ import pytz
 # Configuración de zona horaria de Chile
 CHILE_TZ = pytz.timezone('America/Santiago')
 
-# Configuración de la página para celulares
+# Configuración de página para celulares
 st.set_page_config(
     page_title="SmartLine Ops",
-    page_icon="🚀",
+    page_icon="⚡",
     layout="centered"
 )
 
-st.title("🚀 SmartLine Ops")
-st.caption("Calculadora de Producción, Insumos y Reposición de Línea")
+st.title("⚡ SmartLine Ops")
+st.caption("Control Rápido de Producción e Insumos")
 
-st.divider()
-
-# --- DICCIONARIO DE PRODUCTOS PRECONFIGURADOS ---
+# --- DICCIONARIO DE PRODUCTOS ---
 PRODUCTOS_PRESET = {
-    "Personalizado (Manual)": {"factor": 7.125, "ml": 600, "bph": 60000},
     "Bilz 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
     "Pap 600 ml": {"factor": 7.125, "ml": 600, "bph": 60000},
-
+    "Bilz 1.5 Litros": {"factor": 4.500, "ml": 1500, "bph": 35000},
+    "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000}
 }
 
-# --- SECCIÓN 1: SELECCIÓN RÁPIDA DE PRODUCTO ---
-st.subheader("1. Selección de Producto")
-producto_seleccionado = st.selectbox("Elige el producto para cargar valores automáticos:", list(PRODUCTOS_PRESET.keys()))
+# Pestañas principales para navegación ultrarrápida
+tab1, tab2 = st.tabs(["🚀 Modo Turno (Inicio)", "🔄 Saldo de Jarabe"])
 
-preset_actual = PRODUCTOS_PRESET[producto_seleccionado]
-
-st.subheader("2. Parámetros de Mezcla y Línea")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    jarabe = st.number_input("Litros de Jarabe (L)", value=16000, step=500)
-    factor = st.number_input("Factor de Mezcla (Mixer)", value=preset_actual["factor"], format="%.3f")
-    merma_pct = st.number_input("% Merma Operativa (Seguridad)", value=1.5, step=0.5, format="%.1f")
-
-with col2:
-    formato_ml = st.number_input("Tamaño Botella (ml)", value=preset_actual["ml"], step=50)
-    velocidad_bph = st.number_input("Velocidad Línea (BPH)", value=preset_actual["bph"], step=1000)
-
-st.subheader("3. Capacidades y Stock Actual en Línea")
-with st.expander("⚙️ Configurar capacidades de cajas/rollos y stock físico", expanded=False):
-    col_e1, col_e2 = st.columns(2)
+# ==========================================
+# PESTAÑA 1: CÁLCULO PRINCIPAL DE TURNO
+# ==========================================
+with tab1:
+    st.subheader("1. Parámetros del Lote")
     
-    with col_e1:
-        st.markdown("**Capacidades por Empaque:**")
-        cap_preformas = st.number_input("Preformas por caja", value=14000, step=500)
-        cap_tapas = st.number_input("Tapas por caja", value=5000, step=500)
-        duracion_film_min = st.number_input("Duración 1 Rollo Film (min)", value=18, step=1)
-    
-    with col_e2:
-        st.markdown("**Stock Actual al Pie de Máquina:**")
-        stock_actual_film = st.number_input("Rollos de Film en piso", value=8, step=1)
-        stock_actual_tapas = st.number_input("Cajas de Tapas disponibles", value=5, step=1)
-        stock_actual_preformas = st.number_input("Cajas de Preformas disponibles", value=3, step=1)
-
-    st.markdown("---")
-    st.markdown("**Parámetros de Palletizado:**")
-    col_p1, col_p2, col_p3 = st.columns(3)
+    col_p1, col_p2 = st.columns(2)
     with col_p1:
-        botellas_por_pack = st.number_input("Bot./Pack", value=12, step=1)
+        producto_sel = st.selectbox("Producto:", list(PRODUCTOS_PRESET.keys()))
+        preset = PRODUCTOS_PRESET[producto_sel]
+        jarabe = st.number_input("Litros de Jarabe (L)", value=16000, step=500)
+    
     with col_p2:
-        packs_por_pallet = st.number_input("Packs/Pallet", value=132, step=1)
-    with col_p3:
-        camadas_por_pallet = st.number_input("Camadas/Pallet", value=6, step=1)
+        factor = st.number_input("Factor (Mixer)", value=preset["factor"], format="%.3f")
+        velocidad_bph = st.number_input("Velocidad (BPH)", value=preset["bph"], step=5000)
 
-# --- SECCIÓN 2: CÁLCULOS MATEMÁTICOS ---
-litros_bebida = jarabe * factor
-litros_envase = formato_ml / 1000.0
-botellas_teoricas = litros_bebida / litros_envase if litros_envase > 0 else 1
+    formato_ml = preset["ml"]
 
-# Factor de merma aplicado a insumos
-factor_merma = 1 + (merma_pct / 100.0)
-botellas_con_merma = botellas_teoricas * factor_merma
+    # --- AJUSTES RÁPIDOS EN EXPANDER (OCULTO POR DEFECTO PARA NO MOLESTAR) ---
+    with st.expander("⚙️ Stock Actual en Piso y Empaques"):
+        c1, c2 = st.columns(2)
+        with c1:
+            stock_film = st.number_input("Rollos Film en piso", value=8, step=1)
+            stock_tapas = st.number_input("Cajas Tapas en piso", value=5, step=1)
+            stock_pref = st.number_input("Cajas Preformas en piso", value=3, step=1)
+        with c2:
+            cap_pref = st.number_input("Preformas x caja", value=14000, step=1000)
+            cap_tapas = st.number_input("Tapas x caja", value=5000, step=500)
+            rend_film = 17448  # Estándar fijo (1 rollo = 17,448 botellas)
 
-# Tiempo de producción
-horas_prod = botellas_teoricas / velocidad_bph if velocidad_bph > 0 else 1
-minutos_totales = horas_prod * 60
+    # --- CÁLCULOS MATEMÁTICOS DIRECTOS ---
+    litros_bebida = jarabe * factor
+    litros_envase = formato_ml / 1000.0
+    botellas_totales = litros_bebida / litros_envase if litros_envase > 0 else 1
 
-# Cálculos de Insumos Totales (con merma)
-cajas_preformas_totales = math.ceil(botellas_con_merma / cap_preformas) if cap_preformas > 0 else 0
-cajas_tapas_totales = math.ceil(botellas_con_merma / cap_tapas) if cap_tapas > 0 else 0
-rollos_film_totales = math.ceil(minutos_totales / duracion_film_min) if duracion_film_min > 0 else 0
+    horas_prod = botellas_totales / velocidad_bph if velocidad_bph > 0 else 1
+    minutos_totales = horas_prod * 60
 
-# Faltantes por pedir
-faltan_film = max(0, rollos_film_totales - stock_actual_film)
-faltan_tapas = max(0, cajas_tapas_totales - stock_actual_tapas)
-faltan_preformas = max(0, cajas_preformas_totales - stock_actual_preformas)
+    # Insumos necesarios
+    cajas_pref_totales = math.ceil(botellas_totales / cap_pref)
+    cajas_tapas_totales = math.ceil(botellas_totales / cap_tapas)
+    rollos_film_totales = math.ceil(botellas_totales / rend_film)
 
-# Cálculos de Pallets
-total_packs = math.ceil(botellas_teoricas / botellas_por_pack) if botellas_por_pack > 0 else 0
-total_pallets = math.ceil(total_packs / packs_por_pallet) if packs_por_pallet > 0 else 0
-packs_por_camada = packs_por_pallet / camadas_por_pallet if camadas_por_pallet > 0 else 0
-separadores_carton = total_pallets * camadas_por_pallet
+    # Faltantes por pedir a bodega
+    faltan_pref = max(0, cajas_pref_totales - stock_pref)
+    faltan_tapas = max(0, cajas_tapas_totales - stock_tapas)
+    faltan_film = max(0, rollos_film_totales - stock_film)
 
-# --- SECCIÓN 3: RESULTADOS ---
-st.divider()
-st.header("📊 Hoja de Ruta Operativa")
+    # Palletizado (12 bot/pack, 132 packs/pallet)
+    total_packs = math.ceil(botellas_totales / 12)
+    total_pallets = math.ceil(total_packs / 132)
 
-m1, m2, m3 = st.columns(3)
-m1.metric("Bebida Total", f"{litros_bebida:,.0f} L")
-m2.metric("Botellas Finales", f"{int(botellas_teoricas):,} unid.")
-m3.metric("Tiempo Total", f"{int(horas_prod)}h {int(minutos_totales % 60)}m")
+    # Tiempos y Alertas
+    ahora = datetime.now(CHILE_TZ)
+    hora_fin = ahora + timedelta(minutes=minutos_totales)
+    hora_corte_tolva = hora_fin - timedelta(minutes=60)
+    duracion_rollo_min = (rend_film / velocidad_bph) * 60 if velocidad_bph > 0 else 17.5
+    hora_fin_film_piso = ahora + timedelta(minutes=stock_film * duracion_rollo_min)
 
-st.subheader("📦 Control de Insumos y Reposición a Bodega")
+    st.divider()
 
-col_i1, col_i2, col_i3 = st.columns(3)
+    # --- RESULTADOS VISUALES ---
+    st.subheader("📊 Resumen del Lote")
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Bebida Total", f"{litros_bebida:,.0f} L")
+    m2.metric("Botellas", f"{int(botellas_totales):,} u")
+    m3.metric("Tiempo Total", f"{int(horas_prod)}h {int(minutos_totales % 60)}m")
 
-with col_i1:
-    st.markdown("#### 📦 Preformas")
-    st.metric("Total Requerido", f"{cajas_preformas_totales} cajas")
-    if faltan_preformas > 0:
-        st.error(f"⚠️ Faltan pedir: **{faltan_preformas} cajas**")
-    else:
-        st.success("✅ Stock suficiente")
+    st.subheader("📦 Pedido Inmediato a Bodega")
+    i1, i2, i3 = st.columns(3)
+    
+    with i1:
+        st.markdown("**Preformas**")
+        if faltan_pref > 0:
+            st.error(f"Pedir **{faltan_pref} cajas**")
+        else:
+            st.success("✅ OK")
 
-with col_i2:
-    st.markdown("#### 🥤 Tapas")
-    st.metric("Total Requerido", f"{cajas_tapas_totales} cajas")
-    if faltan_tapas > 0:
-        st.error(f"⚠️ Faltan pedir: **{faltan_tapas} cajas**")
-    else:
-        st.success("✅ Stock suficiente")
+    with i2:
+        st.markdown("**Tapas**")
+        if faltan_tapas > 0:
+            st.error(f"Pedir **{faltan_tapas} cajas**")
+        else:
+            st.success("✅ OK")
 
-with col_i3:
-    st.markdown("#### 🎞️ Film Vario")
-    st.metric("Total Requerido", f"{rollos_film_totales} rollos")
-    if faltan_film > 0:
-        st.error(f"⚠️ Faltan pedir: **{faltan_film} rollos**")
-    else:
-        st.success("✅ Stock suficiente")
+    with i3:
+        st.markdown("**Film Vario**")
+        if faltan_film > 0:
+            st.error(f"Pedir **{faltan_film} rollos**")
+        else:
+            st.success("✅ OK")
 
-st.subheader("🏗️ Fin de Línea y Palletizado")
-col_p1, col_p2, col_p3 = st.columns(3)
-col_p1.metric("📦 Packs Totales", f"{total_packs:,} packs")
-col_p2.metric("🪵 Pallets Terminados", f"{total_pallets} pallets")
-col_p3.metric("🏷️ LPNs Requeridos", f"{total_pallets} etiquetas")
+    st.info(f"""
+    🪵 **Pallets totales:** {total_pallets} pallets ({total_packs:,} packs)
+    🏁 **Fin estimado:** {hora_fin.strftime('%H:%M')} hrs.
+    🎞️ **Film en piso se acaba a las:** {hora_fin_film_piso.strftime('%H:%M')} hrs.
+    ⏰ **Corte de Tolva:** A las **{hora_corte_tolva.strftime('%H:%M')} hrs** deja de cargar tapas para no vaciar a mano.
+    """)
 
-st.markdown(f"""
-> **Estructura del Pallet:** {packs_por_camada:.0f} packs por camada | {camadas_por_pallet} camadas | **{separadores_carton}** separadores de cartón.
-""")
+    # --- REPORTE WHATSAPP ---
+    st.subheader("📱 Reporte para WhatsApp")
+    msg_wa = f"""📊 *REPORTE DE LÍNEA - {producto_sel}*
+🕐 Hora inicio: {ahora.strftime('%H:%M')} hrs | Fin Est.: {hora_fin.strftime('%H:%M')} hrs
+🥤 Bebida Total: {litros_bebida:,.0f} L ({int(botellas_totales):,} botellas)
+🪵 Pallets: {total_pallets} ({total_packs:,} packs)
 
-st.divider()
-
-# --- SECCIÓN 4: RECOMENDACIÓN PROACTIVA CON HORA DE CHILE ---
-st.subheader("💡 Alertas de Turno (Hora Chile)")
-
-# Hora actual real de Chile
-ahora_chile = datetime.now(CHILE_TZ)
-hora_fin = ahora_chile + timedelta(minutes=minutos_totales)
-hora_alerta_revision = hora_fin - timedelta(minutes=60)
-
-st.info(f"""
-* 🕐 **Hora actual en Chile:** {ahora_chile.strftime('%H:%M')} hrs.
-* 🏁 **Fin estimado de corrida:** {hora_fin.strftime('%H:%M')} hrs.
-* ⏰ **Conteo Final de Tolva:** A las **{hora_alerta_revision.strftime('%H:%M')} hrs** (1 hora antes), verifica remanente para frenar la carga antes del cambio de producto.
-""")
-
-# --- SECCIÓN 5: REPORTE PARA WHATSAPP ---
-st.subheader("📱 Reporte Rápido de Línea")
-
-reporte_text = f"""📊 *REPORTE DE LÍNEA - {producto_seleccionado}*
-🕐 Inicio/Actual: {ahora_chile.strftime('%H:%M')} hrs | Fin Est.: {hora_fin.strftime('%H:%M')} hrs
-🥤 Bebida Total: {litros_bebida:,.0f} L ({int(botellas_teoricas):,} botellas)
-🪵 Pallets Totales: {total_pallets} pallets ({total_packs:,} packs)
-
-📦 *PEDIDOS A BODEGA:*
-- Preformas: {'✅ OK' if faltan_preformas == 0 else f'Faltan {faltan_preformas} cajas'}
+📦 *PEDIR A BODEGA:*
+- Preformas: {'✅ OK' if faltan_pref == 0 else f'Faltan {faltan_pref} cajas'}
 - Tapas: {'✅ OK' if faltan_tapas == 0 else f'Faltan {faltan_tapas} cajas'}
-- Film Vario: {'✅ OK' if faltan_film == 0 else f'Faltan {faltan_film} rollos'}
-⏰ *Hora límite conteo tolva:* {hora_alerta_revision.strftime('%H:%M')} hrs"""
+- Film: {'✅ OK' if faltan_film == 0 else f'Faltan {faltan_film} rollos'}
+⏰ *Hora corte tolva:* {hora_corte_tolva.strftime('%H:%M')} hrs"""
 
-st.code(reporte_text, language="text")
-st.caption("Copiar y pegar este bloque directo en el grupo de WhatsApp de la línea.")
+    st.code(msg_wa, language="text")
 
-st.divider()
+# ==========================================
+# PESTAÑA 2: CALCULADORA INVERSA (SALDO JARABE)
+# ==========================================
+with tab2:
+    st.subheader("🔄 Consultar Jarabe Restante")
+    st.caption("Si la producción se cortó ayer, ingresa los packs hechos para saber cuánto jarabe queda.")
 
-# --- SECCIÓN 6: CALCULADORA INVERSA (AJUSTE POR PRODUCCIÓN PARCIAL) ---
-st.subheader("🔄 Calculadora Inversa: ¿Cuánto Jarabe me queda?")
-st.caption("Usa esta sección si ya se produjo una parte del lote y necesitas saber el saldo de jarabe restante en tanque.")
+    j_inicial = st.number_input("Jarabe Inicial con el que empezaron (L)", value=16000, step=500)
+    packs_hechos = st.number_input("Packs/Cajas producidas en total", value=0, step=100)
 
-with st.expander("🔍 Ingresar Packs o Cajas Producidas Ayer", expanded=True):
-    col_inv1, col_inv2 = st.columns(2)
-    
-    with col_inv1:
-        jarabe_inicial = st.number_input("Jarabe Inicial en Tanque (L)", value=16000, step=500, key="j_in")
-        packs_producidos = st.number_input("Packs o Cajas Producidas Ayer", value=0, step=100)
-    
-    with col_inv2:
-        # Usar los valores seleccionados arriba en el preset
-        bot_pack_inv = botellas_por_pack
-        ml_inv = formato_ml
-        factor_inv = factor
-    
-    # Cálculos Inversos
-    botellas_hechas = packs_producidos * bot_pack_inv
-    litros_bebida_hechos = (botellas_hechas * ml_inv) / 1000.0
-    jarabe_consumido = litros_bebida_hechos / factor_inv if factor_inv > 0 else 0
-    jarabe_restante = max(0.0, jarabe_inicial - jarabe_consumido)
-    
-    # Saldo de producción futura con el jarabe restante
-    bebida_restante = jarabe_restante * factor_inv
-    botellas_restantes = bebida_restante / (ml_inv / 1000.0) if ml_inv > 0 else 0
-    packs_restantes = math.ceil(botellas_restantes / bot_pack_inv) if bot_pack_inv > 0 else 0
-    pallets_restantes = math.ceil(packs_restantes / packs_por_pallet) if packs_por_pallet > 0 else 0
-    
-    st.markdown("---")
-    res_col1, res_col2, res_col3 = st.columns(3)
-    res_col1.metric("Jarabe Consumido", f"{jarabe_consumido:,.0f} L")
-    res_col2.metric("Jarabe Restante en Tanque", f"{jarabe_restante:,.0f} L")
-    res_col3.metric("Pallets por Producir", f"{pallets_restantes} pallets")
+    if packs_hechos > 0:
+        botellas_hechas = packs_hechos * 12
+        litros_bebida_hechos = (botellas_hechas * formato_ml) / 1000.0
+        jarabe_usado = litros_bebida_hechos / factor if factor > 0 else 0
+        jarabe_saldo = max(0.0, j_inicial - jarabe_usado)
 
-    if jarabe_restante > 0:
-        st.info(f"💡 Con los **{jarabe_restante:,.0f} Litros** de jarabe que te quedan, aún puedes fabricar **{int(botellas_restantes):,} botellas** ({packs_restantes:,} packs).")
-    else:
-        st.warning("⚠️ El jarabe inicial ya fue consumido en su totalidad según las cajas reportadas.")
+        bebida_saldo = jarabe_saldo * factor
+        botellas_saldo = bebida_saldo / (formato_ml / 1000.0) if formato_ml > 0 else 0
+        pallets_saldo = math.ceil((botellas_saldo / 12) / 132)
+
+        st.divider()
+        r1, r2 = st.columns(2)
+        r1.metric("Jarabe Restante en Tanque", f"{jarabe_saldo:,.0f} L")
+        r2.metric("Pallets que te quedan por hacer", f"{pallets_saldo} pallets")
+
+        st.success(f"💡 Te quedan **{jarabe_saldo:,.0f} Litros** de jarabe. Eso alcanza para fabricar **{int(botellas_saldo):,} botellas más**.")
