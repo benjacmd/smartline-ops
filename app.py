@@ -344,8 +344,8 @@ with tab3:
             "Saludo inicial",
             [
                 "Buenos días\nFavor notificar:",
-                "Buenas tardes\nFavor notificar",
-                "Buenas noches\nFavor notificar."
+                "Buenas tardes\nFavor notificar:",
+                "Buenas noches\nFavor notificar:",
             ]
         )
         if opcion_saludo == "Personalizado":
@@ -356,18 +356,14 @@ with tab3:
     with col2:
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
 
-    # Fila 2: Línea y Producto / Sabor
+    # Fila 2: Línea y Orden de Producción (OP) [Cambio 1: OP ahora está aquí]
     col3, col4 = st.columns(2)
     with col3:
         linea_sel = st.text_input("Línea", value="línea 2")
     with col4:
-        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
-        if sabor_sel == "Otro (Escribir manualmente)":
-            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
-        else:
-            sabor_txt = sabor_sel
+        op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
 
-    # Fila 3: Formato y Orden de Producción (OP)
+    # Fila 3: Formato y Producto / Sabor [Cambio 2: Formato primero, luego Producto]
     col5, col6 = st.columns(2)
     with col5:
         fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
@@ -377,9 +373,13 @@ with tab3:
             fmt_txt = fmt_sel
 
     with col6:
-        op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
+        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
+        if sabor_sel == "Otro (Escribir manualmente)":
+            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
+        else:
+            sabor_txt = sabor_sel
 
-    # Armar combinación directa de Producto + Formato
+    # Armar combinación directa de Producto + Formato para el mensaje
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
 
     # Fila 4: Cajas Producidas y Fecha
