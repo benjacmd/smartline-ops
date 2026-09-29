@@ -11,83 +11,67 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ESTILOS CSS PARA CELULAR Y MODO OSCURO/CLARO ---
+# --- INICIALIZACIÓN DE SESSION STATE ---
+if "packs_calculados" not in st.session_state:
+    st.session_state.packs_calculados = 15724
+
+# --- ESTILOS CSS PERSONALIZADOS ---
 st.markdown("""
     <style>
-    /* Forzar fondo blanco y texto oscuro global */
-    html, body, [data-testid="stAppViewContainer"], .main {
-        background-color: #ffffff !important;
-        color: #212529 !important;
-    }
-    
-    label, .stMarkdown, p, span, h1, h2, h3, h4, h5, h6 {
-        color: #212529 !important;
-    }
-
-    div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
-        background-color: #f8f9fa !important;
-        color: #212529 !important;
-        border: 1px solid #ced4da !important;
-    }
-    input {
-        color: #212529 !important;
-    }
-
-    /* Tarjetas de métricas */
+    /* Estilos específicos para tarjetas sin romper temas globales */
     .metric-card {
-        background-color: #ffffff !important;
+        background-color: #ffffff;
         border-radius: 10px;
         padding: 16px;
         border: 1px solid #dee2e6;
-        border-left: 5px solid #0d6efd !important;
+        border-left: 5px solid #0d6efd;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         margin-bottom: 12px;
     }
     .metric-value {
         font-size: 24px;
         font-weight: bold;
-        color: #0d6efd !important;
+        color: #0d6efd;
     }
     .metric-label {
         font-size: 12px;
-        color: #495057 !important;
+        color: #495057;
         text-transform: uppercase;
         font-weight: 600;
     }
-
-    /* Tarjetas de Insumos */
     .insumo-card {
-        background-color: #f1f3f5 !important;
+        background-color: #f8f9fa;
         border-radius: 8px;
         padding: 12px;
-        border-left: 4px solid #198754 !important;
+        border-left: 4px solid #198754;
         margin-bottom: 10px;
+        border-top: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
     }
     .insumo-title {
         font-weight: bold;
-        color: #198754 !important;
+        color: #198754;
         font-size: 14px;
     }
     .insumo-qty {
         font-size: 20px;
         font-weight: bold;
-        color: #212529 !important;
+        color: #212529;
     }
     .insumo-sub {
-        color: #6c757d !important;
+        color: #6c757d;
         font-size: 12px;
     }
-
-    /* Caja de mensaje WhatsApp estilo Chat */
     .whatsapp-box {
-        background-color: #e7f7ee !important;
-        border: 1px solid #25d366 !important;
-        border-left: 6px solid #25d366 !important;
+        background-color: #e7f7ee;
+        border: 1px solid #25d366;
+        border-left: 6px solid #25d366;
         padding: 16px;
         border-radius: 8px;
         font-family: monospace;
         font-size: 15px;
-        color: #111b21 !important;
+        color: #111b21;
         white-space: pre-wrap;
         margin-bottom: 15px;
     }
@@ -118,48 +102,23 @@ PRODUCTOS_PRESET = {
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
 }
 
-# --- LISTAS SEPARADAS PARA EL DESPLEGABLE DE NOTIFICACIÓN ---
 LISTA_SABORES = [
-    "Bilz",
-    "Bilz Zero",
-    "Pap",
-    "Pap Zero",
-    "Kem",
-    "Kem Zero",
-    "Kem piña",
-    "Pepsi Reducida",
-    "Pepsi Zero",
-    "7Up",
-    "7Up Zero",
-    "Limón Soda",
-    "Limón Soda Zero",
-    "Crush",
-    "Crush Zero",
-    "Rockstar Original",
-    "Rockstar Sandía",
-    "Rockstar Mango",
-    "POP Huevo",
-    "Otro (Escribir manualmente)"
+    "Bilz", "Bilz Zero", "Pap", "Pap Zero", "Kem", "Kem Zero", "Kem piña",
+    "Pepsi Reducida", "Pepsi Zero", "7Up", "7Up Zero", "Limón Soda",
+    "Limón Soda Zero", "Crush", "Crush Zero", "Rockstar Original",
+    "Rockstar Sandía", "Rockstar Mango", "POP Huevo", "Otro (Escribir manualmente)"
 ]
 
 LISTA_FORMATOS = [
-    "600ml",
-    "500ml",
-    "350ml",
-    "1,5",
-    "1.5 lts",
-    "1.6 lts",
-    "2 lts",
-    "1.25 L",
-    "1.75 L Cisne",
-    "Otro (Escribir manualmente)"
+    "600ml", "500ml", "350ml", "1,5", "1.5 lts", "1.6 lts", "2 lts",
+    "1.25 L", "1.75 L Cisne", "Otro (Escribir manualmente)"
 ]
 
 # --- ENCABEZADO ---
 st.title("⚡ Control de Producción e Insumos - Línea 2 CCU")
 st.caption("Calculadora en tiempo real para Ergobloc L, Mixer y Pedido a Bodega")
 
-# --- BARRA LATERAL: SELECCIÓN Y CONFIGURACIÓN DE INSUMOS ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.header("⚙️ Configuración del Turno")
     prod_nombre = st.selectbox("Producto a Producir", list(PRODUCTOS_PRESET.keys()))
@@ -190,33 +149,30 @@ tab1, tab2, tab3 = st.tabs([
     "📲 3. Notificación WhatsApp"
 ])
 
-packs_totales_calculados = 0
-
 # ==========================================
-# PESTAÑA 1: PROGRAMACIÓN DESDE JARABE (SIN MERMA)
+# PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
 # ==========================================
 with tab1:
     st.markdown("### 🧪 Planificación de Lote según Jarabe Preparado")
     st.caption("Calcula el rendimiento exacto del tanque, tiempos de embotellado e insumos requeridos.")
 
-    # --- CONTENEDOR DE PARÁMETROS DE ENTRADA ---
     with st.container():
         st.markdown("#### 📥 1. Parámetros del Tanque y Lote")
         col_in1, col_in2 = st.columns(2)
         
         with col_in1:
-            jarabe_disponible = st.number_input("🧪 Jarabe Disponible en Tanque (L)", value=7000, step=500, help="Litros medidos en el tanque de jarabe terminado")
+            jarabe_disponible = st.number_input("🧪 Jarabe Disponible en Tanque (L)", value=7000, step=500)
             hora_inicio = st.time_input("⏰ Hora de Inicio / Actual", value=datetime.now().time())
 
         with col_in2:
-            botellas_por_pack = st.number_input("📦 Botellas por Pack", value=6, step=1, key="pack_t1", help="Ejemplo: 6 para formato 3x2")
+            botellas_por_pack = st.number_input("📦 Botellas por Pack", value=6, step=1, key="pack_t1")
             packs_por_pallet = st.number_input("🏗️ Packs por Pallet", value=100, step=10, key="pallet_t1")
 
-    # --- CÁLCULOS PRINCIPALES (100% DIRECTOS) ---
+    # Cálculos principales
     litros_bebida_total = jarabe_disponible * factor_mezcla
     total_botellas = (litros_bebida_total * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
-    packs_totales_calculados = int(total_packs)
+    st.session_state.packs_calculados = int(total_packs)
     total_pallets = total_packs / packs_por_pallet
     
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
@@ -226,46 +182,23 @@ with tab1:
     tiempo_fin = datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=horas_prod)
 
     st.markdown("---")
-
-    # --- MÉTRICAS DE RENDIMIENTO DEL LOTE ---
     st.markdown("#### 📊 2. Proyección de Producción")
     
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
     with kpi1:
-        st.metric(
-            label="🥤 Bebida Final Total",
-            value=f"{int(litros_bebida_total):,} L".replace(",", "."),
-            delta=f"{int(total_botellas):,} botellas".replace(",", "."),
-            delta_color="off"
-        )
+        st.metric("🥤 Bebida Final Total", f"{int(litros_bebida_total):,} L".replace(",", "."), delta=f"{int(total_botellas):,} botellas".replace(",", "."), delta_color="off")
     with kpi2:
-        st.metric(
-            label="📦 Packs Totales",
-            value=f"{int(total_packs):,}".replace(",", "."),
-            delta=f"{botellas_por_pack} bot/pack",
-            delta_color="off"
-        )
+        st.metric("📦 Packs Totales", f"{int(total_packs):,}".replace(",", "."), delta=f"{botellas_por_pack} bot/pack", delta_color="off")
     with kpi3:
-        st.metric(
-            label="🏗️ Pallets Totales",
-            value=f"{total_pallets:.1f}",
-            delta=f"{int(packs_por_pallet)} packs/pallet",
-            delta_color="off"
-        )
+        st.metric("🏗️ Pallets Totales", f"{total_pallets:.1f}", delta=f"{int(packs_por_pallet)} packs/pallet", delta_color="off")
     with kpi4:
-        st.metric(
-            label="⏱️ Hora Término Est.",
-            value=tiempo_fin.strftime("%H:%M hrs"),
-            delta=f"Duración: {horas_format}h {min_format}m",
-            delta_color="normal"
-        )
+        st.metric("⏱️ Hora Término Est.", tiempo_fin.strftime("%H:%M hrs"), delta=f"Duración: {horas_format}h {min_format}m", delta_color="normal")
 
-    # --- BARRA DE TIEMPO / ESTADO ---
     st.info(f"💡 **Resumen del Lote:** A una velocidad real de **{int(bph_real):,} BPH** (OEE: {oee}%), el embotellado de este tanque tomará **{horas_format} horas y {min_format} minutos**.")
 
     st.markdown("---")
+    st.markdown("#### 📋 3. Insumos y Materiales a Solicitar a Bodega")
 
-    # --- CÁLCULOS DE INSUMOS DIRECTOS ---
     cajas_preforma = math.ceil(total_botellas / std_preforma_caja)
     cajas_tapa = math.ceil(total_botellas / std_tapa_caja)
     rollos_etiqueta = math.ceil(total_botellas / std_etiqueta_rollo)
@@ -273,84 +206,36 @@ with tab1:
     pallets_carton = math.ceil(total_pallets / std_carton_pallet)
     rollos_stretcher = math.ceil(total_pallets / std_pallet_stretcher)
 
-    st.markdown("#### 📋 3. Insumos y Materiales a Solicitar a Bodega")
-
     ic1, ic2, ic3 = st.columns(3)
-    
     with ic1:
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #0d6efd !important;">
-            <div class="insumo-title">🧪 Cajas de Preforma</div>
-            <div class="insumo-qty">{cajas_preforma} Cajas</div>
-            <div class="insumo-sub">Exacto: {int(total_botellas):,} un.<br>Format: {std_preforma_caja:,} u/caja</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #6f42c1 !important;">
-            <div class="insumo-title">🏷️ Rollos de Etiqueta</div>
-            <div class="insumo-qty">{rollos_etiqueta} Rollos</div>
-            <div class="insumo-sub">Format: {std_etiqueta_rollo:,} etiquetas/rollo</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #0d6efd;"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_preforma} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} un.<br>Format: {std_preforma_caja:,} u/caja</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #6f42c1;"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiqueta} Rollos</div><div class="insumo-sub">Format: {std_etiqueta_rollo:,} etiquetas/rollo</div></div>', unsafe_allow_html=True)
 
     with ic2:
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #198754 !important;">
-            <div class="insumo-title">🔘 Cajas de Tapa</div>
-            <div class="insumo-qty">{cajas_tapa} Cajas</div>
-            <div class="insumo-sub">Exacto: {int(total_botellas):,} tapas<br>Format: {std_tapa_caja:,} u/caja</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #fd7e14 !important;">
-            <div class="insumo-title">📦 Rollos Film Paquete</div>
-            <div class="insumo-qty">{rollos_film} Rollos</div>
-            <div class="insumo-sub">Format: {std_film_pack_rollo:,} packs/rollo</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #198754;"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa} Cajas</div><div class="insumo-sub">Exacto: {int(total_botellas):,} tapas<br>Format: {std_tapa_caja:,} u/caja</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #fd7e14;"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film} Rollos</div><div class="insumo-sub">Format: {std_film_pack_rollo:,} packs/rollo</div></div>', unsafe_allow_html=True)
 
     with ic3:
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #20c997 !important;">
-            <div class="insumo-title">📜 Pallets Cartón Corrugado</div>
-            <div class="insumo-qty">{pallets_carton} Pallet(s)</div>
-            <div class="insumo-sub">({int(total_pallets)} planchas totales)</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown(f"""
-        <div class="insumo-card" style="border-left: 5px solid #d63384 !important;">
-            <div class="insumo-title">🌀 Film Envolvedora (Stretch)</div>
-            <div class="insumo-qty">{rollos_stretcher} Rollos</div>
-            <div class="insumo-sub">Format: {std_pallet_stretcher} pallets/rollo</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #20c997;"><div class="insumo-title">📜 Pallets Cartón Corrugado</div><div class="insumo-qty">{pallets_carton} Pallet(s)</div><div class="insumo-sub">({int(total_pallets)} planchas totales)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card" style="border-left-color: #d63384;"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><div class="insumo-sub">Format: {std_pallet_stretcher} pallets/rollo</div></div>', unsafe_allow_html=True)
+
 # ==========================================
 # PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ==========================================
 with tab2:
     st.subheader("🌊 Balance Total de Producto en Línea (Tanque + Mixer + Tuberías)")
-    st.caption("Usa esta pestaña cuando te quede poco jarabe para saber exactamente cuántos pallets finales sacarás y qué insumos necesitas para terminar.")
+    st.caption("Usa esta pestaña cuando te quede poco jarabe para calcular el remanente exacto.")
 
-    col_a, col_b, col_c = st.columns(3)
-    
+    col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
-        st.markdown("### 🛢️ 1. Tanque Elaboración")
-        jarabe_tanque = st.number_input("Jarabe Restante en Tanque (L)", value=1500, step=100, key="j_t2")
+        jarabe_tanque = st.number_input("Jarabe Tanque (L)", value=1500, step=100, key="j_t2")
         bebida_de_jarabe = jarabe_tanque * factor_mezcla
-        st.caption(f"➜ Equivale a **{int(bebida_de_jarabe):,} L** de bebida.")
-
     with col_b:
-        st.markdown("### 🎛️ 2. Mixer / Carbonatador")
-        litros_mixer = st.number_input("Producto Terminado en Mixer (L)", value=200, step=20)
-        st.caption("Normalmente ~200 Litros.")
-
+        litros_mixer = st.number_input("Mixer (L)", value=200, step=20)
     with col_c:
-        st.markdown("### 🚀 3. Tuberías y Matriz")
-        litros_tuberias = st.number_input("Producto Terminado en Tuberías (L)", value=1000, step=100)
-        st.caption("Normalmente ~1.000 Litros con línea llena.")
+        litros_tuberias = st.number_input("Tuberías (L)", value=1000, step=100)
+    with col_d:
+        pct_merma = st.number_input("Merma Est. (%)", value=2.0, step=0.5)
 
     litros_totales_sistema = bebida_de_jarabe + litros_mixer + litros_tuberias
     botellas_sistema = (litros_totales_sistema * 1000) / vol_ml
@@ -362,22 +247,19 @@ with tab2:
     st.markdown("## 📊 Producto Final Producible")
 
     res1, res2, res3, res4 = st.columns(4)
-    with res1:
-        st.metric("Litros TOTALES Bebida", f"{int(litros_totales_sistema):,} L")
-    with res2:
-        st.metric("Botellas Reales", f"{int(botellas_sistema):,} u")
-    with res3:
-        st.metric("Packs Reales", f"{int(packs_sistema):,} packs")
-    with res4:
-        st.metric("Tiempo de Llenado", f"{int(tiempo_sistema_min)} min")
+    res1.metric("Litros TOTALES", f"{int(litros_totales_sistema):,} L")
+    res2.metric("Botellas Reales", f"{int(botellas_sistema):,} u")
+    res3.metric("Packs Reales", f"{int(packs_sistema):,} packs")
+    res4.metric("Tiempo Estimado", f"{int(tiempo_sistema_min)} min")
 
-    st.success(f"💡 **Resumen para el Supervisor:** Quedan exactamente **{pallets_sistema:.1f} Pallets** de producción total. La línea parará por falta de producto en **{int(tiempo_sistema_min)} minutos** a la velocidad actual.")
+    st.success(f"💡 **Resumen:** Quedan **{pallets_sistema:.1f} Pallets** de producción. Parada de línea proyectada en **{int(tiempo_sistema_min)} minutos**.")
 
     st.markdown("---")
-    st.subheader("📋 Insumos Necesarios para Terminar el Lote Actual")
+    st.subheader("📋 Insumos Necesarios (Con Merma)")
 
-    botellas_rem_merma = botellas_sistema * 1.02
-    packs_rem_merma = packs_sistema * 1.02
+    factor_merma = 1.0 + (pct_merma / 100.0)
+    botellas_rem_merma = botellas_sistema * factor_merma
+    packs_rem_merma = packs_sistema * factor_merma
 
     cajas_pref_rem = math.ceil(botellas_rem_merma / std_preforma_caja)
     cajas_tapa_rem = math.ceil(botellas_rem_merma / std_tapa_caja)
@@ -388,89 +270,62 @@ with tab2:
 
     ric1, ric2, ric3 = st.columns(3)
     with ric1:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><div class="insumo-sub">(BOPP / Body / Sleeve @ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} un. @ {std_preforma_caja:,}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><div class="insumo-sub">(@ {std_etiqueta_rollo:,}/rollo)</div></div>', unsafe_allow_html=True)
 
     with ric2:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} tapas @ 5,000/caja)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><div class="insumo-sub">(Empaquetadora Variopac @ 2,900 packs)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><div class="insumo-sub">({int(botellas_rem_merma):,} tapas @ {std_tapa_caja:,}/caja)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><div class="insumo-sub">(@ {std_film_pack_rollo:,} packs/rollo)</div></div>', unsafe_allow_html=True)
 
     with ric3:
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><div class="insumo-sub">({pallets_sistema:.1f} planchas)</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><div class="insumo-sub">(Envolvedora Stretch W.)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><div class="insumo-sub">({pallets_sistema:.1f} planchas)</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Stretch</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><div class="insumo-sub">(@ {std_pallet_stretcher} pallets/rollo)</div></div>', unsafe_allow_html=True)
 
 # ==========================================
-# PESTAÑA 3: NOTIFICACIÓN RÁPIDA DE WHATSAPP
+# PESTAÑA 3: NOTIFICACIÓN WHATSAPP
 # ==========================================
 with tab3:
     st.subheader("📲 Generador de Notificación de Turno")
-    st.caption("Completa los datos para generar el mensaje estandarizado.")
-
-    # Fila 1: Saludo y Turno
+    
     col1, col2 = st.columns(2)
     with col1:
         opcion_saludo = st.selectbox(
             "Saludo inicial",
-            [
-                "Buenos días\nFavor notificar:",
-                "Buenas tardes\nFavor notificar:",
-                "Buenas noches\nFavor notificar:",
-                "Favor notificar",
-                "Buenas favor notificar",
-                "Personalizado"
-            ]
+            ["Buenos días\nFavor notificar:", "Buenas tardes\nFavor notificar:", "Buenas noches\nFavor notificar:", "Favor notificar", "Personalizado"]
         )
-        if opcion_saludo == "Personalizado":
-            saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días\nFavor notificar:")
-        else:
-            saludo_txt = opcion_saludo
-
+        saludo_txt = st.text_input("Escribe el saludo", value="Buenos días\nFavor notificar:") if opcion_saludo == "Personalizado" else opcion_saludo
     with col2:
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
 
-    # Fila 2: Línea y Orden de Producción (OP)
     col3, col4 = st.columns(2)
     with col3:
         linea_sel = st.text_input("Línea", value="Línea 2")
     with col4:
         op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
 
-    # Fila 3: Producto / Sabor primero, luego Formato
     col5, col6 = st.columns(2)
     with col5:
-        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
-        if sabor_sel == "Otro (Escribir manualmente)":
-            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
-        else:
-            sabor_txt = sabor_sel
-
+        sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES)
+        sabor_txt = st.text_input("Escribe el sabor", value="Pap") if sabor_sel == "Otro (Escribir manualmente)" else sabor_sel
     with col6:
         fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
-        if fmt_sel == "Otro (Escribir manualmente)":
-            fmt_txt = st.text_input("Escribe el formato", value="600ml")
-        else:
-            fmt_txt = fmt_sel
+        fmt_txt = st.text_input("Escribe el formato", value="600ml") if fmt_sel == "Otro (Escribir manualmente)" else fmt_sel
 
-    # Armar combinación directa de Producto + Formato
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
 
-    # Fila 4: Cajas Producidas y Fecha
     col7, col8 = st.columns(2)
     with col7:
         cajas_cant = st.number_input(
             "Cajas / Packs Producidos", 
-            value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
+            value=st.session_state.packs_calculados if st.session_state.packs_calculados > 0 else 15724, 
             step=100
         )
         cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
-
     with col8:
         fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
 
-    # CONSTRUCCIÓN ÚNICA Y UNIFICADA DEL MENSAJE (Mismo formato para todos)
     mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
-    # Mensaje generado y botón de WhatsApp integrados abajo
     st.markdown("### 📄 Mensaje Generado:")
     st.markdown(f'<div class="whatsapp-box">{mensaje_final}</div>', unsafe_allow_html=True)
 
