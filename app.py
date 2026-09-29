@@ -9,43 +9,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ESTILOS CSS PROFESIONALES (TEMA INDUSTRIAL/DARK) ---
+# --- ESTILOS CSS EN TEMA CLARO (FONDO BLANCO) ---
 st.markdown("""
     <style>
     .stApp {
-        background-color: #0e1117;
-        color: #ffffff;
+        background-color: #f8f9fa;
+        color: #212529;
     }
     .metric-card {
-        background-color: #1e222d;
-        border-radius: 12px;
-        padding: 20px;
-        border-left: 5px solid #00c853;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        margin-bottom: 15px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 18px;
+        border: 1px solid #e9ecef;
+        border-left: 5px solid #0d6efd;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 12px;
     }
     .metric-value {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: bold;
-        color: #00e676;
+        color: #0d6efd;
     }
     .metric-label {
-        font-size: 14px;
-        color: #b0bec5;
+        font-size: 13px;
+        color: #6c757d;
         text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .stButton>button {
-        background-color: #2962ff;
-        color: white;
-        border-radius: 8px;
-        font-weight: bold;
-        border: none;
-        padding: 10px 20px;
-        width: 100%;
-    }
-    .stButton>button:hover {
-        background-color: #1e88e5;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -70,7 +60,7 @@ PRODUCTOS_PRESET = {
 
 # --- ENCABEZADO ---
 st.title("⚡ Control de Producción - Línea 2 CCU")
-st.caption("Calculadora en tiempo real para Sopladora Ergobloc L, Mixer y Materiales")
+st.caption("Calculadora de rendimiento para Sopladora Ergobloc L, Mixer y Materiales")
 
 # --- BARRA LATERAL: SELECCIÓN DE PRODUCTO Y EFICIENCIA ---
 with st.sidebar:
@@ -86,7 +76,7 @@ with st.sidebar:
     st.subheader("Eficiencia de Línea")
     oee = st.slider("OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=85)
     bph_real = bph_nominal * (oee / 100.0)
-    st.info(f"Velocidad Real Calculada: **{int(bph_real):,} BPH**")
+    st.info(f"Velocidad Real: **{int(bph_real):,} BPH**")
 
 # --- PESTAÑAS PRINCIPALES ---
 tab1, tab2, tab3 = st.tabs([
@@ -140,7 +130,7 @@ with tab2:
     # Cálculos Tab 2
     bebida_total_j = jarabe_disp * factor_mezcla
     botellas_j = (bebida_total_j * 1000) / vol_ml
-    packs_j = botellas_j / 6  # Asumiendo 6 por pack
+    packs_j = botellas_j / 6
     pallets_j = packs_j / 100
     horas_j = botellas_j / bph_real if bph_real > 0 else 0
 
@@ -170,7 +160,6 @@ with tab3:
     with col_b:
         st.markdown("### 🎛️ 2. Mixer / Carbonatador")
         litros_mixer = st.number_input("Producto Terminado en Mixer (L)", value=200, step=20)
-        st.caption("Normalmente ~200 Litros.")
 
     with col_c:
         st.markdown("### 🚀 3. Tuberías y Matriz")
