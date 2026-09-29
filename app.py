@@ -241,7 +241,6 @@ with tab2:
     with res4:
         st.metric("Tiempo de Llenado", f"{int(tiempo_sistema_min)} min")
 
-    st.success(f"💡 **Resumen para el Supervisor:** Quedan exactamente **{pallets_sistema:.1f} Pallets** de producción total. La línea parará por falta de producto en **{int(tiempo_sistema_min)} minutos** a la velocidad actual.")
 
     # CALCULADORA DE INSUMOS PARA EL REMANENTE
     st.markdown("---")
