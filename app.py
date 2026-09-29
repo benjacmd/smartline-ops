@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- ESTILOS CSS REFORZADOS PARA CELULAR Y MODO OSCURO ---
+# --- ESTILOS CSS PARA CELULAR Y MODO OSCURO/CLARO ---
 st.markdown("""
     <style>
     /* Forzar fondo blanco y texto oscuro global */
@@ -20,12 +20,10 @@ st.markdown("""
         color: #212529 !important;
     }
     
-    /* Asegurar texto en inputs y labels para móvil */
     label, .stMarkdown, p, span, h1, h2, h3, h4, h5, h6 {
         color: #212529 !important;
     }
 
-    /* Inputs y Selectboxes en blanco con texto visible */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div {
         background-color: #f8f9fa !important;
         color: #212529 !important;
@@ -80,7 +78,7 @@ st.markdown("""
         font-size: 12px;
     }
 
-    /* Caja de mensaje WhatsApp */
+    /* Caja de mensaje WhatsApp estilo Chat */
     .whatsapp-box {
         background-color: #e7f7ee !important;
         border: 1px solid #25d366 !important;
@@ -98,18 +96,21 @@ st.markdown("""
 
 # --- DICCIONARIO OFICIAL LÍNEA 2 CCU ---
 PRODUCTOS_PRESET = {
-    "Bilz / Pap / Kem Regular (600 ml)": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Bilz / Pap / Kem Zero (600 ml)": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Regular / Zero (600 ml)": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Seven Up / Tónica / Ginger Ale (600 ml)": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Limón Soda Regular / Zero (600 ml)": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Crush Regular / Zero (600 ml)": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Rockstar (500 ml)": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
-    "POP Huevo (500 ml)": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
-    "Formato 1.25 L": {"factor": 7.125, "ml": 1250, "bph": 38000, "pref_caja": 10000},
-    "Bilz / Pap / Kem (1.5 L)": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Pepsi / 7Up (1.5 L)": {"factor": 6.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
-    "Crush (1.5 L)": {"factor": 5.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
+    "Bilz Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pap Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Kem Regular 600ml": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pepsi Regular 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Pepsi Zero 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "7Up Regular 600ml": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Limón Soda 600ml": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Crush Naranja 600ml": {"factor": 5.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
+    "Rockstar Original 500ml": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
+    "Rockstar Mango 500ml": {"factor": 4.000, "ml": 500, "bph": 60000, "pref_caja": 15000},
+    "POP Huevo 500ml": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
+    "Bilz 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
+    "Pap 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
+    "Kem 1.5L": {"factor": 7.125, "ml": 1500, "bph": 38000, "pref_caja": 10000},
+    "Pepsi 1.5L": {"factor": 6.000, "ml": 1500, "bph": 38000, "pref_caja": 10000},
     "1.75 L Cisne": {"factor": 7.125, "ml": 1750, "bph": 34000, "pref_caja": 10000},
     "Personalizado": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000}
 }
@@ -149,8 +150,7 @@ tab1, tab2, tab3 = st.tabs([
     "📲 3. Notificación WhatsApp"
 ])
 
-# Variables compartidas para auto-completar pestaña 3
-packs_totales_tab1 = 0
+packs_totales_calculados = 0
 
 # ==========================================
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -167,17 +167,17 @@ with tab1:
     with col2:
         hora_inicio = st.time_input("Hora de Inicio / Actual", value=datetime.now().time())
 
-    # Cálculos Principales desde Jarabe
+    # Cálculos Principales
     litros_bebida_total = jarabe_disponible * factor_mezcla
     total_botellas = (litros_bebida_total * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
-    packs_totales_tab1 = int(total_packs)
+    packs_totales_calculados = int(total_packs)
     total_pallets = total_packs / packs_por_pallet
     
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
     tiempo_fin = datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=horas_prod)
 
-    # Métricas Principales Tab 1
+    # Métricas Principales
     m1, m2, m3, m4 = st.columns(4)
     with m1:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Bebida Final Total</div><div class="metric-value">{int(litros_bebida_total):,} L</div></div>', unsafe_allow_html=True)
@@ -192,7 +192,6 @@ with tab1:
     st.subheader("📋 Insumos y Materiales a Pedir a Bodega")
     st.caption("Calculado con un 2% adicional para mermas de arranque y pruebas de línea.")
 
-    # Cálculos Insumos (+2% Mermas) Tab 1
     botellas_con_merma = total_botellas * 1.02
     packs_con_merma = total_packs * 1.02
 
@@ -241,7 +240,6 @@ with tab2:
         litros_tuberias = st.number_input("Producto Terminado en Tuberías (L)", value=1000, step=100)
         st.caption("Normalmente ~1.000 Litros con línea llena.")
 
-    # CÁLCULO SUMATORIA TOTAL TAB 2
     litros_totales_sistema = bebida_de_jarabe + litros_mixer + litros_tuberias
     botellas_sistema = (litros_totales_sistema * 1000) / vol_ml
     packs_sistema = botellas_sistema / botellas_por_pack
@@ -263,10 +261,8 @@ with tab2:
 
     st.success(f"💡 **Resumen para el Supervisor:** Quedan exactamente **{pallets_sistema:.1f} Pallets** de producción total. La línea parará por falta de producto en **{int(tiempo_sistema_min)} minutos** a la velocidad actual.")
 
-    # CALCULADORA DE INSUMOS PARA EL REMANENTE
     st.markdown("---")
     st.subheader("📋 Insumos Necesarios para Terminar el Lote Actual")
-    st.caption("Insumos mínimos requeridos en máquina para procesar la bebida restante del sistema (+2% merma).")
 
     botellas_rem_merma = botellas_sistema * 1.02
     packs_rem_merma = packs_sistema * 1.02
@@ -296,44 +292,70 @@ with tab2:
 # ==========================================
 with tab3:
     st.subheader("📲 Generador de Notificación de Turno / Producción")
-    st.caption("Crea el texto estandarizado para enviar al grupo de WhatsApp en segundos.")
+    st.caption("Crea el mensaje estandarizado exacto según el historial del grupo de WhatsApp.")
 
-    # Auto-detectar saludo según la hora
+    # Auto-detección inicial según hora
     hora_actual = datetime.now().hour
     if 6 <= hora_actual < 12:
-        saludo_auto = "Buenos días"
+        saludo_def = "Buenos días\nFavor notificar."
     elif 12 <= hora_actual < 20:
-        saludo_auto = "Buenas tardes"
+        saludo_def = "Buenas tardes, favor notificar"
     else:
-        saludo_auto = "Buenas noches"
+        saludo_def = "Buenas noches\nFavor notificar."
 
     col_n1, col_n2 = st.columns(2)
     
     with col_n1:
-        saludo = st.text_input("Saludo", value=f"{saludo_auto}, favor notificar.")
+        # Selector de Saludo con opciones típicas del grupo
+        opcion_saludo = st.selectbox(
+            "Opción de Saludo",
+            [
+                "Buenos días\nFavor notificar.",
+                "Buenas tardes, favor notificar",
+                "Buenas noches\nFavor notificar.",
+                "Favor notificar",
+                "Buenas favor notificar",
+                "Personalizado"
+            ]
+        )
+        
+        if opcion_saludo == "Personalizado":
+            saludo_txt = st.text_input("Escribe tu saludo", value="Buenos días")
+        else:
+            saludo_txt = opcion_saludo
+
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
-        linea_sel = st.text_input("Línea", value="Línea 2")
-        prod_notif = st.text_input("Producto", value=prod_nombre)
+        linea_sel = st.text_input("Línea", value="línea 2")
+        prod_notif = st.text_input("Producto y Formato", value=prod_nombre)
 
     with col_n2:
         op_num = st.text_input("Orden de Producción (OP)", value="6600225198", help="Número de OP de SAP")
         
-        # Formato de cajas con punto de miles (Ej: 5.700)
-        cajas_cant = st.number_input("Cajas / Packs Producidos", value=packs_totales_tab1 if packs_totales_tab1 > 0 else 5700, step=100)
-        cajas_formateadas = f"{cajas_cant:,.0f}".replace(",", ".")
+        # Conteo de Cajas con valor por defecto o autocompletado
+        cajas_cant = st.number_input(
+            "Cajas / Packs Producidos", 
+            value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
+            step=100
+        )
+        
+        # FORMATO EXACTO DE CAJAS CON PUNTO DE MILES (Ej: 15.724)
+        cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
         
         fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
 
-    # CONSTRUCCIÓN DEL MENSAJE OFICIAL
-    mensaje_final = f"{saludo}\n{turno_sel} - {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+    # Estructuración exacta del mensaje estilo WhatsApp
+    if "Buenas tardes" in saludo_txt:
+        mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+    else:
+        mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_notif}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
     st.markdown("---")
-    st.subheader("📄 Mensaje Generado:")
+    st.subheader("📄 Mensaje Listo para Enviar:")
     
-    # Mostrar el mensaje con estilo de chat
+    # Vista previa del mensaje en cuadro tipo WhatsApp
     st.markdown(f'<div class="whatsapp-box">{mensaje_final}</div>', unsafe_allow_html=True)
 
-    # Botón dinámico para abrir WhatsApp con el mensaje ya cargado
+    # Enlace/Botón dinámico a WhatsApp
     mensaje_encoded = urllib.parse.quote(mensaje_final)
     whatsapp_url = f"https://api.whatsapp.com/send?text={mensaje_encoded}"
 
@@ -343,7 +365,7 @@ with tab3:
                 background-color: #25d366;
                 color: white;
                 border: none;
-                padding: 12px 24px;
+                padding: 14px 24px;
                 font-size: 16px;
                 font-weight: bold;
                 border-radius: 8px;
@@ -354,7 +376,7 @@ with tab3:
                 justify-content: center;
                 gap: 10px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                📲 Abrir en WhatsApp con este Mensaje
+                📲 Enviar por WhatsApp
             </button>
         </a>
     ''', unsafe_allow_html=True)
