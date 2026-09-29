@@ -362,7 +362,7 @@ with tab3:
     # Fila 2: Línea y Orden de Producción (OP)
     col3, col4 = st.columns(2)
     with col3:
-        linea_sel = st.text_input("Línea", value="línea 2")
+        linea_sel = st.text_input("Línea", value="Línea 2")
     with col4:
         op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
 
