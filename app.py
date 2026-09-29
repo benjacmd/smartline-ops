@@ -337,63 +337,81 @@ with tab3:
     st.subheader("📲 Generador de Notificación de Turno")
     st.caption("Completa los datos para generar el mensaje estandarizado.")
 
-    # 1. SALUDO Y LÍNEA
-    opcion_saludo = st.selectbox(
-        "Saludo inicial",
-        [
-            "Buenos días\nFavor notificar:",
-            "Buenas tardes\n favor notificar",
-            "Buenas noches\nFavor notificar.",
-        ]
-    )
-    
-    if opcion_saludo == "Personalizado":
-        saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días")
-    else:
-        saludo_txt = opcion_saludo
+    # Fila 1: Saludo y Turno
+    col1, col2 = st.columns(2)
+    with col1:
+        opcion_saludo = st.selectbox(
+            "Saludo inicial",
+            [
+                "Buenos días\nFavor notificar:",
+                "Buenas tardes\nFavor notificar",
+                "Buenas noches\nFavor notificar."
+            ]
+        )
+        if opcion_saludo == "Personalizado":
+            saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días")
+        else:
+            saludo_txt = opcion_saludo
 
-    turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
-    linea_sel = st.text_input("Línea", value="línea 2")
+    with col2:
+        turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
 
-    # 2. SELECCIÓN DE PRODUCTO Y FORMATO
-    prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False)
+    # Fila 2: Línea y Opción de Prefijo
+    col3, col4 = st.columns(2)
+    with col3:
+        linea_sel = st.text_input("Línea", value="línea 2")
+    with col4:
+        st.write("") # Espaciador para alinear con la casilla
+        st.write("") 
+        prefijo_sabor = st.checkbox("Anteponer 'Sabor:'", value=False)
 
-    sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
-    if sabor_sel == "Otro (Escribir manualmente)":
-        sabor_txt = st.text_input("Escribe el sabor", value="Pap")
-    else:
-        sabor_txt = sabor_sel
+    # Fila 3: Producto y Formato
+    col5, col6 = st.columns(2)
+    with col5:
+        sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
+        if sabor_sel == "Otro (Escribir manualmente)":
+            sabor_txt = st.text_input("Escribe el sabor", value="Pap")
+        else:
+            sabor_txt = sabor_sel
 
-    fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
-    if fmt_sel == "Otro (Escribir manualmente)":
-        fmt_txt = st.text_input("Escribe el formato", value="600ml")
-    else:
-        fmt_txt = fmt_sel
+    with col6:
+        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
+        if fmt_sel == "Otro (Escribir manualmente)":
+            fmt_txt = st.text_input("Escribe el formato", value="600ml")
+        else:
+            fmt_txt = fmt_sel
 
     prod_completo = f"{'Sabor: ' if prefijo_sabor else ''}{sabor_txt} {fmt_txt}".strip()
 
-    # 3. DATOS DE PRODUCCIÓN Y FECHA
-    op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
-    
-    cajas_cant = st.number_input(
-        "Cajas / Packs Producidos", 
-        value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
-        step=100
-    )
-    cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
-    
-    fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
+    # Fila 4: Orden de Producción (OP) y Cajas Producidas
+    col7, col8 = st.columns(2)
+    with col7:
+        op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
+    with col8:
+        cajas_cant = st.number_input(
+            "Cajas / Packs Producidos", 
+            value=packs_totales_calculados if packs_totales_calculados > 0 else 15724, 
+            step=100
+        )
+        cajas_formateadas = f"{int(cajas_cant):,}".replace(",", ".")
 
-    # CONSTRUCCIÓN Y MUESTRA DEL MENSAJE FINAL
+    # Fila 5: Fecha
+    col9, col10 = st.columns(2)
+    with col9:
+        fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
+    with col10:
+        pass  # Columna vacía para mantener la proporción de 2 por fila
+
+    # Construcción del mensaje final
     if "Buenas tardes" in saludo_txt:
         mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
     else:
         mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
+    # Mensaje generado y botón de WhatsApp integrados abajo
     st.markdown("### 📄 Mensaje Generado:")
     st.markdown(f'<div class="whatsapp-box">{mensaje_final}</div>', unsafe_allow_html=True)
 
-    # BOTÓN DE WHATSAPP
     mensaje_encoded = urllib.parse.quote(mensaje_final)
     whatsapp_url = f"https://api.whatsapp.com/send?text={mensaje_encoded}"
 
