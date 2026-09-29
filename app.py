@@ -346,40 +346,43 @@ with tab3:
                 "Buenos días\nFavor notificar:",
                 "Buenas tardes\nFavor notificar:",
                 "Buenas noches\nFavor notificar:",
+                "Favor notificar",
+                "Buenas favor notificar",
+                "Personalizado"
             ]
         )
         if opcion_saludo == "Personalizado":
-            saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días")
+            saludo_txt = st.text_input("Escribe el saludo personalizado", value="Buenos días\nFavor notificar:")
         else:
             saludo_txt = opcion_saludo
 
     with col2:
         turno_sel = st.selectbox("Turno", ["Turno A", "Turno B", "Turno C"])
 
-    # Fila 2: Línea y Orden de Producción (OP) [Cambio 1: OP ahora está aquí]
+    # Fila 2: Línea y Orden de Producción (OP)
     col3, col4 = st.columns(2)
     with col3:
         linea_sel = st.text_input("Línea", value="línea 2")
     with col4:
         op_num = st.text_input("Orden de Producción (OP)", value="6600225198")
 
-    # Fila 3: Formato y Producto / Sabor [Cambio 2: Formato primero, luego Producto]
+    # Fila 3: Producto / Sabor primero, luego Formato
     col5, col6 = st.columns(2)
     with col5:
-        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
-        if fmt_sel == "Otro (Escribir manualmente)":
-            fmt_txt = st.text_input("Escribe el formato", value="600ml")
-        else:
-            fmt_txt = fmt_sel
-
-    with col6:
         sabor_sel = st.selectbox("Producto / Marca / Sabor", LISTA_SABORES)
         if sabor_sel == "Otro (Escribir manualmente)":
             sabor_txt = st.text_input("Escribe el sabor", value="Pap")
         else:
             sabor_txt = sabor_sel
 
-    # Armar combinación directa de Producto + Formato para el mensaje
+    with col6:
+        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
+        if fmt_sel == "Otro (Escribir manualmente)":
+            fmt_txt = st.text_input("Escribe el formato", value="600ml")
+        else:
+            fmt_txt = fmt_sel
+
+    # Armar combinación directa de Producto + Formato
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
 
     # Fila 4: Cajas Producidas y Fecha
@@ -395,11 +398,8 @@ with tab3:
     with col8:
         fecha_notif = st.text_input("Fecha", value=datetime.now().strftime("%d/%m/%Y"))
 
-    # Construcción del mensaje final
-    if "Buenas tardes" in saludo_txt:
-        mensaje_final = f"{saludo_txt} {turno_sel}, {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
-    else:
-        mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
+    # CONSTRUCCIÓN ÚNICA Y UNIFICADA DEL MENSAJE (Mismo formato para todos)
+    mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
     # Mensaje generado y botón de WhatsApp integrados abajo
     st.markdown("### 📄 Mensaje Generado:")
