@@ -182,8 +182,8 @@ with st.sidebar:
     std_preforma_caja = st.number_input("Preformas x Caja", value=preset["pref_caja"], step=1000)
     std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)
     std_etiqueta_rollo = st.number_input("Etiquetas x Rollo", value=10000, step=1000)
-    std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=2900, step=100)
-    std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=500, step=50)
+    std_film_pack_rollo = st.number_input("Packs x Rollo Film Paquete", value=2700, step=100)
+    std_carton_pallet = st.number_input("Planchas Cartón x Pallet", value=400, step=50)
     std_pallet_stretcher = st.number_input("Pallets x Rollo Stretcher", value=35, step=5)
 
 # --- PESTAÑAS PRINCIPALES ---
