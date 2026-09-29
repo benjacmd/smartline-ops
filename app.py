@@ -18,7 +18,6 @@ if "packs_calculados" not in st.session_state:
 # --- ESTILOS CSS PERSONALIZADOS ---
 st.markdown("""
     <style>
-    /* Estilos específicos para tarjetas sin romper temas globales */
     .metric-card {
         background-color: #ffffff;
         border-radius: 10px;
@@ -110,9 +109,19 @@ LISTA_SABORES = [
 ]
 
 LISTA_FORMATOS = [
-    "600ml", "500ml", "350ml", "1,5", "1.5 lts", "1.6 lts", "2 lts",
-    "1.25 L", "1.75 L Cisne", "Otro (Escribir manualmente)"
+    "350ml", "500ml", "600ml", "1 L", "1.25 L", "1.5 L", "1.75 L Cisne", "Otro (Escribir manualmente)"
 ]
+
+# --- MAPEO DE FORMATOS ESTÁNDAR DE BOTELLA (ML) ---
+FORMATOS_MAP = {
+    "350 ml": 350,
+    "500 ml": 500,
+    "600 ml": 600,
+    "1.0 L": 1000,
+    "1.25 L": 1250,
+    "1.5 L": 1500,
+    "1.75 L": 1750
+}
 
 # --- ENCABEZADO ---
 st.title("⚡ Control de Producción e Insumos - Línea 2 CCU")
@@ -124,38 +133,23 @@ with st.sidebar:
     prod_nombre = st.selectbox("Producto a Producir", list(PRODUCTOS_PRESET.keys()))
     preset = PRODUCTOS_PRESET[prod_nombre]
 
-st.subheader("Parámetros del Producto")
+    st.subheader("Parámetros del Producto")
     
-    # Mapeo de opciones de formato a su valor numérico en ml
-    FORMATOS_MAP = {
-        "350 ml": 350,
-        "500 ml": 500,
-        "600 ml": 600,
-        "1.0 L": 1000,
-        "1.25 L": 1250,
-        "1.5 L": 1500,
-        "1.75 L": 1750
-    }
-    
-    # Determinar qué índice seleccionar según el preset del producto
+    # Selección de formato predefinido
     preset_ml = preset["ml"]
-    lista_opciones = list(FORMATOS_MAP.keys())
+    lista_opciones_fmt = list(FORMATOS_MAP.keys())
     
-    # Buscar el índice del formato por defecto (si no está, usa 600 ml por defecto)
     idx_defecto = 2  # 600 ml por defecto
     for i, (label, val_ml) in enumerate(FORMATOS_MAP.items()):
         if val_ml == preset_ml:
             idx_defecto = i
             break
 
-    # Selector rápido desplegable en vez de number_input
     fmt_seleccionado = st.selectbox(
         "Formato Botella", 
-        options=lista_opciones, 
+        options=lista_opciones_fmt, 
         index=idx_defecto
     )
-    
-    # Variable 'vol_ml' lista para usar en los cálculos de las pestañas
     vol_ml = FORMATOS_MAP[fmt_seleccionado]
 
     factor_mezcla = st.number_input("Factor de Mezcla (Jarabe → Bebida)", value=preset["factor"], step=0.1)
@@ -340,7 +334,14 @@ with tab3:
         sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES)
         sabor_txt = st.text_input("Escribe el sabor", value="Pap") if sabor_sel == "Otro (Escribir manualmente)" else sabor_sel
     with col6:
-        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS)
+        # Formato predeterminado según el elegido en la barra lateral
+        idx_fmt_notif = 2
+        for idx, f_item in enumerate(LISTA_FORMATOS):
+            if f_item.replace(" ", "").lower() == fmt_seleccionado.replace(" ", "").lower():
+                idx_fmt_notif = idx
+                break
+
+        fmt_sel = st.selectbox("Formato", LISTA_FORMATOS, index=idx_fmt_notif)
         fmt_txt = st.text_input("Escribe el formato", value="600ml") if fmt_sel == "Otro (Escribir manualmente)" else fmt_sel
 
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
