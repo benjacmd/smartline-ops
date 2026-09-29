@@ -124,8 +124,40 @@ with st.sidebar:
     prod_nombre = st.selectbox("Producto a Producir", list(PRODUCTOS_PRESET.keys()))
     preset = PRODUCTOS_PRESET[prod_nombre]
 
-    st.subheader("Parámetros del Producto")
-    vol_ml = st.number_input("Volumen Botella (ml)", value=preset["ml"], step=50)
+st.subheader("Parámetros del Producto")
+    
+    # Mapeo de opciones de formato a su valor numérico en ml
+    FORMATOS_MAP = {
+        "350 ml": 350,
+        "500 ml": 500,
+        "600 ml": 600,
+        "1.0 L": 1000,
+        "1.25 L": 1250,
+        "1.5 L": 1500,
+        "1.75 L": 1750
+    }
+    
+    # Determinar qué índice seleccionar según el preset del producto
+    preset_ml = preset["ml"]
+    lista_opciones = list(FORMATOS_MAP.keys())
+    
+    # Buscar el índice del formato por defecto (si no está, usa 600 ml por defecto)
+    idx_defecto = 2  # 600 ml por defecto
+    for i, (label, val_ml) in enumerate(FORMATOS_MAP.items()):
+        if val_ml == preset_ml:
+            idx_defecto = i
+            break
+
+    # Selector rápido desplegable en vez de number_input
+    fmt_seleccionado = st.selectbox(
+        "Formato Botella", 
+        options=lista_opciones, 
+        index=idx_defecto
+    )
+    
+    # Variable 'vol_ml' lista para usar en los cálculos de las pestañas
+    vol_ml = FORMATOS_MAP[fmt_seleccionado]
+
     factor_mezcla = st.number_input("Factor de Mezcla (Jarabe → Bebida)", value=preset["factor"], step=0.1)
     bph_nominal = st.number_input("Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000)
     
