@@ -106,11 +106,11 @@ with st.sidebar:
 # --- PESTAÑAS PRINCIPALES ---
 tab1, tab2 = st.tabs([
     "📦 1. Programación y Pedido a Bodega", 
-    "🌊 2. Litros Finales (Sistema Completo)"
+    "🌊 2. Litros Finales e Insumos Restantes"
 ])
 
 # ==========================================
-# PESTAÑA 1: PROGRAMACIÓN E INSUMOS
+# PESTAÑA 1: PROGRAMACIÓN E INSUMOS TOTALES
 # ==========================================
 with tab1:
     st.subheader("Planificación de Orden y Materiales Requeridos")
@@ -118,13 +118,13 @@ with tab1:
     
     with col1:
         litros_obj = st.number_input("Litros Totales a Producir", value=50000, step=5000)
-        botellas_por_pack = st.number_input("Botellas por Pack (Ej. 6 para 3x2)", value=6, step=1)
-        packs_por_pallet = st.number_input("Packs por Pallet", value=100, step=10)
+        botellas_por_pack = st.number_input("Botellas por Pack (Ej. 6 para 3x2)", value=6, step=1, key="pack_t1")
+        packs_por_pallet = st.number_input("Packs por Pallet", value=100, step=10, key="pallet_t1")
     
     with col2:
         hora_inicio = st.time_input("Hora de Inicio / Actual", value=datetime.now().time())
 
-    # Cálculos Principales
+    # Cálculos Principales Tab 1
     total_botellas = (litros_obj * 1000) / vol_ml
     total_packs = total_botellas / botellas_por_pack
     total_pallets = total_packs / packs_por_pallet
@@ -133,7 +133,7 @@ with tab1:
     horas_prod = total_botellas / bph_real if bph_real > 0 else 0
     tiempo_fin = datetime.combine(datetime.today(), hora_inicio) + timedelta(hours=horas_prod)
 
-    # Métricas Principales
+    # Métricas Principales Tab 1
     m1, m2, m3, m4 = st.columns(4)
     with m1:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Pallets Totales</div><div class="metric-value">{total_pallets:.1f}</div></div>', unsafe_allow_html=True)
@@ -148,7 +148,7 @@ with tab1:
     st.subheader("📋 Pedido de Insumos y Materiales a Bodega")
     st.caption("Calculado con un 2% adicional para mermas de arranque y pruebas de línea.")
 
-    # Cálculos Insumos (+2% Mermas)
+    # Cálculos Insumos (+2% Mermas) Tab 1
     botellas_con_merma = total_botellas * 1.02
     packs_con_merma = total_packs * 1.02
 
@@ -173,11 +173,11 @@ with tab1:
         st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretcher} Rollos</div><small>(Envolvedora Stretch W.)</small></div>', unsafe_allow_html=True)
 
 # ==========================================
-# PESTAÑA 2: LITROS FINALES (SISTEMA COMPLETO)
+# PESTAÑA 2: LITROS FINALES E INSUMOS REMANENTES
 # ==========================================
 with tab2:
     st.subheader("🌊 Balance Total de Producto en Línea (Elaboración + Tuberías + Mixer)")
-    st.caption("Usa esta pestaña al final del lote para calcular la última botella real antes de purgar.")
+    st.caption("Usa esta pestaña al final del lote para saber exactamente cuánto producto y material necesitas para terminar.")
 
     col_a, col_b, col_c = st.columns(3)
     
@@ -197,7 +197,7 @@ with tab2:
         litros_tuberias = st.number_input("Producto Terminado en Tuberías (L)", value=1000, step=100)
         st.caption("Normalmente ~1.000 Litros con línea llena.")
 
-    # CÁLCULO SUMATORIA TOTAL
+    # CÁLCULO SUMATORIA TOTAL TAB 2
     litros_totales_sistema = bebida_de_jarabe + litros_mixer + litros_tuberias
     botellas_sistema = (litros_totales_sistema * 1000) / vol_ml
     packs_sistema = botellas_sistema / botellas_por_pack
@@ -205,7 +205,7 @@ with tab2:
     tiempo_sistema_min = (botellas_sistema / bph_real) * 60 if bph_real > 0 else 0
 
     st.markdown("---")
-    st.markdown("## 📊 Resultado Total en Sistema")
+    st.markdown("## 📊 Producto Final Producible")
 
     res1, res2, res3, res4 = st.columns(4)
     with res1:
@@ -218,3 +218,31 @@ with tab2:
         st.metric("Tiempo de Llenado", f"{int(tiempo_sistema_min)} min")
 
     st.success(f"💡 **Resumen para el Supervisor:** Quedan exactamente **{pallets_sistema:.1f} Pallets** de producción total. La línea parará por falta de producto en **{int(tiempo_sistema_min)} minutos** a la velocidad actual.")
+
+    # CALCULADORA DE INSUMOS PARA EL REMANENTE
+    st.markdown("---")
+    st.subheader("📋 Insumos Necesarios para Terminar el Lote Actual")
+    st.caption("Insumos mínimos requeridos en máquina para procesar la bebida restante del sistema (+2% merma).")
+
+    botellas_rem_merma = botellas_sistema * 1.02
+    packs_rem_merma = packs_sistema * 1.02
+
+    cajas_pref_rem = math.ceil(botellas_rem_merma / std_preforma_caja)
+    cajas_tapa_rem = math.ceil(botellas_rem_merma / std_tapa_caja)
+    rollos_etiq_rem = math.ceil(botellas_rem_merma / std_etiqueta_rollo)
+    rollos_film_rem = math.ceil(packs_rem_merma / std_film_pack_rollo)
+    pallets_carton_rem = math.ceil(pallets_sistema / std_carton_pallet)
+    rollos_stretch_rem = math.ceil(pallets_sistema / std_pallet_stretcher)
+
+    ric1, ric2, ric3 = st.columns(3)
+    with ric1:
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{cajas_pref_rem} Cajas</div><small>({int(botellas_rem_merma):,} un.)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{rollos_etiq_rem} Rollos</div><small>(BOPP / Body / Sleeve)</small></div>', unsafe_allow_html=True)
+
+    with ric2:
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{cajas_tapa_rem} Cajas</div><small>({int(botellas_rem_merma):,} tapas)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{rollos_film_rem} Rollos</div><small>(Empaquetadora Variopac)</small></div>', unsafe_allow_html=True)
+
+    with ric3:
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">📜 Pallet Cartón Corrugado</div><div class="insumo-qty">{pallets_carton_rem} Pallet(s)</div><small>({pallets_sistema:.1f} planchas)</small></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="insumo-card"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{rollos_stretch_rem} Rollos</div><small>(Envolvedora Stretch W.)</small></div>', unsafe_allow_html=True)
