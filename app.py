@@ -7,7 +7,7 @@ import streamlit as st
 # ==========================================
 # CONSTANTES Y CONFIGURACIÓN INICIAL
 # ==========================================
-PACKS_DEFECTO_INICIAL = 15724  # Valor base por defecto para el turno
+PACKS_DEFECTO_INICIAL = 15724
 
 st.set_page_config(
     page_title="Control Línea 2 - CCU",
@@ -20,8 +20,55 @@ if "packs_calculados" not in st.session_state:
     st.session_state.packs_calculados = PACKS_DEFECTO_INICIAL
 
 # ==========================================
-# DICCIONARIOS Y DATOS DE REFERENCIA
+# TABLA DE PROPORCIONES (OFICIAL CCU)
+# Factor Total = Agua + 1 de Jarabe
 # ==========================================
+PROPORCIONES_SABORES = {
+    # --- JUGOS Y AGUAS ---
+    "Frugo Piña": 4.0,  # 3 agua / 1 jarabe
+    "Frugo Naranja": 4.0,  # 3 agua / 1 jarabe
+    "Frugo Frutilla": 4.0,  # 3 agua / 1 jarabe
+    "Citrus Limón": 6.0,  # 5 agua / 1 jarabe
+    "Más Granada": 5.0,  # 4 agua / 1 jarabe
+    "Más Manzana": 5.0,  # 4 agua / 1 jarabe
+    "Más Pera": 5.0,  # 4 agua / 1 jarabe
+    "Más Uva": 5.0,  # 4 agua / 1 jarabe
+    "Manzana Durazno": 6.0,  # 5 agua / 1 jarabe
+    "Más Piña": 4.0,  # 3 agua / 1 jarabe
+    "Limonada Jengibre": 4.0,  # 3 agua / 1 jarabe
+    "Limonada Menta": 6.0,  # 5 agua / 1 jarabe
+    "Limonada Frambuesa": 5.0,  # 4 agua / 1 jarabe
+    "Mango Maracuyá": 5.0,  # 4 agua / 1 jarabe
+    "Aloe Vera": 4.0,  # 3 agua / 1 jarabe
+    "Más Woman Beauty Skin": 4.0,  # 3 agua / 1 jarabe
+    # --- BEBIDAS ZERO ---
+    "Bilz Zero": 7.125,  # 6.125 agua / 1 jarabe
+    "Pap Zero": 7.125,  # 6.125 agua / 1 jarabe
+    "Kem Zero": 7.125,  # 6.125 agua / 1 jarabe
+    "Pepsi Zero": 6.0,  # 5 agua / 1 jarabe
+    "Crush Zero": 5.0,  # 4 agua / 1 jarabe
+    "Ginger Ale Zero": 6.0,  # 5 agua / 1 jarabe
+    "Agua Tónica Zero": 6.40,  # 5.4 agua / 1 jarabe
+    "Limón Soda Zero": 6.0,  # 5 agua / 1 jarabe
+    "Seven Up Zero": 6.0,  # 5 agua / 1 jarabe
+    # --- BEBIDAS REGULAR ---
+    "Kem Piña": 7.125,  # 6.125 agua / 1 jarabe
+    "Pap Regular": 7.125,  # 6.125 agua / 1 jarabe
+    "Bilz Regular": 7.125,  # 6.125 agua / 1 jarabe
+    "Pepsi Regular": 6.0,  # 5 agua / 1 jarabe
+    "Tónica Regular": 6.0,  # 5 agua / 1 jarabe
+    "Ginger Ale Regular": 6.0,  # 5 agua / 1 jarabe
+    "Limón Soda Regular": 5.0,  # 4 agua / 1 jarabe
+    "Crush 5% Jugo": 5.0,  # 4 agua / 1 jarabe
+    "Crush Sin Jugo": 5.0,  # 4 agua / 1 jarabe
+    "Seven Up Reducida": 6.0,  # 5 agua / 1 jarabe
+    # --- ROCKSTAR Y OTROS ---
+    "Rockstar Original": 4.0,  # 3 agua / 1 jarabe
+    "Rockstar Sandía": 4.0,  # 3 agua / 1 jarabe
+    "Rockstar Mango": 4.0,  # 3 agua / 1 jarabe
+    "POP Huevo": 4.0,  # 3 agua / 1 jarabe
+}
+
 FORMATOS_LINEA_2 = {
     "500 ml Rockstar": {
         "vol_ml": 500,
@@ -179,29 +226,9 @@ FORMATOS_LINEA_2 = {
     },
 }
 
-LISTA_SABORES = [
-    "Bilz",
-    "Bilz Zero",
-    "Pap",
-    "Pap Zero",
-    "Kem",
-    "Kem Zero",
-    "Kem piña",
-    "Pepsi Reducida",
-    "Pepsi Zero",
-    "7Up",
-    "7Up Zero",
-    "Limón Soda",
-    "Limón Soda Zero",
-    "Crush",
-    "Crush Zero",
-    "Rockstar Original",
-    "Rockstar Sandía",
-    "Rockstar Mango",
-    "POP Huevo",
-    "Otro (Escribir manualmente)",
+LISTA_SABORES = list(PROPORCIONES_SABORES.keys()) + [
+    "Otro (Escribir manualmente)"
 ]
-
 LISTA_FORMATOS = list(FORMATOS_LINEA_2.keys()) + ["Otro (Escribir manualmente)"]
 
 
@@ -209,7 +236,6 @@ LISTA_FORMATOS = list(FORMATOS_LINEA_2.keys()) + ["Otro (Escribir manualmente)"]
 # FUNCIONES DE LÓGICA Y CÁLCULOS
 # ==========================================
 def formato_miles(valor: float | int) -> str:
-    """Aplica formato de números usando punto como separador de miles."""
     return f"{int(valor):,}".replace(",", ".")
 
 
@@ -221,7 +247,6 @@ def calcular_produccion_lote(
     packs_pallet: int,
     bph_real: float,
 ):
-    """Calcula rendimientos, equivalencias de empaque y tiempos proyectados de producción."""
     litros_bebida = jarabe_L * factor
     botellas = (litros_bebida * 1000) / vol_ml
     packs = botellas / botellas_pack if botellas_pack > 0 else 0
@@ -252,7 +277,6 @@ def calcular_insumos_requeridos(
     std_carton: int,
     std_stretcher: int,
 ):
-    """Calcula la cantidad entera requerida por cada tipo de insumo."""
     return {
         "preformas_cajas": math.ceil(botellas / std_preforma) if std_preforma else 0,
         "tapas_cajas": math.ceil(botellas / std_tapa) if std_tapa else 0,
@@ -269,26 +293,6 @@ def calcular_insumos_requeridos(
 st.markdown(
     """
     <style>
-    .metric-card {
-        background-color: #ffffff;
-        border-radius: 10px;
-        padding: 16px;
-        border: 1px solid #dee2e6;
-        border-left: 5px solid #0d6efd;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 12px;
-    }
-    .metric-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #0d6efd;
-    }
-    .metric-label {
-        font-size: 12px;
-        color: #495057;
-        text-transform: uppercase;
-        font-weight: 600;
-    }
     .insumo-card {
         background-color: #f8f9fa;
         border-radius: 8px;
@@ -339,21 +343,27 @@ st.caption("Calculadora en tiempo real para Ergobloc L, Mixer y Pedido a Bodega"
 with st.sidebar:
     st.header("⚙️ Configuración del Turno")
 
-    # 1. Sabor/Producto
+    # 1. Selección de Sabor
     sabor_nombre = st.selectbox("Sabor / Producto", LISTA_SABORES)
 
-    # 2. Envase/Formato según la tabla CCU
+    # 2. Selección de Formato
     envase_nombre = st.selectbox(
         "Formato / Envase Línea 2", list(FORMATOS_LINEA_2.keys())
     )
     preset_envase = FORMATOS_LINEA_2[envase_nombre]
 
-    # Asignación automática de parámetros del envase
     vol_ml = preset_envase["vol_ml"]
     bph_nominal = preset_envase["bph_ergobloc"]
 
+    # Asignar Factor automático desde la tabla según el Sabor
+    factor_defecto = PROPORCIONES_SABORES.get(sabor_nombre, 7.125)
+
+    # Key dinámica según el sabor para auto-actualizar en pantalla
     factor_mezcla = st.number_input(
-        "Factor de Mezcla (Jarabe → Bebida)", value=7.125, step=0.1
+        "Factor de Mezcla (Jarabe → Bebida)",
+        value=factor_defecto,
+        step=0.1,
+        key=f"factor_{sabor_nombre}",
     )
 
     oee = st.number_input("Rendimiento / OEE Est. (%)", value=85.0, step=1.0)
@@ -369,8 +379,9 @@ with st.sidebar:
     std_pallet_stretcher = st.number_input("Pallets por rollo stretch", value=40, step=5)
 
     st.info(
-        f"**Envase:** {envase_nombre}\n\n"
-        f"• Velocidad Ergobloc: **{bph_nominal:,} BPH**\n\n".replace(",", ".")
+        f"**Sabor:** {sabor_nombre}\n\n"
+        f"• Factor CCU: **{factor_mezcla}**\n\n"
+        f"• Vel. Ergobloc: **{bph_nominal:,} BPH**\n\n".replace(",", ".")
         + f"• Peso Preforma: **{preset_envase['peso_pref_g']} g**\n\n"
         + f"• Etiqueta: **{preset_envase['etiqueta']}**"
     )
@@ -517,18 +528,12 @@ with tab1:
 # PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ------------------------------------------
 with tab2:
-    st.subheader(
-        "🌊 Balance Total de Producto en Línea (Tanque + Mixer + Tuberías)"
-    )
-    st.caption(
-        "Usa esta pestaña cuando te quede poco jarabe para calcular el remanente exacto."
-    )
+    st.subheader("🌊 Balance Total de Producto en Línea (Tanque + Mixer + Tuberías)")
+    st.caption("Usa esta pestaña cuando te quede poco jarabe para calcular el remanente exacto.")
 
     col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
-        jarabe_tanque = st.number_input(
-            "Jarabe Tanque (L)", value=1500, step=100, key="j_t2"
-        )
+        jarabe_tanque = st.number_input("Jarabe Tanque (L)", value=1500, step=100, key="j_t2")
         bebida_de_jarabe = jarabe_tanque * factor_mezcla
     with col_b:
         litros_mixer = st.number_input("Mixer (L)", value=200, step=20)
@@ -537,15 +542,11 @@ with tab2:
     with col_d:
         pct_merma = st.number_input("Merma Est. (%)", value=2.0, step=0.5)
 
-    litros_totales_sistema = (
-        bebida_de_jarabe + litros_mixer + litros_tuberias
-    )
+    litros_totales_sistema = bebida_de_jarabe + litros_mixer + litros_tuberias
     botellas_sistema = (litros_totales_sistema * 1000) / vol_ml
     packs_sistema = botellas_sistema / botellas_por_pack
     pallets_sistema = packs_sistema / packs_por_pallet
-    tiempo_sistema_min = (
-        (botellas_sistema / bph_real) * 60 if bph_real > 0 else 0
-    )
+    tiempo_sistema_min = (botellas_sistema / bph_real) * 60 if bph_real > 0 else 0
 
     st.markdown("---")
     st.markdown("## 📊 Producto Final Producible")
@@ -623,9 +624,8 @@ with tab3:
     )
     data_env = FORMATOS_LINEA_2[envase_sel]
 
-    # Ficha Técnica
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("⚖️ Preforma", f"{data_env['peso_pref_g']} g")
+    col1.metric("⚖ Preforma", f"{data_env['peso_pref_g']} g")
     col2.metric("🌡️ Temp. Llenado", data_env["temp_llenado"])
     col3.metric("🧼 Etiqueta", data_env["etiqueta"])
     col4.metric("📦 Config. Paquete", data_env["paquete"])
@@ -633,7 +633,6 @@ with tab3:
     st.markdown("---")
     st.markdown("#### ⚡ Velocidades Nominales por Equipo (BPH)")
 
-    # Tabla de velocidades por máquina
     df_vel = pd.DataFrame(
         [
             {
@@ -650,8 +649,6 @@ with tab3:
         ]
     )
     st.dataframe(df_vel, use_container_width=True, hide_index=True)
-
-    st.warning("★ Próxima implementación: Formato 1,25 L (Marzo 2027)")
 
 # ------------------------------------------
 # PESTAÑA 4: NOTIFICACIÓN WHATSAPP
@@ -687,7 +684,10 @@ with tab4:
 
     col5, col6 = st.columns(2)
     with col5:
-        sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES, key="sab_notif")
+        idx_sab_notif = 0
+        if sabor_nombre in LISTA_SABORES:
+            idx_sab_notif = LISTA_SABORES.index(sabor_nombre)
+        sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES, index=idx_sab_notif, key="sab_notif")
         sabor_txt = (
             st.text_input("Escribe el sabor", value="Pap")
             if sabor_sel == "Otro (Escribir manualmente)"
