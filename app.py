@@ -24,50 +24,33 @@ if "packs_calculados" not in st.session_state:
 # Factor Total = Agua + 1 de Jarabe
 # ==========================================
 PROPORCIONES_SABORES = {
-    # --- JUGOS Y AGUAS ---
-    "Frugo Piña": 4.0,  # 3 agua / 1 jarabe
-    "Frugo Naranja": 4.0,  # 3 agua / 1 jarabe
-    "Frugo Frutilla": 4.0,  # 3 agua / 1 jarabe
-    "Citrus Limón": 6.0,  # 5 agua / 1 jarabe
-    "Más Granada": 5.0,  # 4 agua / 1 jarabe
-    "Más Manzana": 5.0,  # 4 agua / 1 jarabe
-    "Más Pera": 5.0,  # 4 agua / 1 jarabe
-    "Más Uva": 5.0,  # 4 agua / 1 jarabe
-    "Manzana Durazno": 6.0,  # 5 agua / 1 jarabe
-    "Más Piña": 4.0,  # 3 agua / 1 jarabe
-    "Limonada Jengibre": 4.0,  # 3 agua / 1 jarabe
-    "Limonada Menta": 6.0,  # 5 agua / 1 jarabe
-    "Limonada Frambuesa": 5.0,  # 4 agua / 1 jarabe
-    "Mango Maracuyá": 5.0,  # 4 agua / 1 jarabe
-    "Aloe Vera": 4.0,  # 3 agua / 1 jarabe
-    "Más Woman Beauty Skin": 4.0,  # 3 agua / 1 jarabe
-    # --- BEBIDAS ZERO ---
-    "Bilz Zero": 7.125,  # 6.125 agua / 1 jarabe
-    "Pap Zero": 7.125,  # 6.125 agua / 1 jarabe
-    "Kem Zero": 7.125,  # 6.125 agua / 1 jarabe
-    "Pepsi Zero": 6.0,  # 5 agua / 1 jarabe
-    "Crush Zero": 5.0,  # 4 agua / 1 jarabe
-    "Ginger Ale Zero": 6.0,  # 5 agua / 1 jarabe
-    "Agua Tónica Zero": 6.40,  # 5.4 agua / 1 jarabe
-    "Limón Soda Zero": 6.0,  # 5 agua / 1 jarabe
-    "Seven Up Zero": 6.0,  # 5 agua / 1 jarabe
     # --- BEBIDAS REGULAR ---
-    "Kem Piña": 7.125,  # 6.125 agua / 1 jarabe
-    "Pap Regular": 7.125,  # 6.125 agua / 1 jarabe
-    "Bilz Regular": 7.125,  # 6.125 agua / 1 jarabe
-    "Pepsi Regular": 6.0,  # 5 agua / 1 jarabe
-    "Tónica Regular": 6.0,  # 5 agua / 1 jarabe
-    "Ginger Ale Regular": 6.0,  # 5 agua / 1 jarabe
-    "Limón Soda Regular": 5.0,  # 4 agua / 1 jarabe
-    "Crush 5% Jugo": 5.0,  # 4 agua / 1 jarabe
-    "Crush Sin Jugo": 5.0,  # 4 agua / 1 jarabe
-    "Seven Up Reducida": 6.0,  # 5 agua / 1 jarabe
+    "Bilz": 7.125,                # 6.125 agua / 1 jarabe
+    "Pap": 7.125,                 # 6.125 agua / 1 jarabe
+    "Kem": 7.125,                 # 6.125 agua / 1 jarabe
+    "Kem piña": 7.125,            # 6.125 agua / 1 jarabe
+    "Pepsi Reducida": 6.0,        # 5 agua / 1 jarabe
+    "7Up": 6.0,                   # 5 agua / 1 jarabe
+    "Limón Soda": 5.0,            # 4 agua / 1 jarabe
+    "Crush": 5.0,                 # 4 agua / 1 jarabe
+    # --- BEBIDAS ZERO ---
+    "Bilz Zero": 7.125,           # 6.125 agua / 1 jarabe
+    "Pap Zero": 7.125,            # 6.125 agua / 1 jarabe
+    "Kem Zero": 7.125,            # 6.125 agua / 1 jarabe
+    "Pepsi Zero": 6.0,            # 5 agua / 1 jarabe
+    "7Up Zero": 6.0,              # 5 agua / 1 jarabe
+    "Limón Soda Zero": 6.0,       # 5 agua / 1 jarabe
+    "Crush Zero": 5.0,            # 4 agua / 1 jarabe
     # --- ROCKSTAR Y OTROS ---
-    "Rockstar Original": 4.0,  # 3 agua / 1 jarabe
-    "Rockstar Sandía": 4.0,  # 3 agua / 1 jarabe
-    "Rockstar Mango": 4.0,  # 3 agua / 1 jarabe
-    "POP Huevo": 4.0,  # 3 agua / 1 jarabe
+    "Rockstar Original": 4.0,     # 3 agua / 1 jarabe
+    "Rockstar Sandía": 4.0,       # 3 agua / 1 jarabe
+    "Rockstar Mango": 4.0,        # 3 agua / 1 jarabe
+    "POP Huevo": 4.0,             # 3 agua / 1 jarabe
 }
+
+LISTA_SABORES = list(PROPORCIONES_SABORES.keys()) + [
+    "Otro (Escribir manualmente)"
+]
 
 FORMATOS_LINEA_2 = {
     "500 ml Rockstar": {
