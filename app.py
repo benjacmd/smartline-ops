@@ -724,10 +724,10 @@ with tab4:
         type="primary",
         use_container_width=True,
     )
-    # ------------------------------------------
+# ------------------------------------------
 # PESTAÑA 5: GUÍA Y MANUAL DE CÁLCULOS
 # ------------------------------------------
-with tab5:  # Asegúrate de agregar tab5 a la lista de st.tabs([...])
+with tab5:
     st.subheader("📚 Manual de Cálculos Operativos - Línea 2")
     st.caption(
         "Aprende paso a paso cómo la aplicación calcula la bebida, los tiempos y los insumos de producción."
@@ -739,18 +739,19 @@ with tab5:  # Asegúrate de agregar tab5 a la lista de st.tabs([...])
         El **Factor de Mezcla** representa cuántos litros de bebida final se obtienen a partir de **1 litro de jarabe preparado**.
 
         #### 📐 Fórmula:
-        $$\text{Factor de Mezcla} = \text{Partes de Agua} + 1 \text{ (Parte de Jarabe)}$$
+        `Factor de Mezcla = Partes de Agua + 1 (Parte de Jarabe)`
 
         #### 💡 Ejemplos según la Tabla CCU:
-        * **Rockstar / POP (3 de agua / 1 de jarabe):** $3 + 1 =$ **`4.0`**
-        * **Crush / Limón Soda (4 de agua / 1 de jarabe):** $4 + 1 =$ **`5.0`**
-        * **Pepsi / 7Up (5 de agua / 1 de jarabe):** $5 + 1 =$ **`6.0`**
-        * **Bilz / Pap / Kem (6.125 de agua / 1 de jarabe):** $6.125 + 1 =$ **`7.125`**
+        * **Rockstar / POP (3 de agua / 1 de jarabe):** 3 + 1 = **4.0**
+        * **Crush / Limón Soda (4 de agua / 1 de jarabe):** 4 + 1 = **5.0**
+        * **Pepsi / 7Up (5 de agua / 1 de jarabe):** 5 + 1 = **6.0**
+        * **Bilz / Pap / Kem (6.125 de agua / 1 de jarabe):** 6.125 + 1 = **7.125**
 
         ---
         #### 🧪 Ejemplo Práctico:
         Si tienes **7.000 Litros de Jarabe** de *Bilz Regular* (Factor 7.125):
-        $$\text{Litros Bebida} = 7.000 \text{ L Jarabe} \times 7.125 = \mathbf{49.875 \text{ Litros de Bebida}}$$
+        
+        `Litros Bebida = 7.000 L Jarabe × 7.125 = 49.875 Litros de Bebida`
         """)
 
     # --- SECCIÓN 2: BOTELLAS, PACKS Y PALLETS ---
@@ -759,19 +760,19 @@ with tab5:  # Asegúrate de agregar tab5 a la lista de st.tabs([...])
         Una vez conocidos los **Litros Totales de Bebida**, convertimos ese volumen a unidades de empaque.
 
         #### 📐 Fórmulas:
-        1. **Botellas Totales:**
-           $$\text{Botellas} = \frac{\text{Litros Bebida} \times 1.000}{\text{Formato (ml)}}$$
-        2. **Packs Producidos:**
-           $$\text{Packs} = \frac{\text{Botellas Totales}}{\text{Botellas por Pack (ej: 6)}}$$
-        3. **Pallets Completos:**
-           $$\text{Pallets} = \frac{\text{Packs Totales}}{\text{Packs por Pallet (ej: 100)}}$$
+        1. **Botellas Totales:**  
+           `Botellas = (Litros Bebida × 1.000) / Formato (ml)`
+        2. **Packs Producidos:**  
+           `Packs = Botellas Totales / Botellas por Pack (ej: 6)`
+        3. **Pallets Completos:**  
+           `Pallets = Packs Totales / Packs por Pallet (ej: 100)`
 
         ---
         #### 🧪 Ejemplo Práctico (Formato 600 ml - Pack de 6):
         Con los **49.875 Litros** del ejemplo anterior:
-        * **Botellas:** $(49.875 \times 1.000) / 600 = \mathbf{83.125 \text{ botellas}}$
-        * **Packs:** $83.125 / 6 = \mathbf{13.854 \text{ packs}}$
-        * **Pallets:** $13.854 / 100 = \mathbf{138,5 \text{ pallets}}$
+        * **Botellas:** (49.875 × 1.000) / 600 = **83.125 botellas**
+        * **Packs:** 83.125 / 6 = **13.854 packs**
+        * **Pallets:** 13.854 / 100 = **138,5 pallets**
         """)
 
     # --- SECCIÓN 3: TIEMPOS Y VELOCIDAD EFECTIVA (OEE) ---
@@ -780,19 +781,19 @@ with tab5:  # Asegúrate de agregar tab5 a la lista de st.tabs([...])
         El tiempo estimado depende de la **Velocidad Nominal (BPH)** del equipo y de la eficiencia del turno (**OEE %**).
 
         #### 📐 Fórmulas:
-        1. **Velocidad Real (BPH Real):**
-           $$\text{BPH Real} = \text{BPH Nominal} \times \left(\frac{\text{OEE \%}}{100}\right)$$
-        2. **Horas de Producción:**
-           $$\text{Horas} = \frac{\text{Botellas Totales}}{\text{BPH Real}}$$
+        1. **Velocidad Real (BPH Real):**  
+           `BPH Real = BPH Nominal × (OEE % / 100)`
+        2. **Horas de Producción:**  
+           `Horas = Botellas Totales / BPH Real`
 
         ---
         #### 🧪 Ejemplo Práctico:
         * **Ergobloc L2 en 600ml:** Velocidad nominal = **60.000 BPH**
         * **OEE del Turno:** **85%**
-        * **Velocidad Real:** $60.000 \times 0,85 =$ **`51.000 BPH`**
+        * **Velocidad Real:** 60.000 × 0,85 = **51.000 BPH**
 
-        Para envasar **83.125 botellas**:
-        $$\text{Horas} = \frac{83.125}{51.000} = 1,63 \text{ horas } \rightarrow \mathbf{1\text{h } 38\text{m}}$$
+        Para envasar **83.125 botellas**:  
+        `Horas = 83.125 / 51.000 = 1,63 horas` → **1h 38m**
         """)
 
     # --- SECCIÓN 4: CÁLCULO DE INSUMOS BODEGA ---
@@ -801,12 +802,12 @@ with tab5:  # Asegúrate de agregar tab5 a la lista de st.tabs([...])
         Para evitar quiebres de línea, los insumos se aproximan siempre **hacia arriba** (al entero superior más cercano) usando el estándar de cada empaque.
 
         #### 📐 Fórmulas de Solicitud:
-        * **Cajas de Preformas:** $\text{RedondearArriba}\left(\frac{\text{Botellas}}{\text{Preformas por Caja}}\right)$
-        * **Cajas de Tapas:** $\text{RedondearArriba}\left(\frac{\text{Botellas}}{\text{Tapas por Caja}}\right)$
-        * **Rollos de Etiqueta:** $\text{RedondearArriba}\left(\frac{\text{Botellas}}{\text{Etiquetas por Rollo}}\right)$
-        * **Rollos de Film Paquete:** $\text{RedondearArriba}\left(\frac{\text{Packs}}{\text{Packs por Rollo}}\right)$
+        * **Cajas de Preformas:** `RedondearArriba( Botellas / Preformas por Caja )`
+        * **Cajas de Tapas:** `RedondearArriba( Botellas / Tapas por Caja )`
+        * **Rollos de Etiqueta:** `RedondearArriba( Botellas / Etiquetas por Rollo )`
+        * **Rollos de Film Paquete:** `RedondearArriba( Packs / Packs por Rollo )`
 
         ---
         #### 💡 Nota de Merma:
-        En la pestaña de **Balance Final**, el sistema multiplica la botella teórica por un factor de merma (ej: **2%** adicional) antes de calcular las cajas de insumo para cubrir pérdidas en soplado o etiquetado.
+        En la pestaña de **Balance Final**, el sistema multiplica las botellas teóricas por un factor de merma (ej: **2%** adicional) antes de calcular las cajas de insumo para cubrir pérdidas en soplado o etiquetado.
         """)
