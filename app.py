@@ -373,12 +373,13 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
     [
         "🧪 1. Programación por Jarabe",
         "🌊 2. Balance Final",
         "🍾 3. Ficha Técnica de Formatos",
         "📲 4. Notificación WhatsApp",
+        "📚 5. Guía de Cálculos",
     ]
 )
 
