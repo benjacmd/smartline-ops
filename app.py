@@ -350,7 +350,7 @@ with st.sidebar:
     key=f"factor_{sabor_nombre}",
     )
 
-    oee = st.number_input("Rendimiento / OEE Est. (%)", value=85.0, step=1.0)
+    oee = st.number_input("Rendimiento / OEE Est. (%)", value=100.0, step=1.0)
     bph_real = bph_nominal * (oee / 100.0)
 
     st.markdown("---")
