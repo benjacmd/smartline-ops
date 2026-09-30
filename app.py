@@ -343,10 +343,11 @@ with st.sidebar:
 
     # Key dinámica según el sabor para auto-actualizar en pantalla
     factor_mezcla = st.number_input(
-        "Factor de Mezcla (Jarabe → Bebida)",
-        value=factor_defecto,
-        step=0.1,
-        key=f"factor_{sabor_nombre}",
+    "Factor de Mezcla (Jarabe → Bebida)",
+    value=factor_defecto,
+    step=0.001,
+    format="%.3f",
+    key=f"factor_{sabor_nombre}",
     )
 
     oee = st.number_input("Rendimiento / OEE Est. (%)", value=85.0, step=1.0)
