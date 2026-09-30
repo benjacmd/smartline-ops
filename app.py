@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import math
 import urllib.parse
+import pandas as pd
 import streamlit as st
 
 # ==========================================
@@ -177,6 +178,7 @@ FORMATOS_LINEA_2 = {
         "bph_stretch": 40800,
     },
 }
+
 LISTA_SABORES = [
     "Bilz",
     "Bilz Zero",
@@ -200,6 +202,7 @@ LISTA_SABORES = [
     "Otro (Escribir manualmente)",
 ]
 
+LISTA_FORMATOS = list(FORMATOS_LINEA_2.keys()) + ["Otro (Escribir manualmente)"]
 
 
 # ==========================================
@@ -353,11 +356,23 @@ with st.sidebar:
         "Factor de Mezcla (Jarabe → Bebida)", value=7.125, step=0.1
     )
 
+    oee = st.number_input("Rendimiento / OEE Est. (%)", value=85.0, step=1.0)
+    bph_real = bph_nominal * (oee / 100.0)
+
+    st.markdown("---")
+    st.subheader("📦 Estándares de Insumos")
+    std_preforma_caja = st.number_input("Preformas por caja", value=14000, step=1000)
+    std_tapa_caja = st.number_input("Tapas por caja", value=50000, step=5000)
+    std_etiqueta_rollo = st.number_input("Etiquetas por rollo", value=18000, step=1000)
+    std_film_pack_rollo = st.number_input("Packs por rollo film", value=1200, step=100)
+    std_carton_pallet = st.number_input("Planchas cartón/pallet", value=100, step=10)
+    std_pallet_stretcher = st.number_input("Pallets por rollo stretch", value=40, step=5)
+
     st.info(
         f"**Envase:** {envase_nombre}\n\n"
         f"• Velocidad Ergobloc: **{bph_nominal:,} BPH**\n\n".replace(",", ".")
-        + f"• Peso Preforma: **{preset_envase['peso_pref_g']} g**\n\n"[cite: 1]
-        + f"• Etiqueta: **{preset_envase['etiqueta']}**"[cite: 1]
+        + f"• Peso Preforma: **{preset_envase['peso_pref_g']} g**\n\n"
+        + f"• Etiqueta: **{preset_envase['etiqueta']}**"
     )
 
 # ==========================================
@@ -595,25 +610,28 @@ with tab2:
             unsafe_allow_html=True,
         )
 
-# PESTAÑA 3
-with tab3:  # Pestaña de Formatos y Ficha Técnica
+# ------------------------------------------
+# PESTAÑA 3: FICHA TÉCNICA DE FORMATOS
+# ------------------------------------------
+with tab3:
     st.subheader("📋 Matriz Operativa de Formatos Línea 2")
 
     envase_sel = st.selectbox(
         "Seleccione el Tipo de Botella / Envase",
         list(FORMATOS_LINEA_2.keys()),
+        key="sel_tab3",
     )
     data_env = FORMATOS_LINEA_2[envase_sel]
 
     # Ficha Técnica
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("⚖️ Preforma", f"{data_env['peso_pref_g']} g")[cite: 1]
-    col2.metric("🌡️ Temp. Llenado", data_env["temp_llenado"])[cite: 1]
-    col3.metric("🧼 Etiqueta", data_env["etiqueta"])[cite: 1]
-    col4.metric("📦 Config. Paquete", data_env["paquete"])[cite: 1]
+    col1.metric("⚖️ Preforma", f"{data_env['peso_pref_g']} g")
+    col2.metric("🌡️ Temp. Llenado", data_env["temp_llenado"])
+    col3.metric("🧼 Etiqueta", data_env["etiqueta"])
+    col4.metric("📦 Config. Paquete", data_env["paquete"])
 
     st.markdown("---")
-    st.markdown("#### ⚡ Velocidades Nominales por Equipo (BPH)")[cite: 1]
+    st.markdown("#### ⚡ Velocidades Nominales por Equipo (BPH)")
 
     # Tabla de velocidades por máquina
     df_vel = pd.DataFrame(
@@ -633,7 +651,8 @@ with tab3:  # Pestaña de Formatos y Ficha Técnica
     )
     st.dataframe(df_vel, use_container_width=True, hide_index=True)
 
-    st.warning("★ Próxima implementación: Formato 1,25 L (Marzo 2027)")[cite: 1]
+    st.warning("★ Próxima implementación: Formato 1,25 L (Marzo 2027)")
+
 # ------------------------------------------
 # PESTAÑA 4: NOTIFICACIÓN WHATSAPP
 # ------------------------------------------
@@ -668,21 +687,16 @@ with tab4:
 
     col5, col6 = st.columns(2)
     with col5:
-        sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES)
+        sabor_sel = st.selectbox("Producto / Sabor", LISTA_SABORES, key="sab_notif")
         sabor_txt = (
             st.text_input("Escribe el sabor", value="Pap")
             if sabor_sel == "Otro (Escribir manualmente)"
             else sabor_sel
         )
     with col6:
-        idx_fmt_notif = 2
-        for idx, f_item in enumerate(LISTA_FORMATOS):
-            if (
-                f_item.replace(" ", "").lower()
-                == fmt_seleccionado.replace(" ", "").lower()
-            ):
-                idx_fmt_notif = idx
-                break
+        idx_fmt_notif = 0
+        if envase_nombre in LISTA_FORMATOS:
+            idx_fmt_notif = LISTA_FORMATOS.index(envase_nombre)
 
         fmt_sel = st.selectbox("Formato", LISTA_FORMATOS, index=idx_fmt_notif)
         fmt_txt = (
