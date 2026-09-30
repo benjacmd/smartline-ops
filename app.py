@@ -21,99 +21,162 @@ if "packs_calculados" not in st.session_state:
 # ==========================================
 # DICCIONARIOS Y DATOS DE REFERENCIA
 # ==========================================
-PRODUCTOS_PRESET = {
-    "Bilz Regular": {
-        "factor": 7.125,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+FORMATOS_LINEA_2 = {
+    "500 ml Rockstar": {
+        "vol_ml": 500,
+        "moldes": "De L4",
+        "carb_vol": 3.10,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "20°C",
+        "etiqueta": "Sleeve Fullbody",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 60000,
+        "bph_sleevematic": 66000,
+        "bph_variopac": 69000,
+        "bph_modulpal": 72000,
+        "bph_stretch": 72000,
     },
-    "Bilz Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Pap Regular": {
-        "factor": 7.125,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "500 ml POP (huevo)": {
+        "vol_ml": 500,
+        "moldes": "Set completo nuevo",
+        "carb_vol": 3.20,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "20°C",
+        "etiqueta": "Sleeve Fullbody",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 42000,
+        "bph_sleevematic": 46200,
+        "bph_variopac": 48300,
+        "bph_modulpal": 50400,
+        "bph_stretch": 50400,
     },
-    "Pap Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Kem Regular": {
-        "factor": 7.125,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "600 ml BGP": {
+        "vol_ml": 600,
+        "moldes": "Set completo nuevo",
+        "carb_vol": 4.20,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "15°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 60000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 69000,
+        "bph_modulpal": 72000,
+        "bph_stretch": 72000,
     },
-    "Kem Zero": {"factor": 7.125, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Kem Piña": {"factor": 7.125, "ml": 350, "bph": 60000, "pref_caja": 15000},
-    "Pepsi Regular": {
-        "factor": 6.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "600 ml AXL": {
+        "vol_ml": 600,
+        "moldes": "Set completo nuevo",
+        "carb_vol": 4.20,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "15°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 60000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 69000,
+        "bph_modulpal": 72000,
+        "bph_stretch": 72000,
     },
-    "Pepsi Zero": {
-        "factor": 6.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "600 ml Ripples": {
+        "vol_ml": 600,
+        "moldes": "Set completo nuevo",
+        "carb_vol": 4.20,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "15°C",
+        "etiqueta": "BOPP / Sleeve Halfbody*",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 60000,
+        "bph_sleevematic": 66000,
+        "bph_variopac": 69000,
+        "bph_modulpal": 72000,
+        "bph_stretch": 72000,
     },
-    "7Up Regular": {
-        "factor": 6.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "600 ml B&P": {
+        "vol_ml": 600,
+        "moldes": "Set completo nuevo",
+        "carb_vol": 3.75,
+        "peso_pref_g": 19.5,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2 y 4x3",
+        "bph_ergobloc": 60000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 69000,
+        "bph_modulpal": 72000,
+        "bph_stretch": 72000,
     },
-    "7Up Zero": {"factor": 6.000, "ml": 600, "bph": 60000, "pref_caja": 15000},
-    "Limón Soda": {
-        "factor": 5.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "1.5 l Carolina": {
+        "vol_ml": 1500,
+        "moldes": "De L4",
+        "carb_vol": 4.20,
+        "peso_pref_g": 37.0,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP / Sleeve Halfbody*",
+        "paquete": "3x2",
+        "bph_ergobloc": 36000,
+        "bph_sleevematic": 39600,
+        "bph_variopac": 41400,
+        "bph_modulpal": 43200,
+        "bph_stretch": 43200,
     },
-    "Limón Soda Zero": {
-        "factor": 5.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "1.5 l Generica": {
+        "vol_ml": 1500,
+        "moldes": "De L4",
+        "carb_vol": 3.95,
+        "peso_pref_g": 37.0,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2",
+        "bph_ergobloc": 38000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 43700,
+        "bph_modulpal": 45220,
+        "bph_stretch": 45220,
     },
-    "Crush Naranja": {
-        "factor": 5.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "1.5 l Crush": {
+        "vol_ml": 1500,
+        "moldes": "16 de L5, 8 nuevos",
+        "carb_vol": 3.95,
+        "peso_pref_g": 37.0,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2",
+        "bph_ergobloc": 38000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 43700,
+        "bph_modulpal": 45220,
+        "bph_stretch": 45220,
     },
-    "Crush Zero": {
-        "factor": 5.000,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "1.5 l B&P": {
+        "vol_ml": 1500,
+        "moldes": "De L4",
+        "carb_vol": 3.75,
+        "peso_pref_g": 37.0,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2",
+        "bph_ergobloc": 38000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 42560,
+        "bph_modulpal": 42560,
+        "bph_stretch": 42560,
     },
-    "Rockstar Original": {
-        "factor": 4.000,
-        "ml": 500,
-        "bph": 60000,
-        "pref_caja": 15000,
-    },
-    "Rockstar Mango": {
-        "factor": 4.000,
-        "ml": 500,
-        "bph": 60000,
-        "pref_caja": 15000,
-    },
-    "Rockstar Sandía": {
-        "factor": 4.000,
-        "ml": 500,
-        "bph": 60000,
-        "pref_caja": 15000,
-    },
-    "POP Huevo": {"factor": 7.125, "ml": 500, "bph": 42000, "pref_caja": 15000},
-    "Personalizado": {
-        "factor": 7.125,
-        "ml": 600,
-        "bph": 60000,
-        "pref_caja": 15000,
+    "1.75 l Cisne": {
+        "vol_ml": 1750,
+        "moldes": "16 de L5, 8 nuevos",
+        "carb_vol": 0,
+        "peso_pref_g": 47.6,
+        "temp_llenado": "20°C",
+        "etiqueta": "BOPP",
+        "paquete": "3x2",
+        "bph_ergobloc": 34000,
+        "bph_sleevematic": 0,
+        "bph_variopac": 39100,
+        "bph_modulpal": 40800,
+        "bph_stretch": 40800,
     },
 }
-
 LISTA_SABORES = [
     "Bilz",
     "Bilz Zero",
@@ -137,26 +200,6 @@ LISTA_SABORES = [
     "Otro (Escribir manualmente)",
 ]
 
-LISTA_FORMATOS = [
-    "350ml",
-    "500ml",
-    "600ml",
-    "1 L",
-    "1.25 L",
-    "1.5 L",
-    "1.75 L Cisne",
-    "Otro (Escribir manualmente)",
-]
-
-FORMATOS_MAP = {
-    "350 ml": 350,
-    "500 ml": 500,
-    "600 ml": 600,
-    "1.0 L": 1000,
-    "1.25 L": 1250,
-    "1.5 L": 1500,
-    "1.75 L": 1750,
-}
 
 
 # ==========================================
@@ -292,67 +335,42 @@ st.caption("Calculadora en tiempo real para Ergobloc L, Mixer y Pedido a Bodega"
 
 with st.sidebar:
     st.header("⚙️ Configuración del Turno")
-    prod_nombre = st.selectbox(
-        "Producto a Producir", list(PRODUCTOS_PRESET.keys())
+
+    # 1. Sabor/Producto
+    sabor_nombre = st.selectbox("Sabor / Producto", LISTA_SABORES)
+
+    # 2. Envase/Formato según la tabla CCU
+    envase_nombre = st.selectbox(
+        "Formato / Envase Línea 2", list(FORMATOS_LINEA_2.keys())
     )
-    preset = PRODUCTOS_PRESET[prod_nombre]
+    preset_envase = FORMATOS_LINEA_2[envase_nombre]
 
-    st.subheader("Parámetros del Producto")
-
-    preset_ml = preset["ml"]
-    lista_opciones_fmt = list(FORMATOS_MAP.keys())
-
-    idx_defecto = 2  # 600 ml por defecto
-    for i, (label, val_ml) in enumerate(FORMATOS_MAP.items()):
-        if val_ml == preset_ml:
-            idx_defecto = i
-            break
-
-    fmt_seleccionado = st.selectbox(
-        "Formato Botella", options=lista_opciones_fmt, index=idx_defecto
-    )
-    vol_ml = FORMATOS_MAP[fmt_seleccionado]
+    # Asignación automática de parámetros del envase
+    vol_ml = preset_envase["vol_ml"]
+    bph_nominal = preset_envase["bph_ergobloc"]
 
     factor_mezcla = st.number_input(
-        "Factor de Mezcla (Jarabe → Bebida)", value=preset["factor"], step=0.1
-    )
-    bph_nominal = st.number_input(
-        "Velocidad Nominal Ergobloc (BPH)", value=preset["bph"], step=1000
+        "Factor de Mezcla (Jarabe → Bebida)", value=7.125, step=0.1
     )
 
-    st.subheader("Eficiencia de Línea")
-    oee = st.slider(
-        "OEE / Eficiencia Real (%)", min_value=50, max_value=100, value=100
-    )
-    bph_real = bph_nominal * (oee / 100.0)
-    st.info(f"Velocidad Real: **{formato_miles(bph_real)} BPH**")
-
-    st.subheader("📦 Capacidades Estándar de Bodega")
-    std_preforma_caja = st.number_input(
-        "Preformas x Caja", value=preset["pref_caja"], step=1000
-    )
-    std_tapa_caja = st.number_input("Tapas x Caja", value=5000, step=500)
-    std_etiqueta_rollo = st.number_input(
-        "Etiquetas x Rollo", value=10000, step=1000
-    )
-    std_film_pack_rollo = st.number_input(
-        "Packs x Rollo Film Paquete", value=2700, step=100
-    )
-    std_carton_pallet = st.number_input(
-        "Planchas Cartón x Pallet", value=400, step=50
-    )
-    std_pallet_stretcher = st.number_input(
-        "Pallets x Rollo Stretcher", value=35, step=5
+    st.info(
+        f"**Envase:** {envase_nombre}\n\n"
+        f"• Velocidad Ergobloc: **{bph_nominal:,} BPH**\n\n".replace(",", ".")
+        + f"• Peso Preforma: **{preset_envase['peso_pref_g']} g**\n\n"[cite: 1]
+        + f"• Etiqueta: **{preset_envase['etiqueta']}**"[cite: 1]
     )
 
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3 = st.tabs([
-    "🧪 1. Programación por Jarabe Disponible",
-    "🌊 2. Balance Final de Cierre de Lote",
-    "📲 3. Notificación WhatsApp",
-])
+tab1, tab2, tab3, tab4 = st.tabs(
+    [
+        "🧪 1. Programación por Jarabe",
+        "🌊 2. Balance Final",
+        "🍾 3. Ficha Técnica de Formatos",
+        "📲 4. Notificación WhatsApp",
+    ]
+)
 
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -577,10 +595,49 @@ with tab2:
             unsafe_allow_html=True,
         )
 
+# PESTAÑA 3
+with tab3:  # Pestaña de Formatos y Ficha Técnica
+    st.subheader("📋 Matriz Operativa de Formatos Línea 2")
+
+    envase_sel = st.selectbox(
+        "Seleccione el Tipo de Botella / Envase",
+        list(FORMATOS_LINEA_2.keys()),
+    )
+    data_env = FORMATOS_LINEA_2[envase_sel]
+
+    # Ficha Técnica
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("⚖️ Preforma", f"{data_env['peso_pref_g']} g")[cite: 1]
+    col2.metric("🌡️ Temp. Llenado", data_env["temp_llenado"])[cite: 1]
+    col3.metric("🧼 Etiqueta", data_env["etiqueta"])[cite: 1]
+    col4.metric("📦 Config. Paquete", data_env["paquete"])[cite: 1]
+
+    st.markdown("---")
+    st.markdown("#### ⚡ Velocidades Nominales por Equipo (BPH)")[cite: 1]
+
+    # Tabla de velocidades por máquina
+    df_vel = pd.DataFrame(
+        [
+            {
+                "Ergobloc L": f"{data_env['bph_ergobloc']:,}".replace(",", "."),
+                "Sleevematic (x2)": (
+                    f"{data_env['bph_sleevematic']:,}".replace(",", ".")
+                    if data_env["bph_sleevematic"] > 0
+                    else "N/A"
+                ),
+                "Variopac": f"{data_env['bph_variopac']:,}".replace(",", "."),
+                "Modulpal": f"{data_env['bph_modulpal']:,}".replace(",", "."),
+                "Stretch W.": f"{data_env['bph_stretch']:,}".replace(",", "."),
+            }
+        ]
+    )
+    st.dataframe(df_vel, use_container_width=True, hide_index=True)
+
+    st.warning("★ Próxima implementación: Formato 1,25 L (Marzo 2027)")[cite: 1]
 # ------------------------------------------
-# PESTAÑA 3: NOTIFICACIÓN WHATSAPP
+# PESTAÑA 4: NOTIFICACIÓN WHATSAPP
 # ------------------------------------------
-with tab3:
+with tab4:
     st.subheader("📲 Generador de Notificación de Turno")
 
     col1, col2 = st.columns(2)
