@@ -831,7 +831,7 @@ with tab6:
         | **CIP 5 pasos** | Enjuague - Detergente alcalino - Desinfectante - Enjuague | 62 min |
         | **CIP 5 pasos caliente** | Enjuague - Detergente alcalino - Termodesinfección - Enjuague | 62 min |
         | **CIP 7 pasos caliente** | Enjuague - Detergente Ácido - Termodesinfección - Detergente Alcalino + potenciador - Enjuague | 73 min |
-        """[cite: 2])
+        """)
 
     # --- SECCIÓN 2: DEFINICIONES MANDATORIAS Y EXPLICACIÓN DE MATRIZ ---
     with st.expander("📌 2. Definiciones Mandatorias y Explicación de Matriz"):
@@ -846,7 +846,7 @@ with tab6:
         | **Intervención en componentes** | Agua Caliente | Intervención en válvulas, bombas de envío o componentes en contacto directo con Jarabe/Bebida. |
         | **Desviación validación de saneado** | Agua fría | Adicional a matriz, en caso de desviación Sensorial, Trazas de Químico y/o Trazas de Azúcar. |
         | **Enjuague** | Agua fría | **Todas las aguas frías se deben realizar desde elaboración.** |
-        """[cite: 3])
+        """)
 
         st.markdown("---")
         st.markdown("#### 🧠 Criterios de Matriz de Sabor / Operaciones Especiales")
@@ -862,7 +862,7 @@ with tab6:
         | **Elaboración Jarabes - Rockstar** | CIP 3 Pasos | Excepción en tanques 519 y 520. Realizar CIP 3 Pasos después de 24hrs a tanques y línea. |
         | **Línea 4 - Gatorade Zero (> 24 Hrs)** | CIP 5 Pasos | CIP 5 pasos fríos cada 24 Hrs en producción continua mayor a 24 hrs. |
         | **Saneado de pasteurizador** | Según matriz | Limpieza inmediata después de uso en producciones que requieran pasteurización. |
-        """[cite: 5])
+        """)
 
     # --- SECCIÓN 3: PROTOCOLO EXCLUSIVO BLYS ---
     with st.expander("🥤 3. Definiciones Mandatorias Especiales: Productos BLYS"):
@@ -875,7 +875,7 @@ with tab6:
         | **Línea detenida (≥ 4 hrs)** | CIP 5 Pasos Caliente | Si la línea presenta detención mayor a 4 hrs, realizar antes de reiniciar. |
         | **Intervención en componentes** | Agua Caliente | Intervenciones en válvulas/bombas con contacto directo a Jarabe/Bebida. |
         | **Desviación validación saneado** | Agua Fría | En caso de desviación Sensorial, Trazas de Químico o Trazas de Azúcar. |
-        """[cite: 4])
+        """)
 
     # --- SECCIÓN 4: VALIDACIÓN DE SANEADOS ---
     with st.expander("🔍 4. Protocolo Mandatorio de Validación de Saneados"):
@@ -885,7 +885,7 @@ with tab6:
         | **Validación Sensorial** | Todas | Evaluación contra muestra patrón por **dos panelistas** (Analista + Operador de Elaboración) en la última agua de enjuague. |
         | **Trazas de Químicos** | CIP 3, 5 y 7 Pasos | Medición en última agua de enjuague con **Indicador de Fenolftaleína** o **Tiras de Ácido**. |
         | **Trazas de Azúcar** | Todas | Obligatorio en productos con azúcar que anteceden a productos **Zero o Light**. Medir con **Reflecto-quant** en última agua de enjuague. |
-        """[cite: 6])
+        """)
 
     # --- SECCIÓN 5: SIMULADOR INTERACTIVO ---
     st.markdown("---")
@@ -905,21 +905,21 @@ with tab6:
     )
 
     if escenario == "Cambio de producto con materia prima Pungente (Salida)":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)[cite: 2, 5]")
-        st.info("💡 **Validación:** Sensorial + Trazas de químico con Fenolftaleína/Tiras de ácido.[cite: 6]")
+        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)")
+        st.info("💡 **Validación:** Sensorial + Trazas de químico con Fenolftaleína/Tiras de ácido.")
     elif escenario == "Línea parada más de 8 horas SIN saneado previo":
-        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)[cite: 2, 3]")
-        st.info("💡 **Validación:** Sensorial + Trazas de químico.[cite: 6]")
+        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)")
+        st.info("💡 **Validación:** Sensorial + Trazas de químico.")
     elif escenario == "Línea BLYS parada más de 4 horas":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos Caliente` (Tiempo: 62 min)[cite: 2, 4]")
-        st.info("💡 **Nota BLYS:** Aplica al presentar detención mayor a 4 horas antes de reiniciar operación.[cite: 4]")
+        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos Caliente` (Tiempo: 62 min)")
+        st.info("💡 **Nota BLYS:** Aplica al presentar detención mayor a 4 horas antes de reiniciar operación.")
     elif escenario == "Producción continua de Lipton mayor a 24 horas":
-        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)[cite: 2, 5]")
+        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)")
     elif escenario == "Han pasado 168 horas consecutivas (7 días)":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)[cite: 2, 3]")
-        st.info("💡 Obligatorio al cumplir 168 hrs máximo consecutivo.[cite: 3]")
+        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)")
+        st.info("💡 Obligatorio al cumplir 168 hrs máximo consecutivo.")
     elif escenario == "Paso de producto Regular (Con Azúcar) a Producto Zero/Light":
-        st.warning("👉 **Validación Mandatoria:** Medición de trazas de azúcar con `Reflecto-quant` en última agua de enjuague.[cite: 6]")
+        st.warning("👉 **Validación Mandatoria:** Medición de trazas de azúcar con `Reflecto-quant` en última agua de enjuague.")
     elif escenario == "Intervención en bomba o válvula de jarabe/bebida":
-        st.warning("👉 **Receta Requerida:** `Agua Caliente` (Tiempo: 21 min)[cite: 2, 3]")
-        st.info("💡 Esterilización a 85°C por intervención en componentes en contacto con producto.[cite: 2, 3]")
+        st.warning("👉 **Receta Requerida:** `Agua Caliente` (Tiempo: 21 min)")
+        st.info("💡 Esterilización a 85°C por intervención en componentes en contacto con producto.")
