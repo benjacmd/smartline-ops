@@ -373,17 +373,15 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
-    [
-        "🧪 1. Programación por Jarabe",
-        "🌊 2. Balance Final",
-        "🍾 3. Ficha Técnica de Formatos",
-        "📲 4. Notificación WhatsApp",
-        "📚 5. Guía de Cálculos",
-        "🧫 6. Saneados (CIP)"
-    ]
-)
-
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+    "🧪 Programación", 
+    "🌊 Balance Final", 
+    "🍾 Formatos", 
+    "📲 WhatsApp", 
+    "📚 Guía Cálculos",
+    "🧫 Saneados (CIP)",
+    "⚙️ P&ID Llenadora"
+])
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
 # ------------------------------------------
@@ -923,3 +921,57 @@ with tab6:
     elif escenario == "Intervención en bomba o válvula de jarabe/bebida":
         st.warning("👉 **Receta Requerida:** `Agua Caliente` (Tiempo: 21 min)")
         st.info("💡 Esterilización a 85°C por intervención en componentes en contacto con producto.")
+
+# ------------------------------------------
+# PESTAÑA 7: MANUAL P&ID Y MATRIZ LLENADORA
+# ------------------------------------------
+with tab7:  # Asegúrate de agregar tab7 a la lista de st.tabs([...])
+    st.subheader("⚙️️ Diagrama P&ID y Líneas de Servicio - Llenadora")
+    st.caption("Guía de interpretación de válvulas, instrumentos e interpretación del HMI Ergobloc.")
+
+    # --- SECCIÓN 1: DICCIONARIO DE LÍNEAS DE INGRESO ---
+    with st.expander("🔌 1. Descripción de Servicios e Ingresos a la Llenadora", expanded=True):
+        st.markdown("""
+        | Servicio | Función Principal | Valores / Instrumentos Clave |
+        | :--- | :--- | :--- |
+        | **Aire Comprimido** | Accionamiento de válvulas neumáticas y presión de control. | Filtros estériles + Transmisores de presión. |
+        | **CO2 Presurización** | Inyección de CO2 para presurizar el estanque **D100** y realizar barrido en botella antes del llenado. | Válvulas reguladoras de presión ($P_{\text{estanque}}$). |
+        | **Agua de Proceso** | Agua de enjuague / empuje / preparación de circuitos. | Válvulas automáticas de entrada. |
+        | **Retorno / Alimentación CIP** | Circuito cerrado de lavado químico y sanitización. | **Sensor de Conductividad** ($\text{mS/cm}$) para detectar detergente vs agua final. |
+        | **Línea de Producto** | Ingreso de bebida terminada desde el Mixer/Carbonatador. | **Medidor de Flujo Masico** ($\text{kg/h}$ o $\text{L/min}$). |
+        """)
+
+    # --- SECCIÓN 2: INSTRUMENTACIÓN Y COMPONENTES (HMI) ---
+    with st.expander("🧠 2. Instrumentos y Sensores Principales"):
+        st.markdown("""
+        * **Estanque Isobarométrico (D100):**
+          * **Nivel (% / mm):** Controla el volumen interno de bebida para evitar sobrellenado o formación de espuma.
+          * **Presión (bar):** Mantiene la contrapresión de CO2 para evitar que el gas de la bebida se desosocie (descarbonatación).
+        * **Sensor de Conductividad ($\text{mS/cm}$):**
+          * Identifica la fase del CIP. Si la conductividad es alta, está pasando soda o ácido; si es cercana a cero, es agua de enjuague.
+        * **Tulipas CIP / Falsa Botella:**
+          * Mecanismo que sella los grifos de llenado para permitir el retorno del fluido durante el lavado CIP 3, 5 u 7 pasos.
+        """)
+
+    # --- SECCIÓN 3: PREGUNTAS FRECUENTES Y DIAGNÓSTICO (OPERADOR) ---
+    st.markdown("---")
+    st.markdown("### ❓ Preguntas Frecuentes y Diagnóstico Rápido")
+
+    duda = st.selectbox(
+        "Selecciona una duda o anomalía operativa:",
+        [
+            "¿Por qué es crítico medir la conductividad en el retorno CIP?",
+            "¿Qué ocurre si la presión de CO2 en el estanque D100 baja?",
+            "¿Para qué sirve el barrido de CO2 en la botella antes de llenar?",
+            "¿Por qué se debe enjuagar hasta que la conductividad baje a nivel de agua fresca?"
+        ]
+    )
+
+    if duda == "¿Por qué es crítico medir la conductividad en el retorno CIP?":
+        st.info("💡 **Respuesta:** La conductividad indica la concentración exacta del químico (Soda/Ácido). Si el valor no alcanza el setpoint, el CIP no sanitiza correctamente; si no baja al final, quedan trazas de químico en la línea.")
+    elif duda == "¿Qué ocurre si la presión de CO2 en el estanque D100 baja?":
+        st.warning("⚠️ **Efecto:** La bebida genera turbulencia y espuma dentro de la botella, lo que provoca **llenados bajos** y pérdida de carbonatación (volúmenes de CO2 bajo norma).")
+    elif duda == "¿Para qué sirve el barrido de CO2 en la botella antes de llenar?":
+        st.success("✅ **Respuesta:** Desplaza el aire (oxígeno) presente dentro de la botella vacía. El oxígeno es el enemigo principal de la bebida ya que altera el sabor y acorta la vida útil del producto.")
+    elif duda == "¿Por qué se debe enjuagar hasta que la conductividad baje a nivel de agua fresca?":
+        st.warning("🧪 **Seguridad Alimentaria:** Garantiza que no queden residuos alcalinos ni ácidos en la matriz antes de dar pase a la bebida. Se complementa obligatoriamente con prueba de **Fenolftaleína**.")
