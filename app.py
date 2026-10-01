@@ -380,7 +380,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         "🍾 3. Ficha Técnica de Formatos",
         "📲 4. Notificación WhatsApp",
         "📚 5. Guía de Cálculos",
-        "🧫 Saneados (CIP)"
+        "🧫 6. Saneados (CIP)"
     ]
 )
 
