@@ -710,10 +710,9 @@ with tab4:
     mensaje_final = f"{saludo_txt}\n{turno_sel} - {linea_sel}\n{prod_completo}\nOP: {op_num}\nCajas: {cajas_formateadas}\n{fecha_notif}"
 
     st.markdown("### 📄 Mensaje Generado:")
-    st.markdown(
-        f'<div class="whatsapp-box">{mensaje_final}</div>',
-        unsafe_allow_html=True,
-    )
+    
+    # Muestra el mensaje en un recuadro limpio que incluye botón automático de copiar (esquina superior derecha)
+    st.code(mensaje_final, language=None)
 
     whatsapp_url = (
         f"https://api.whatsapp.com/send?text={urllib.parse.quote(mensaje_final)}"
