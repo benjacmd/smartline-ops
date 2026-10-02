@@ -400,8 +400,9 @@ with tab1:
                 "🧪 Jarabe Disponible en Tanque (L)", value=7000, step=500
             )
             hora_inicio = st.time_input(
-            "⏰ Hora de Inicio / Actual", value=time(0, 0)
-            )    
+                "⏰ Hora de Inicio / Actual", 
+                value=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).time()
+            )
 
         with col_in2:
             botellas_por_pack = st.number_input(
