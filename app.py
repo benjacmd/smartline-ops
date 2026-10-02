@@ -684,11 +684,22 @@ with tab4:
             idx_fmt_notif = LISTA_FORMATOS.index(envase_nombre)
 
         fmt_sel = st.selectbox("Formato", LISTA_FORMATOS, index=idx_fmt_notif)
-        fmt_txt = (
-            st.text_input("Escribe el formato", value="600ml")
-            if fmt_sel == "Otro (Escribir manualmente)"
-            else fmt_sel
-        )
+        
+        # --- LÓGICA DE SIMPLIFICACIÓN DEL FORMATO ---
+        # Extrae automáticamente el tamaño y unidad limpios (ej: 600ml, 1.5 Lts, 500ml)
+        if fmt_sel == "Otro (Escribir manualmente)":
+            fmt_txt = st.text_input("Escribe el formato", value="600ml")
+        else:
+            if "500" in fmt_sel:
+                fmt_txt = "500ml"
+            elif "600" in fmt_sel:
+                fmt_txt = "600ml"
+            elif "1.5" in fmt_sel:
+                fmt_txt = "1.5 Lts"
+            elif "1.75" in fmt_sel:
+                fmt_txt = "1.75 Lts"
+            else:
+                fmt_txt = fmt_sel.split()[0] + ("ml" if "ml" in fmt_sel.lower() else " Lts")
 
     prod_completo = f"{sabor_txt} {fmt_txt}".strip()
 
@@ -711,7 +722,7 @@ with tab4:
 
     st.markdown("### 📄 Mensaje Generado:")
     
-    # Muestra el mensaje en un recuadro limpio que incluye botón automático de copiar (esquina superior derecha)
+    # Muestra el mensaje en un recuadro limpio que incluye botón automático de copiar
     st.code(mensaje_final, language=None)
 
     whatsapp_url = (
