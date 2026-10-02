@@ -356,9 +356,9 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("📦 Estándares de Insumos")
     std_preforma_caja = st.number_input("Preformas por caja", value=14000, step=1000)
-    std_tapa_caja = st.number_input("Tapas por caja", value=50000, step=5000)
+    std_tapa_caja = st.number_input("Tapas por caja", value=5000, step=5000)
     std_etiqueta_rollo = st.number_input("Etiquetas por rollo", value=18000, step=1000)
-    std_film_pack_rollo = st.number_input("Packs por rollo film", value=1200, step=100)
+    std_film_pack_rollo = st.number_input("Packs por rollo film", value=2700, step=100)
     std_carton_pallet = st.number_input("Planchas cartón/pallet", value=100, step=10)
     std_pallet_stretcher = st.number_input("Pallets por rollo stretch", value=40, step=5)
 
