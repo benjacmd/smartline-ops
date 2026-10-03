@@ -373,14 +373,13 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6,  = st.tabs([
     "🧪 Programación", 
     "🌊 Balance Final", 
     "🍾 Formatos", 
     "📲 WhatsApp", 
     "📚 Guía Cálculos",
     "🧫 Saneados (CIP)",
-    "⚙️ P&ID Llenadora"
 ])
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
