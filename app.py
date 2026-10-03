@@ -820,4 +820,104 @@ with tab5:
         #### 💡 Nota de Merma:
         En la pestaña de **Balance Final**, el sistema multiplica las botellas teóricas por un factor de merma (ej: **2%** adicional) antes de calcular las cajas de insumo para cubrir pérdidas en soplado o etiquetado.
         """)
-        
+
+# ------------------------------------------
+# PESTAÑA 6: DEFINICIONES Y CRITERIOS MANDATORIOS CIP
+# ------------------------------------------
+with tab6:
+    st.subheader("📚 Pestaña 6: Definiciones y Conceptos Clave de Saneados")
+    st.caption("Estándar Oficial NPR-ASC-DOC-16 | Versión 22 (Edición Marzo 2026)")
+
+    # ==========================================
+    # SECCIÓN 1: TIEMPOS Y TIPOS DE RECETA
+    # ==========================================
+    st.markdown("### ⏱️ 1. Tiempos y Métodos de Recetas Disponibles")
+    
+    col_r1, col_r2, col_r3 = st.columns(3)
+    col_r1.metric("Empuje con Agua", "15 min", "Empuje de 15 min")
+    col_r2.metric("Agua Fría", "20 min", "Enjuague T° ambiente")
+    col_r3.metric("Agua Caliente", "21 min", "Esterilización 85°C")
+
+    col_r4, col_r5, col_r6, col_r7 = st.columns(4)
+    col_r4.metric("CIP 3 Pasos", "50 min", "Enjuague-Desinfección-Enjuague")
+    col_r5.metric("CIP 5 Pasos", "62 min", "Enjuague-Soda-Desinf.-Enjuague")
+    col_r6.metric("CIP 5 Pasos Caliente", "62 min", "+ Termodesinfección")
+    col_r7.metric("CIP 7 Pasos Caliente", "73 min", "+ Ácido y Potenciador")
+
+    st.markdown("---")
+
+    # ==========================================
+    # SECCIÓN 2: DEFINICIONES MANDATORIAS (GENERALES Y BLYS)
+    # ==========================================
+    st.markdown("### 📋 2. Definiciones Mandatorias y Criterios Operativos")
+
+    tab_gen, tab_blys, tab_mat = st.tabs(["📌 Criterios Generales", "🍹 Criterios Solo BLYS", "🏭 Reglas de Proceso / Matriz"])
+
+    with tab_gen:
+        st.markdown("#### **Criterios Adicionales a la Matriz (Generales)**")
+        st.markdown("""
+        * **Cada 7 Días (168 hrs máx):** Requiere obligatoriamente al menos un **CIP 5 Pasos**.
+        * **Aseo COP (Manual):** Se debe realizar al menos **3 veces por semana** en la línea de envasado[cite: 3].
+        * **Línea Detenida ≥ 8 hrs (Sin Saneado al término):** Iniciar con **CIP 3 Pasos** antes de retomar producción (ej: corte de luz imprevisto)[cite: 3].
+        * **Línea Detenida ≥ 8 hrs (Con Saneado al término):** Realizar enjuague de **Agua Fría** al retomar (ej: detención programada con vaciado de mixer y CIP realizado)[cite: 3].
+        * **Intervención en contacto con Jarabe/Bebida:** Realizar **Agua Caliente** tras intervenir válvulas, bombas de envío o tuberías[cite: 3].
+        * **Desviación en Validación de Saneado:** Aplicar **Agua Fría** adicional solo en caso de desviación Sensorial, Trazas de Químico o Trazas de Azúcar[cite: 3].
+        * **Enjuagues:** Todos los enjuagues de agua fría deben realizarse **desde Elaboración**[cite: 3].
+        """)
+
+    with tab_blys:
+        st.markdown("#### **Criterios Mandatorios Exclusivos para BLYS**")
+        st.markdown("""
+        * **Producción Continua > 24 hrs:** Debe realizar saneado **CIP 3 Pasos** cada 24 horas[cite: 3].
+        * **Línea Detenida ≥ 4 hrs:** Si la línea presenta una detención mayor a 4 horas, se debe realizar **CIP 5 Pasos Caliente** antes de reiniciar operación[cite: 3].
+        * **Línea Detenida ≥ 8 hrs (Sin Saneado):** Partir con **CIP 3 Pasos** antes de retomar[cite: 3].
+        * **Línea Detenida ≥ 8 hrs (Con Saneado):** Realizar **Agua Fría** antes de retomar[cite: 3].
+        * **Intervenciones o Desviaciones:** Aplican las mismas reglas que el criterio general (Agua Caliente para intervenciones y Agua Fría para desviaciones)[cite: 3].
+        """)
+
+    with tab_mat:
+        st.markdown("#### **Definiciones Específicas de Matriz y Elaboración**")
+        st.markdown("""
+        * **Materia Prima Pungente/Orgánica (Antes):** Realizar **CIP 3 Pasos** antes de fabricar jarabes con MP de olor/sabor penetrante por su naturaleza orgánica.
+        * **Pungente 2:** Ingreso mandatorio con **CIP 5 Pasos Caliente**[cite: 4].
+        * **Materia Prima Pungente (Después):** Realizar **CIP 5 Pasos Caliente** al término/salida[cite: 4].
+        * **Materia Prima Orgánica (Después):** Realizar **CIP 5 Pasos** al término/salida[cite: 4].
+        * **Producción Continua Lipton > 24 hrs:** Realizar **CIP 3 Pasos** cada 24 hrs[cite: 4].
+        * **Detención Línea Jarabe-Lipton > 4 hrs:** Realizar **CIP 5 Pasos Caliente**[cite: 4].
+        * **Línea Rockstar (Tanques 519 y 520):** CIP 3 Pasos después de 24 hrs a los tanques y línea[cite: 4].
+        * **Línea 4 Gatorade Zero (> 24 hrs):** CIP 5 Pasos Fríos cada 24 hrs en producción continua[cite: 4].
+        * **Saneado de Pasteurizador:** Debe quedar limpio e higienizado **inmediatamente después de su uso**[cite: 4].
+        """)
+
+    st.markdown("---")
+
+    # ==========================================
+    # SECCIÓN 3: PROTOCOLO DE VALIDACIÓN DE SANEADOS
+    # ==========================================
+    st.markdown("### 🧪 3. Protocolo Mandatorio de Validación de Saneados")
+    
+    col_v1, col_v2, col_v3 = st.columns(3)
+    
+    with col_v1:
+        st.info("👅 **Validación Sensorial**")
+        st.markdown("""
+        * **Aplica a:** Todas las recetas[cite: 4].
+        * **Método:** Evaluación contra muestra patrón en la última agua de enjuague[cite: 4].
+        * **Exigencia:** Requiere **2 panelistas** (Analista de Calidad + Operador de Elaboración)[cite: 4].
+        """)
+
+    with col_v2:
+        st.warning("🧪 **Trazas de Químico**")
+        st.markdown("""
+        * **Aplica a:** CIP 3, CIP 5 y CIP 7 Pasos[cite: 4].
+        * **Método:** Medición en la última agua de enjuague[cite: 4].
+        * **Herramientas:** Indicador de **Fenolftaleína** o **Tiras de Ácido**[cite: 4].
+        """)
+
+    with col_v3:
+        st.success("🍬 **Trazas de Azúcar**")
+        st.markdown("""
+        * **Aplica a:** Transición de productos con azúcar hacia productos Zero o Light[cite: 4].
+        * **Método:** Medición en la última agua de enjuague[cite: 4].
+        * **Herramienta:** Medidor **Reflectoquant**[cite: 4].
+        """)
