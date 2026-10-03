@@ -373,13 +373,14 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4, tab5, tab6,  = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7  = st.tabs([
     "🧪 Programación", 
     "🌊 Balance Final", 
     "🍾 Formatos", 
     "📲 WhatsApp", 
     "📚 Guía Cálculos",
     "🧫 Saneados (CIP)",
+    "🔄 Evaluador de Cambio"
 ])
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -920,4 +921,126 @@ with tab6:
         * **Aplica a:** Transición de productos con azúcar hacia productos Zero o Light.
         * **Método:** Medición en la última agua de enjuague.
         * **Herramienta:** Medidor **Reflectoquant**.
+        """)
+# ------------------------------------------
+# PESTAÑA 7: MATRIZ DE CAMBIO DE PRODUCTO Y DIAGNÓSTICO EN TURNO
+# ------------------------------------------
+with tab7:
+    st.subheader("🔄 Pestaña 7: Evaluador Interactivo de Cambio de Producto (L2)")
+    st.caption("Matriz de Transición Envasado L2 | NPR-ASC-DOC-16 v22")
+
+    # Lista consolidada de Sabores por Categoría Oficial
+    PUNGENTES = ["H2Oh! Toronchello", "Kem Xtreme", "Kem Xtreme Blue Berry", "Kem Xtreme Suggar Free", "Kem Piña Maracuya", "Rockstar", "Rockstar Mango", "Rockstar Sandia"]
+    PUNGENTES_2_JUGO = ["Lipton Durazno", "Lipton Limón", "Lipton Te verde Mango Zero", "Lipton limón Zero", "Lipton Raspberry Zero", "Crush 5% Jugo", "Kem Xtreme Flamin Hot"]
+    COLOR_FUERTE = ["Pepsi", "Pepsi Zero", "Pepsi Light", "Bilz", "Bilz Zero", "Crush", "Crush Zero", "Crush sin jugo"]
+    BLANCOS = ["Seven UP", "Seven Up Zero", "Agua Tónica", "Agua Tónica Zero", "Ginger Ale", "Ginger Ale Light", "Ginger Ale Zero"]
+    SIN_RESTRICCION = ["H2Oh! Naranchelo", "H2Oh! Lima Limon", "H2Oh! Limonchelo", "H2Oh! Limoneto", "Kem", "Kem Zero", "Pap", "Pap Zero", "Limón Soda", "Limón Soda Zero"]
+
+    TODOS_LOS_SABORES = sorted(list(set(PUNGENTES + PUNGENTES_2_JUGO + COLOR_FUERTE + BLANCOS + SIN_RESTRICCION)))
+
+    # Selección de Productos
+    st.markdown("### 1. Selección de Transición de Producto")
+    col_p1, col_p2 = st.columns(2)
+    with col_p1:
+        prod_saliente = st.selectbox("🥤 Producto Saliente (Desde / Fila)", TODOS_LOS_SABORES, index=0, key="eval_saliente")
+    with col_p2:
+        prod_entrante = st.selectbox("🍹 Producto Entrante (A / Columna)", TODOS_LOS_SABORES, index=1, key="eval_entrante")
+
+    st.markdown("---")
+    st.markdown("### 2. Dictamen Operativo del Saneado")
+
+    # Identificación de Familias
+    es_sal_pungente = prod_saliente in PUNGENTES or prod_saliente in PUNGENTES_2_JUGO
+    es_ent_blanco_sinrest = prod_entrante in BLANCOS or prod_entrante in SIN_RESTRICCION
+    
+    # Regla Mismo Sabor Zero -> Normal
+    es_mismo_sabor_zero_a_norm = (
+        ("Zero" in prod_saliente or "Light" in prod_saliente) and
+        (prod_saliente.replace(" Zero", "").replace(" Light", "").strip() == prod_entrante.strip())
+    )
+
+    # Lógica de Evaluación
+    if es_mismo_sabor_zero_a_norm:
+        st.info("💧 **PROTOCOLO: EMPUJE CON AGUA FRÍA**")
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱️ Tiempo Receta", "15 min", "Empuje continuo")
+        c2.metric("📟 Receta HMI", "RN° 1 C/D / RN° 2 S/D")
+        c3.metric("🧪 Aseo Jarabería", "Empuje Agua Fría")
+
+        st.markdown("""
+        * **Detalle del Procedimiento:** Considerar empuje continuo con agua tratada de **15 minutos** para barrido de edulcorantes/azúcar antes de ingresar la versión normal[cite: 1, 3].
+        * **Validación:** Sensorial + Medición de trazas de azúcar con **Reflectoquant**[cite: 4].
+        """)
+
+    elif es_sal_pungente and es_ent_blanco_sinrest:
+        st.error("🚫 **PROHIBIDO / RESTRICCIÓN DE CALIDAD CRÍTICA**")
+        st.markdown("### ⚠️ ***No realizar producción***")
+        st.warning("La matriz prohíbe el paso directo de productos Pungentes / Lipton / Jugo hacia productos Blancos o Sin Restricción por riesgo crítico de contaminación sensorial de sabor y olor[cite: 1, 4].")
+        st.caption("Acción en turno: Detener cambio de formato y consultar con el Analista o Jefe de Calidad.")
+
+    elif es_sal_pungente:
+        st.markdown("### 🔴 **CIP 5 PASOS CALIENTE**")
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱️ Tiempo Receta", "62 min", "+ Termodesinfección")
+        c2.metric("📟 Receta HMI", "RN° 12 S/D / RN° 13")
+        c3.metric("🧪 Aseo Jarabería", "S + Q + A / S + A + Q")
+
+        st.markdown("""
+        * **Secuencia CIP:** Enjuague ➔ Detergente Alcalino (Soda) ➔ Desinfectante ➔ Termodesinfección (85°C) ➔ Enjuague final[cite: 3].
+        * **Puntos Críticos:** Saneado de alta exigencia para desodorización de matrices aromáticas orgánicas[cite: 4].
+        """)
+
+    elif prod_saliente in COLOR_FUERTE:
+        st.markdown("### 🟡 **CIP 3 PASOS / CIP 5 PASOS**")
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱️ Tiempo Receta", "50 min - 62 min", "Según recirculación")
+        c2.metric("📟 Receta HMI", "RN° 10 C/D / RN° 11 S/D")
+        c3.metric("🧪 Aseo Jarabería", "S + Q / S + A")
+
+        st.markdown("""
+        * **Secuencia CIP:** Enjuague previo ➔ Desinfección / Lavado Alcalino ➔ Enjuague final con verificación de pH/conductividad[cite: 3].
+        """)
+
+    else:
+        st.markdown("### 🟢 **AGUA CALIENTE / CIP 3 PASOS ESTÁNDAR**")
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("⏱️ Tiempo Receta", "21 min - 50 min", "Según matiz de sabor")
+        c2.metric("📟 Receta HMI", "RN° 1 C/D / RN° 3 C/D")
+        c3.metric("🧪 Aseo Jarabería", "S / S + A")
+
+        st.markdown("""
+        * **Secuencia CIP:** Enjuague regular o esterilización térmica a 85°C para productos de la misma familia o baja complejidad[cite: 3].
+        """)
+
+    st.markdown("---")
+
+    # ==========================================
+    # SECCIÓN 3: VERIFICACIONES Y CHECKLIST DE VALIDACIÓN
+    # ==========================================
+    st.markdown("### 3. Protocolo Mandatorio de Liberación de Calidad")
+    
+    col_v1, col_v2 = st.columns(2)
+    with col_v1:
+        st.markdown("**📋 Pruebas Requeridas en la última agua de enjuague:**")
+        
+        # Validación Sensorial Obligatoria
+        st.checkbox("👅 **Validación Sensorial:** Muestra patrón evaluada por 2 panelistas (Analista + Operador Elaboración)[cite: 4].", value=True)
+        
+        # Trazas Químicas
+        if es_sal_pungente or prod_saliente in COLOR_FUERTE:
+            st.checkbox("🧪 **Trazas de Químico:** Prueba de Fenolftaleína o Tiras de Ácido negativa[cite: 4].", value=True)
+        
+        # Trazas de Azúcar
+        if "Zero" in prod_entrante or "Light" in prod_entrante or es_mismo_sabor_zero_a_norm:
+            st.checkbox("🍬 **Trazas de Azúcar:** Medición con Reflectoquant en enjuague final (Paso a producto Zero/Light)[cite: 4].", value=True)
+
+    with col_v2:
+        st.info("""
+        💡 **Nota Técnica Operativa:**
+        * Los enjuagues con agua fría siempre deben realizarse **desde Elaboración**.
+        * Si el saneado presenta desviación en química, azúcar o sensorial, se debe repetir un enjuague adicional con **Agua Fría**[cite: 3].
         """)
