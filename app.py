@@ -823,167 +823,116 @@ with tab5:
         """)
         
 # ------------------------------------------
-# PESTAÑA 6: CENTRO DE ESTUDIO DE SANEADOS (CIP)
+# PESTAÑA 6: SANEADOS Y MATRIZ CIP (OFICIAL CCU V22)
 # ------------------------------------------
 with tab6:
-    st.subheader("🧪 Centro de Estudio y Protocolos de Saneados (CIP)")
-    st.caption("Guía estándar y criterios mandatorios de saneamiento para planta CCU.")
+    st.subheader("🧫 Matriz Oficial de Saneados - Envasado L2")
+    st.caption("NPR-ASC-DOC-16 | Versión 22 (Edición Marzo 2026)")
 
-    # --- SECCIÓN 1: RECETAS DISPONIBLES ---
-    with st.expander("⏱️ 1. Recetas Disponibles y Tiempos Estándar", expanded=True):
-        st.markdown("""
-        | Receta | Método / Descripción | Tiempo Receta |
-        | :--- | :--- | :---: |
-        | **Empuje con agua** | Empuje con agua 15 min | 15 min |
-        | **Agua fría** | Enjuague agua a T° ambiente (desde elaboración) | 20 min |
-        | **Agua Caliente** | Esterilización a 85°C | 21 min |
-        | **CIP 3 pasos** | Enjuague - Desinfección (booster / Divosan Forte) - Enjuague | 50 min |
-        | **CIP 5 pasos** | Enjuague - Detergente alcalino - Desinfectante - Enjuague | 62 min |
-        | **CIP 5 pasos caliente** | Enjuague - Detergente alcalino - Termodesinfección - Enjuague | 62 min |
-        | **CIP 7 pasos caliente** | Enjuague - Detergente Ácido - Termodesinfección - Detergente Alcalino + potenciador - Enjuague | 73 min |
-        """)
-
-    # --- SECCIÓN 2: DEFINICIONES MANDATORIAS Y EXPLICACIÓN DE MATRIZ ---
-    with st.expander("📌 2. Definiciones Mandatorias y Explicación de Matriz"):
-        st.markdown("#### 📘 Adicionales a Matriz (General)")
-        st.markdown("""
-        | Criterio | Receta | Descripción |
-        | :--- | :--- | :--- |
-        | **7 días** | CIP 5 Pasos | Cada 168 horas como máximo consecutivo, corresponde al menos **un CIP 5 Pasos**. |
-        | **Aseo COP** | Manual | Se debe realizar al menos **3 veces por semana** en cada línea de envasado. |
-        | **Línea detenida (≥ 8h + SIN saneado)** | CIP 3 Pasos | Ejemplo: corte de luz sin saneado previo. Aplicar antes de retomar. |
-        | **Línea detenida (≥ 8h + CON saneado)** | Agua Fría | Vaciado y saneado realizado previamente por matriz. Al retomar solo se realiza agua fría. |
-        | **Intervención en componentes** | Agua Caliente | Intervención en válvulas, bombas de envío o componentes en contacto directo con Jarabe/Bebida. |
-        | **Desviación validación de saneado** | Agua fría | Adicional a matriz, en caso de desviación Sensorial, Trazas de Químico y/o Trazas de Azúcar. |
-        | **Enjuague** | Agua fría | **Todas las aguas frías se deben realizar desde elaboración.** |
-        """)
-
-        st.markdown("---")
-        st.markdown("#### 🧠 Criterios de Matriz de Sabor / Operaciones Especiales")
-        st.markdown("""
-        | Criterio | Receta | Descripción |
-        | :--- | :--- | :--- |
-        | **Materia Prima pungente / orgánica (Antes)** | CIP 3 Pasos | Antes del inicio de fabricación de jarabes con materias primas de sabor u olor penetrante por su naturaleza orgánica. |
-        | **Pungente 2** | CIP 5 Pasos Caliente | Mandatorio Ingreso con CIP 5 Pasos Caliente. |
-        | **Materia Prima pungente (Después)** | CIP 5 Pasos | Al término (o salida) de jarabes con materias primas de sabor u olor penetrante. |
-        | **Materia Prima orgánica (Después)** | CIP 3 Pasos | Al término (o salida) de jarabes con materias primas de tipo orgánico. |
-        | **Producción continua > 24 Hrs Lipton** | CIP 3 Pasos | Realizar cuando la línea supere las 24 hrs continuas con Lipton. |
-        | **Detención de línea - Jarabe Lipton** | CIP 5 Pasos Caliente | Realizar cuando la línea dure más de 4 hrs detenida. |
-        | **Elaboración Jarabes - Rockstar** | CIP 3 Pasos | Excepción en tanques 519 y 520. Realizar CIP 3 Pasos después de 24hrs a tanques y línea. |
-        | **Línea 4 - Gatorade Zero (> 24 Hrs)** | CIP 5 Pasos | CIP 5 pasos fríos cada 24 Hrs en producción continua mayor a 24 hrs. |
-        | **Saneado de pasteurizador** | Según matriz | Limpieza inmediata después de uso en producciones que requieran pasteurización. |
-        """)
-
-    # --- SECCIÓN 3: PROTOCOLO EXCLUSIVO BLYS ---
-    with st.expander("🥤 3. Definiciones Mandatorias Especiales: Productos BLYS"):
-        st.markdown("""
-        | Criterio BLYS | Receta | Descripción |
-        | :--- | :--- | :--- |
-        | **Producción continua > 24 hrs** | CIP 3 Pasos | Producción continua BLYS, debe realizar saneado cada 24 hrs. |
-        | **Línea detenida (≥ 8h + SIN saneado)** | CIP 3 Pasos | Ejemplo: corte de luz sin saneado al término. Realizar antes de retomar. |
-        | **Línea detenida (≥ 8h + CON saneado)** | Agua Fría | Vaciado y saneado correspondiente al término. Al retomar solo agua fría. |
-        | **Línea detenida (≥ 4 hrs)** | CIP 5 Pasos Caliente | Si la línea presenta detención mayor a 4 hrs, realizar antes de reiniciar. |
-        | **Intervención en componentes** | Agua Caliente | Intervenciones en válvulas/bombas con contacto directo a Jarabe/Bebida. |
-        | **Desviación validación saneado** | Agua Fría | En caso de desviación Sensorial, Trazas de Químico o Trazas de Azúcar. |
-        """)
-
-    # --- SECCIÓN 4: VALIDACIÓN DE SANEADOS ---
-    with st.expander("🔍 4. Protocolo Mandatorio de Validación de Saneados"):
-        st.markdown("""
-        | Criterio de Validación | Receta Aplicable | Método de Medición Mandatorio |
-        | :--- | :--- | :--- |
-        | **Validación Sensorial** | Todas | Evaluación contra muestra patrón por **dos panelistas** (Analista + Operador de Elaboración) en la última agua de enjuague. |
-        | **Trazas de Químicos** | CIP 3, 5 y 7 Pasos | Medición en última agua de enjuague con **Indicador de Fenolftaleína** o **Tiras de Ácido**. |
-        | **Trazas de Azúcar** | Todas | Obligatorio en productos con azúcar que anteceden a productos **Zero o Light**. Medir con **Reflecto-quant** en última agua de enjuague. |
-        """)
-
-    # --- SECCIÓN 5: SIMULADOR INTERACTIVO ---
-    st.markdown("---")
-    st.markdown("### 🎓 Evaluador / Buscador de Caso Operativo")
+    # ==========================================
+    # SECCIÓN 1: MATRIZ DE CAMBIO DE SABOR
+    # ==========================================
+    st.markdown("### 🔄 1. Evaluador de Cambio de Producto")
     
-    escenario = st.selectbox(
-        "Selecciona el escenario operativo de la planta:",
-        [
-            "Cambio de producto con materia prima Pungente (Salida)",
-            "Línea parada más de 8 horas SIN saneado previo",
-            "Línea BLYS parada más de 4 horas",
-            "Producción continua de Lipton mayor a 24 horas",
-            "Han pasado 168 horas consecutivas (7 días)",
-            "Paso de producto Regular (Con Azúcar) a Producto Zero/Light",
-            "Intervención en bomba o válvula de jarabe/bebida"
-        ]
+    # Categorías Oficiales
+    CAT_PUNGENTES = ["H2Oh! Toronchello", "Kem Xtreme", "Kem Xtreme Blue Berry", "Kem Xtreme Suggar Free", "Kem Piña Maracuya", "Rockstar", "Rockstar Mango", "Rockstar Sandia"]
+    CAT_PUNGENTES_2_JUGO = ["Lipton Durazno", "Lipton Limón", "Lipton Te verde Mango Zero", "Lipton limón Zero", "Lipton Raspberry Zero", "Crush 5% Jugo", "Kem Xtreme Flamin Hot"]
+    CAT_COLOR_FUERTE = ["Pepsi", "Pepsi Zero", "Pepsi Light", "Bilz", "Bilz Zero", "Crush", "Crush Zero", "Crush sin jugo"]
+    CAT_BLANCOS = ["Seven UP", "Seven Up Zero", "Agua Tónica", "Agua Tónica Zero", "Ginger Ale", "Ginger Ale Light", "Ginger Ale Zero"]
+    CAT_SIN_RESTRICCION = ["H2Oh! Naranchelo", "H2Oh! Lima Limon", "H2Oh! Limonchelo", "H2Oh! Limoneto", "Kem", "Kem Zero", "Pap", "Pap Zero", "Limón Soda", "Limón Soda Zero"]
+
+    col_s1, col_s2 = st.columns(2)
+    with col_s1:
+        prod_saliente = st.selectbox("🥤 Producto Saliente (Desde / Fila)", LISTA_SABORES, index=0, key="mat_saliente")
+    with col_s2:
+        prod_entrante = st.selectbox("🍹 Producto Entrante (A / Columna)", LISTA_SABORES, index=1, key="mat_entrante")
+
+    # Regla Mismo Sabor Zero -> Normal
+    es_mismo_sabor_zero_a_norm = (
+        ("Zero" in prod_saliente or "Light" in prod_saliente) and
+        (prod_saliente.replace(" Zero", "").replace(" Light", "").strip() == prod_entrante.strip())
     )
 
-    if escenario == "Cambio de producto con materia prima Pungente (Salida)":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)")
-        st.info("💡 **Validación:** Sensorial + Trazas de químico con Fenolftaleína/Tiras de ácido.")
-    elif escenario == "Línea parada más de 8 horas SIN saneado previo":
-        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)")
-        st.info("💡 **Validación:** Sensorial + Trazas de químico.")
-    elif escenario == "Línea BLYS parada más de 4 horas":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos Caliente` (Tiempo: 62 min)")
-        st.info("💡 **Nota BLYS:** Aplica al presentar detención mayor a 4 horas antes de reiniciar operación.")
-    elif escenario == "Producción continua de Lipton mayor a 24 horas":
-        st.warning("👉 **Receta Requerida:** `CIP 3 Pasos` (Tiempo: 50 min)")
-    elif escenario == "Han pasado 168 horas consecutivas (7 días)":
-        st.warning("👉 **Receta Requerida:** `CIP 5 Pasos` (Tiempo: 62 min)")
-        st.info("💡 Obligatorio al cumplir 168 hrs máximo consecutivo.")
-    elif escenario == "Paso de producto Regular (Con Azúcar) a Producto Zero/Light":
-        st.warning("👉 **Validación Mandatoria:** Medición de trazas de azúcar con `Reflecto-quant` en última agua de enjuague.")
-    elif escenario == "Intervención en bomba o válvula de jarabe/bebida":
-        st.warning("👉 **Receta Requerida:** `Agua Caliente` (Tiempo: 21 min)")
-        st.info("💡 Esterilización a 85°C por intervención en componentes en contacto con producto.")
+    if es_mismo_sabor_zero_a_norm:
+        st.info("💧 **PROTOCOLO: AGUA FRÍA (Empuje de 15 min)**")
+        st.markdown(f"**Paso de {prod_saliente} ➔ {prod_entrante}:**\n* Considerar empuje continuo con agua tratada durante **15 minutos** para barrido de edulcorantes antes de ingresar la versión normal.")
+        st.caption("Receta Envasado: RN° 1 C/D o RN° 2 S/D según instructivo de drenaje.")
+    else:
+        es_sal_pungente = prod_saliente in CAT_PUNGENTES or prod_saliente in CAT_PUNGENTES_2_JUGO
+        es_ent_blanco_sinrest = prod_entrante in CAT_BLANCOS or prod_entrante in CAT_SIN_RESTRICCION
 
-# ------------------------------------------
-# PESTAÑA 7: MANUAL P&ID Y MATRIZ LLENADORA
-# ------------------------------------------
-with tab7:  # Asegúrate de agregar tab7 a la lista de st.tabs([...])
-    st.subheader("⚙️️ Diagrama P&ID y Líneas de Servicio - Llenadora")
-    st.caption("Guía de interpretación de válvulas, instrumentos e interpretación del HMI Ergobloc.")
+        if es_sal_pungente and es_ent_blanco_sinrest:
+            st.error("🚫 **PROHIBIDO / RESTRICCIÓN DE CALIDAD**")
+            st.markdown("### ⚠️ ***No realizar producción***")
+            st.warning("La matriz prohíbe el paso directo de productos Pungentes / Lipton / Jugo hacia productos Blancos o Sin Restricción por riesgo de contaminación sensorial.")
+            st.caption("Requiere aprobación de Aseguramiento de Calidad o protocolo especial de desodorización.")
+        
+        elif es_sal_pungente:
+            st.markdown("### 🔴 **CIP 5 PASOS CALIENTE**")
+            col_m1, col_m2 = st.columns(2)
+            col_m1.metric("Receta Envasado", "RN° 12 S/D / RN° 13")
+            col_m2.metric("Aseo Jarabería", "S + Q + A / S + A + Q")
+            st.markdown("* **Secuencia:** Enjuague ➔ Soda Cáustica Caliente ➔ Enjuague ➔ Ácido ➔ Enjuague final con Sanitizante.")
+        
+        elif prod_saliente in CAT_COLOR_FUERTE:
+            st.markdown("### 🟡 **CIP 3 PASOS / CIP 5 PASOS**")
+            col_m1, col_m2 = st.columns(2)
+            col_m1.metric("Receta Envasado", "RN° 10 C/D / RN° 11 S/D")
+            col_m2.metric("Aseo Jarabería", "S + Q / S + A")
+            st.markdown("* **Secuencia:** Enjuague previo ➔ Lavado Alcalino (Soda) ➔ Enjuague final verificado por conductividad.")
+        
+        else:
+            st.markdown("### 🟢 **CIP 3 PASOS ESTÁNDAR / AGUA CALIENTE**")
+            col_m1, col_m2 = st.columns(2)
+            col_m1.metric("Receta Envasado", "RN° 1 C/D / RN° 3 C/D")
+            col_m2.metric("Aseo Jarabería", "S / S + A")
+            st.markdown("* Lavado regular para cambios de baja complejidad o productos de la misma familia.")
 
-    # --- SECCIÓN 1: DICCIONARIO DE LÍNEAS DE INGRESO ---
-    with st.expander("🔌 1. Descripción de Servicios e Ingresos a la Llenadora", expanded=True):
-        st.markdown("""
-        | Servicio | Función Principal | Valores / Instrumentos Clave |
-        | :--- | :--- | :--- |
-        | **Aire Comprimido** | Accionamiento de válvulas neumáticas y presión de control. | Filtros estériles + Transmisores de presión. |
-        | **CO2 Presurización** | Inyección de CO2 para presurizar el estanque **D100** y realizar barrido en botella antes del llenado. | Válvulas reguladoras de presión ($P_{\text{estanque}}$). |
-        | **Agua de Proceso** | Agua de enjuague / empuje / preparación de circuitos. | Válvulas automáticas de entrada. |
-        | **Retorno / Alimentación CIP** | Circuito cerrado de lavado químico y sanitización. | **Sensor de Conductividad** ($\text{mS/cm}$) para detectar detergente vs agua final. |
-        | **Línea de Producto** | Ingreso de bebida terminada desde el Mixer/Carbonatador. | **Medidor de Flujo Masico** ($\text{kg/h}$ o $\text{L/min}$). |
-        """)
-
-    # --- SECCIÓN 2: INSTRUMENTACIÓN Y COMPONENTES (HMI) ---
-    with st.expander("🧠 2. Instrumentos y Sensores Principales"):
-        st.markdown("""
-        * **Estanque Isobarométrico (D100):**
-          * **Nivel (% / mm):** Controla el volumen interno de bebida para evitar sobrellenado o formación de espuma.
-          * **Presión (bar):** Mantiene la contrapresión de CO2 para evitar que el gas de la bebida se desosocie (descarbonatación).
-        * **Sensor de Conductividad ($\text{mS/cm}$):**
-          * Identifica la fase del CIP. Si la conductividad es alta, está pasando soda o ácido; si es cercana a cero, es agua de enjuague.
-        * **Tulipas CIP / Falsa Botella:**
-          * Mecanismo que sella los grifos de llenado para permitir el retorno del fluido durante el lavado CIP 3, 5 u 7 pasos.
-        """)
-
-    # --- SECCIÓN 3: PREGUNTAS FRECUENTES Y DIAGNÓSTICO (OPERADOR) ---
     st.markdown("---")
-    st.markdown("### ❓ Preguntas Frecuentes y Diagnóstico Rápido")
 
-    duda = st.selectbox(
-        "Selecciona una duda o anomalía operativa:",
-        [
-            "¿Por qué es crítico medir la conductividad en el retorno CIP?",
-            "¿Qué ocurre si la presión de CO2 en el estanque D100 baja?",
-            "¿Para qué sirve el barrido de CO2 en la botella antes de llenar?",
-            "¿Por qué se debe enjuagar hasta que la conductividad baje a nivel de agua fresca?"
-        ]
-    )
+    # ==========================================
+    # SECCIÓN 2: CALCULADORA DE DOSIFICACIÓN CIP
+    # ==========================================
+    st.markdown("### 🧪 2. Calculadora de Dosificación Química CIP")
+    st.caption("Ajuste de concentración en tanques de la Central CIP")
 
-    if duda == "¿Por qué es crítico medir la conductividad en el retorno CIP?":
-        st.info("💡 **Respuesta:** La conductividad indica la concentración exacta del químico (Soda/Ácido). Si el valor no alcanza el setpoint, el CIP no sanitiza correctamente; si no baja al final, quedan trazas de químico en la línea.")
-    elif duda == "¿Qué ocurre si la presión de CO2 en el estanque D100 baja?":
-        st.warning("⚠️ **Efecto:** La bebida genera turbulencia y espuma dentro de la botella, lo que provoca **llenados bajos** y pérdida de carbonatación (volúmenes de CO2 bajo norma).")
-    elif duda == "¿Para qué sirve el barrido de CO2 en la botella antes de llenar?":
-        st.success("✅ **Respuesta:** Desplaza el aire (oxígeno) presente dentro de la botella vacía. El oxígeno es el enemigo principal de la bebida ya que altera el sabor y acorta la vida útil del producto.")
-    elif duda == "¿Por qué se debe enjuagar hasta que la conductividad baje a nivel de agua fresca?":
-        st.warning("🧪 **Seguridad Alimentaria:** Garantiza que no queden residuos alcalinos ni ácidos en la matriz antes de dar pase a la bebida. Se complementa obligatoriamente con prueba de **Fenolftaleína**.")
+    col_cip_a, col_cip_b = st.columns(2)
+    with col_cip_a:
+        vol_tanque = st.number_input("Capacidad Estanque CIP (L)", value=3000, step=500, key="v_tanque_cip")
+        conc_actual = st.number_input("Concentración Actual (%)", value=0.2, step=0.1, key="c_act_cip")
+    with col_cip_b:
+        conc_target = st.number_input("Concentración Objetivo (%)", value=2.0, step=0.1, key="c_tar_cip")
+        conc_comercial = st.number_input("Concentración Insumo Puro (%)", value=50.0, step=5.0, key="c_com_cip")
+
+    delta_conc = max(0.0, conc_target - conc_actual)
+    litros_quimico = (vol_tanque * (delta_conc / 100)) / (conc_comercial / 100)
+
+    st.metric("📦 Químico a Adicionar", f"{litros_quimico:.2f} Litros")
+    st.caption(f"Aporte necesario para elevar la solución de {conc_actual}% a {conc_target}%.")
+
+    st.markdown("---")
+
+    # ==========================================
+    # SECCIÓN 3: GUÍA TÉCNICA DE RECETAS (RN)
+    # ==========================================
+    with st.expander("📌 Guía Técnica de Recetas HMI (RN) y Aseos Jarabería", expanded=False):
+        st.markdown("""
+        #### **Gestión de Drenaje:**
+        * **C/D (Con Drenaje):** El agua/solución de enjuague se despacha al canal de riles sin retornar al estanque[cite: 1].
+        * **S/D (Sin Drenaje):** La solución recircula y retorna al estanque CIP para reutilización de insumo o agua[cite: 1].
+
+        #### **Nomenclatura de Recetas Envasado (RN):**
+        * **RN° 1 C/D:** Enjuague Agua Fría Con Drenaje[cite: 1].
+        * **RN° 2 S/D:** Empuje Agua Fría Sin Drenaje[cite: 1].
+        * **RN° 3 C/D:** Lavado Agua Caliente Con Drenaje[cite: 1].
+        * **RN° 4 S/D:** Recirculación Agua Caliente Sin Drenaje[cite: 1].
+        * **RN° 10 C/D:** CIP 3 Pasos Con Drenaje[cite: 1].
+        * **RN° 11 S/D:** CIP 3 Pasos Sin Drenaje[cite: 1].
+        * **RN° 12 S/D:** CIP 5 Pasos Caliente Sin Drenaje[cite: 1].
+        * **RN° 13:** CIP 5 Pasos Especial / Sanitización Reforzada[cite: 1, 2].
+
+        #### **Aseos Jarabería:**
+        * **S:** Soda Cáustica
+        * **A:** Ácido (Nítrico/Fosfórico)
+        * **Q:** Químico / Sanitizante
+        """)
