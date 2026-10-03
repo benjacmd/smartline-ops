@@ -857,36 +857,36 @@ with tab6:
         st.markdown("#### **Criterios Adicionales a la Matriz (Generales)**")
         st.markdown("""
         * **Cada 7 Días (168 hrs máx):** Requiere obligatoriamente al menos un **CIP 5 Pasos**.
-        * **Aseo COP (Manual):** Se debe realizar al menos **3 veces por semana** en la línea de envasado[cite: 3].
-        * **Línea Detenida ≥ 8 hrs (Sin Saneado al término):** Iniciar con **CIP 3 Pasos** antes de retomar producción (ej: corte de luz imprevisto)[cite: 3].
-        * **Línea Detenida ≥ 8 hrs (Con Saneado al término):** Realizar enjuague de **Agua Fría** al retomar (ej: detención programada con vaciado de mixer y CIP realizado)[cite: 3].
-        * **Intervención en contacto con Jarabe/Bebida:** Realizar **Agua Caliente** tras intervenir válvulas, bombas de envío o tuberías[cite: 3].
-        * **Desviación en Validación de Saneado:** Aplicar **Agua Fría** adicional solo en caso de desviación Sensorial, Trazas de Químico o Trazas de Azúcar[cite: 3].
-        * **Enjuagues:** Todos los enjuagues de agua fría deben realizarse **desde Elaboración**[cite: 3].
+        * **Aseo COP (Manual):** Se debe realizar al menos **3 veces por semana** en la línea de envasado.
+        * **Línea Detenida ≥ 8 hrs (Sin Saneado al término):** Iniciar con **CIP 3 Pasos** antes de retomar producción (ej: corte de luz imprevisto).
+        * **Línea Detenida ≥ 8 hrs (Con Saneado al término):** Realizar enjuague de **Agua Fría** al retomar (ej: detención programada con vaciado de mixer y CIP realizado).
+        * **Intervención en contacto con Jarabe/Bebida:** Realizar **Agua Caliente** tras intervenir válvulas, bombas de envío o tuberías.
+        * **Desviación en Validación de Saneado:** Aplicar **Agua Fría** adicional solo en caso de desviación Sensorial, Trazas de Químico o Trazas de Azúcar.
+        * **Enjuagues:** Todos los enjuagues de agua fría deben realizarse **desde Elaboración**.
         """)
 
     with tab_blys:
         st.markdown("#### **Criterios Mandatorios Exclusivos para BLYS**")
         st.markdown("""
-        * **Producción Continua > 24 hrs:** Debe realizar saneado **CIP 3 Pasos** cada 24 horas[cite: 3].
-        * **Línea Detenida ≥ 4 hrs:** Si la línea presenta una detención mayor a 4 horas, se debe realizar **CIP 5 Pasos Caliente** antes de reiniciar operación[cite: 3].
-        * **Línea Detenida ≥ 8 hrs (Sin Saneado):** Partir con **CIP 3 Pasos** antes de retomar[cite: 3].
-        * **Línea Detenida ≥ 8 hrs (Con Saneado):** Realizar **Agua Fría** antes de retomar[cite: 3].
-        * **Intervenciones o Desviaciones:** Aplican las mismas reglas que el criterio general (Agua Caliente para intervenciones y Agua Fría para desviaciones)[cite: 3].
+        * **Producción Continua > 24 hrs:** Debe realizar saneado **CIP 3 Pasos** cada 24 horas.
+        * **Línea Detenida ≥ 4 hrs:** Si la línea presenta una detención mayor a 4 horas, se debe realizar **CIP 5 Pasos Caliente** antes de reiniciar operación.
+        * **Línea Detenida ≥ 8 hrs (Sin Saneado):** Partir con **CIP 3 Pasos** antes de retomar.
+        * **Línea Detenida ≥ 8 hrs (Con Saneado):** Realizar **Agua Fría** antes de retomar.
+        * **Intervenciones o Desviaciones:** Aplican las mismas reglas que el criterio general (Agua Caliente para intervenciones y Agua Fría para desviaciones).
         """)
 
     with tab_mat:
         st.markdown("#### **Definiciones Específicas de Matriz y Elaboración**")
         st.markdown("""
         * **Materia Prima Pungente/Orgánica (Antes):** Realizar **CIP 3 Pasos** antes de fabricar jarabes con MP de olor/sabor penetrante por su naturaleza orgánica.
-        * **Pungente 2:** Ingreso mandatorio con **CIP 5 Pasos Caliente**[cite: 4].
-        * **Materia Prima Pungente (Después):** Realizar **CIP 5 Pasos Caliente** al término/salida[cite: 4].
-        * **Materia Prima Orgánica (Después):** Realizar **CIP 5 Pasos** al término/salida[cite: 4].
-        * **Producción Continua Lipton > 24 hrs:** Realizar **CIP 3 Pasos** cada 24 hrs[cite: 4].
-        * **Detención Línea Jarabe-Lipton > 4 hrs:** Realizar **CIP 5 Pasos Caliente**[cite: 4].
-        * **Línea Rockstar (Tanques 519 y 520):** CIP 3 Pasos después de 24 hrs a los tanques y línea[cite: 4].
-        * **Línea 4 Gatorade Zero (> 24 hrs):** CIP 5 Pasos Fríos cada 24 hrs en producción continua[cite: 4].
-        * **Saneado de Pasteurizador:** Debe quedar limpio e higienizado **inmediatamente después de su uso**[cite: 4].
+        * **Pungente 2:** Ingreso mandatorio con **CIP 5 Pasos Caliente**.
+        * **Materia Prima Pungente (Después):** Realizar **CIP 5 Pasos Caliente** al término/salida.
+        * **Materia Prima Orgánica (Después):** Realizar **CIP 5 Pasos** al término/salida.
+        * **Producción Continua Lipton > 24 hrs:** Realizar **CIP 3 Pasos** cada 24 hrs.
+        * **Detención Línea Jarabe-Lipton > 4 hrs:** Realizar **CIP 5 Pasos Caliente**.
+        * **Línea Rockstar (Tanques 519 y 520):** CIP 3 Pasos después de 24 hrs a los tanques y línea.
+        * **Línea 4 Gatorade Zero (> 24 hrs):** CIP 5 Pasos Fríos cada 24 hrs en producción continua.
+        * **Saneado de Pasteurizador:** Debe quedar limpio e higienizado **inmediatamente después de su uso**.
         """)
 
     st.markdown("---")
@@ -901,23 +901,23 @@ with tab6:
     with col_v1:
         st.info("👅 **Validación Sensorial**")
         st.markdown("""
-        * **Aplica a:** Todas las recetas[cite: 4].
-        * **Método:** Evaluación contra muestra patrón en la última agua de enjuague[cite: 4].
-        * **Exigencia:** Requiere **2 panelistas** (Analista de Calidad + Operador de Elaboración)[cite: 4].
+        * **Aplica a:** Todas las recetas.
+        * **Método:** Evaluación contra muestra patrón en la última agua de enjuague.
+        * **Exigencia:** Requiere **2 panelistas** (Analista de Calidad + Operador de Elaboración).
         """)
 
     with col_v2:
         st.warning("🧪 **Trazas de Químico**")
         st.markdown("""
-        * **Aplica a:** CIP 3, CIP 5 y CIP 7 Pasos[cite: 4].
-        * **Método:** Medición en la última agua de enjuague[cite: 4].
-        * **Herramientas:** Indicador de **Fenolftaleína** o **Tiras de Ácido**[cite: 4].
+        * **Aplica a:** CIP 3, CIP 5 y CIP 7 Pasos.
+        * **Método:** Medición en la última agua de enjuague.
+        * **Herramientas:** Indicador de **Fenolftaleína** o **Tiras de Ácido**.
         """)
 
     with col_v3:
         st.success("🍬 **Trazas de Azúcar**")
         st.markdown("""
-        * **Aplica a:** Transición de productos con azúcar hacia productos Zero o Light[cite: 4].
-        * **Método:** Medición en la última agua de enjuague[cite: 4].
-        * **Herramienta:** Medidor **Reflectoquant**[cite: 4].
+        * **Aplica a:** Transición de productos con azúcar hacia productos Zero o Light.
+        * **Método:** Medición en la última agua de enjuague.
+        * **Herramienta:** Medidor **Reflectoquant**.
         """)
