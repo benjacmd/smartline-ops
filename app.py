@@ -1050,40 +1050,42 @@ with tab7:
 # PESTAÑA 8: CALCULADORA Y BALANCE DE JARABE
 # ------------------------------------------
 with tab8:
-    st.subheader("🧪 Pestaña 8: Balance Teórico y Consumo de Jarabe")
-    st.caption("Cálculo estimado de Jarabe Terminado / Concentrado según volumen a producir en L2")
+    st.subheader("🧪 Pestaña 8: Consumo Teórico de Jarabe")
+    st.caption("Cálculo instantáneo de Jarabe Terminado / Concentrado según volumen producido")
 
-    # Mapeo de Factores de Dilución Típicos (Bebida L / Jarabe L)
-    # Por ejemplo, relación 1:5.5 o 1:6 (1 Litro de Jarabe genera X Litros de Bebida)
-    FACTORES_DILUCION = {
-        "Regular (Bilz / Pap / Kem)": 5.5,
-        "Colas (Pepsi / Pepsi Zero)": 6.0,
-        "Juice / Jugo (Crush 5%)": 5.0,
-        "Isotónico / Té (Lipton / Gatorade)": 4.5,
-        "Light / Zero (Sin Azúcar / Edulcorante)": 6.5,
-        "Personalizado": 5.5
+    # Mapeo automático de Factores de Dilución por Sabor/Producto
+    FACTOR_POR_SABOR = {
+        # Regular (1:5.5)
+        "Bilz": 5.5, "Pap": 5.5, "Kem": 5.5, "Kem piña": 5.5, "Crush": 5.5, "Limón Soda": 5.5,
+        # Colas / Zero / Light (1:6.0)
+        "Pepsi": 6.0, "Pepsi Zero": 6.0, "Pepsi Light": 6.0, "Bilz Zero": 6.0, "Pap Zero": 6.0, 
+        "Kem Zero": 6.0, "Limón Soda Zero": 6.0, "Crush Zero": 6.0, "Crush sin jugo": 6.0,
+        "Seven UP": 6.0, "Seven Up Zero": 6.0, "Agua Tónica": 6.0, "Agua Tónica Zero": 6.0,
+        "Ginger Ale": 6.0, "Ginger Ale Light": 6.0, "Ginger Ale Zero": 6.0,
+        # Jugos / Pungentes (1:5.0)
+        "Crush 5% Jugo": 5.0, "Kem Xtreme Flamin Hot": 5.0, "H2Oh! Toronchello": 5.5,
+        "Kem Xtreme": 5.5, "Kem Xtreme Blue Berry": 5.5, "Kem Xtreme Suggar Free": 6.0,
+        "Kem Piña Maracuya": 5.5, "Rockstar": 5.5, "Rockstar Mango": 5.5, "Rockstar Sandia": 5.5,
+        # Té / Lipton (1:4.5)
+        "Lipton Durazno": 4.5, "Lipton Limón": 4.5, "Lipton Te verde Mango Zero": 5.0,
+        "Lipton limón Zero": 5.0, "Lipton Raspberry Zero": 5.0,
+        # H2Oh! (1:6.0)
+        "H2Oh! Naranchelo": 6.0, "H2Oh! Lima Limon": 6.0, "H2Oh! Limonchelo": 6.0, "H2Oh! Limoneto": 6.0
     }
 
-    st.markdown("### 1. Parámetros de Producción")
     col_j1, col_j2 = st.columns(2)
     
     with col_j1:
         sab_jarabe = st.selectbox("🥤 Producto / Sabor", TODOS_LOS_SABORES, index=0, key="jarabe_sabor")
         fmt_jarabe = st.selectbox("🍾 Formato Envase", ["500 ml", "600 ml", "1.5 Lts", "1.75 Lts", "2.0 Lts", "2.5 Lts", "3.0 Lts"], index=1, key="jarabe_fmt")
+    
+    with col_j2:
+        cajas_target = st.number_input("📦 Cajas / Packs Producidos", value=10000, step=500, key="jarabe_cajas")
         unid_pack = st.number_input("📦 Unidades por Pack/Caja", value=6, min_value=1, step=1, key="jarabe_unid")
 
-    with col_j2:
-        cajas_target = st.number_input("📦 Packs / Cajas Producidas (o a Producir)", value=10000, step=500, key="jarabe_cajas")
-        
-        tipo_mezcla = st.selectbox("⚗️ Tipo de Familia / Dilución", list(FACTORES_DILUCION.keys()), index=0, key="jarabe_mezcla")
-        
-        if tipo_mezcla == "Personalizado":
-            factor_dil = st.number_input("Factor de Dilución Manual (Litros Bebida / Litro Jarabe)", value=5.5, min_value=1.0, max_value=20.0, step=0.1)
-        else:
-            factor_dil = FACTORES_DILUCION[tipo_mezcla]
+    # --- LÓGICA AUTOMÁTICA ---
+    factor_dil = FACTOR_POR_SABOR.get(sab_jarabe, 5.5)
 
-    # --- CÁLCULOS MATEMÁTICOS ---
-    # Extraer volumen en Litros
     if "500" in fmt_jarabe:
         vol_unitario_lts = 0.500
     elif "600" in fmt_jarabe:
@@ -1106,32 +1108,9 @@ with tab8:
     agua_tratada_lts = vol_bebida_total_lts - jarabe_teorico_lts
 
     st.markdown("---")
-    st.markdown("### 2. Balance Teórico Estimado")
 
+    # Despliegue limpio y directo en métricas
     m1, m2, m3 = st.columns(3)
     m1.metric("🥤 Bebida Producida", f"{vol_bebida_total_lts:,.0f} Lts".replace(",", "."))
-    m2.metric("🍯 Jarabe Necesario / Consumido", f"{jarabe_teorico_lts:,.1f} Lts".replace(",", "."), f"Relación 1:{factor_dil}")
-    m3.metric("💧 Agua Tratada / Desaireada", f"{agua_tratada_lts:,.1f} Lts".replace(",", "."))
-
-    st.markdown("---")
-    st.markdown("### 3. Verificación de Stock en Tanque vs. Cierre de Turno")
-
-    col_tk1, col_tk2 = st.columns(2)
-    with col_tk1:
-        jarabe_inicial_tk = st.number_input("🛢️ Jarabe Inicial Disponible en Tanque (Lts)", value=12000.0, step=500.0, key="tk_ini")
-        merma_pct_estimada = st.slider("📉 Merma Operativa Estimada / Criterio (%)", min_value=0.0, max_value=5.0, value=1.5, step=0.1)
-
-    with col_tk2:
-        jarabe_con_merma = jarabe_teorico_lts * (1 + (merma_pct_estimada / 100))
-        jarabe_remanente_est = jarabe_inicial_tk - jarabe_con_merma
-
-        if jarabe_remanente_est >= 0:
-            st.success(f"✅ **Jarabe Suficiente:** Al finalizar las {cajas_target:,.0f} cajas, deberían quedar en el tanque **{jarabe_remanente_est:,.1f} Lts** de jarabe aprox.".replace(",", "."))
-        else:
-            st.error(f"🚨 **FALTANTE DE JARABE:** El lote requiere {jarabe_con_merma:,.1f} Lts de jarabe (con merma del {merma_pct_estimada}%). Faltan **{abs(jarabe_remanente_est):,.1f} Lts** para completar el volumen deseado.".replace(",", "."))
-
-    st.info("""
-    💡 **Nota Técnica de Operación Ergobloc L2:**
-    * El **Factor de Dilución** representa cuántos litros de bebida terminada se obtienen por cada litro de jarabe mezclado en el Proportioner/Mixer.
-    * Si al cerrar la Orden de Producción (OP) el estanque real difiere significativamente del valor teórico, verificar posible desviación en el Brix de jarabe o descalibración del medidor de flujo de masa en la mezcla.
-    """)
+    m2.metric("🍯 Jarabe Consumido Teórico", f"{jarabe_teorico_lts:,.1f} Lts".replace(",", "."), f"Relación 1:{factor_dil}")
+    m3.metric("💧 Agua Tratada Necesaria", f"{agua_tratada_lts:,.1f} Lts".replace(",", "."))
