@@ -1047,70 +1047,69 @@ with tab7:
         """)
 
 # ------------------------------------------
-# PESTAÑA 8: CALCULADORA Y BALANCE DE JARABE
+# PESTAÑA 8: CALCULADORA DIRECTA DE JARABE
 # ------------------------------------------
 with tab8:
-    st.subheader("🧪 Pestaña 8: Consumo Teórico de Jarabe")
-    st.caption("Cálculo instantáneo de Jarabe Terminado / Concentrado según volumen producido")
+    st.subheader("🧪 Pestaña 8: Cálculo Directo de Jarabe Requerido")
+    st.caption("Vinculado automáticamente con la configuración del producto en la barra lateral")
 
-    # Mapeo automático de Factores de Dilución por Sabor/Producto
-    FACTOR_POR_SABOR = {
-        # Regular (1:5.5)
-        "Bilz": 5.5, "Pap": 5.5, "Kem": 5.5, "Kem piña": 5.5, "Crush": 5.5, "Limón Soda": 5.5,
-        # Colas / Zero / Light (1:6.0)
-        "Pepsi": 6.0, "Pepsi Zero": 6.0, "Pepsi Light": 6.0, "Bilz Zero": 6.0, "Pap Zero": 6.0, 
-        "Kem Zero": 6.0, "Limón Soda Zero": 6.0, "Crush Zero": 6.0, "Crush sin jugo": 6.0,
-        "Seven UP": 6.0, "Seven Up Zero": 6.0, "Agua Tónica": 6.0, "Agua Tónica Zero": 6.0,
-        "Ginger Ale": 6.0, "Ginger Ale Light": 6.0, "Ginger Ale Zero": 6.0,
-        # Jugos / Pungentes (1:5.0)
-        "Crush 5% Jugo": 5.0, "Kem Xtreme Flamin Hot": 5.0, "H2Oh! Toronchello": 5.5,
-        "Kem Xtreme": 5.5, "Kem Xtreme Blue Berry": 5.5, "Kem Xtreme Suggar Free": 6.0,
-        "Kem Piña Maracuya": 5.5, "Rockstar": 5.5, "Rockstar Mango": 5.5, "Rockstar Sandia": 5.5,
-        # Té / Lipton (1:4.5)
-        "Lipton Durazno": 4.5, "Lipton Limón": 4.5, "Lipton Te verde Mango Zero": 5.0,
-        "Lipton limón Zero": 5.0, "Lipton Raspberry Zero": 5.0,
-        # H2Oh! (1:6.0)
-        "H2Oh! Naranchelo": 6.0, "H2Oh! Lima Limon": 6.0, "H2Oh! Limonchelo": 6.0, "H2Oh! Limoneto": 6.0
-    }
+    # 1. Lectura de parámetros desde la Barra Lateral
+    preset_env = FORMATOS_LINEA_2.get(envase_nombre, {})
+    vol_ml_lat = preset_env.get("vol_ml", 600)
+    
+    # Detección automática de unidades por pack según formato
+    if "1.5" in envase_nombre or "1.75" in envase_nombre:
+        unid_pack_defecto = 6
+    elif "500" in envase_nombre or "600" in envase_nombre:
+        unid_pack_defecto = 12 if "3x2 y 4x3" in preset_env.get("paquete", "") else 6
+    else:
+        unid_pack_defecto = 6
 
+    # Muestra los datos heredados de la sidebar
+    st.info(
+        f"📌 **Configuración Activa (Barra Lateral):**\n"
+        f"* **Producto:** {sabor_nombre}\n"
+        f"* **Formato Envase:** {envase_nombre} ({vol_ml_lat} ml)\n"
+        f"* **Factor de Mezcla CCU:** **{factor_mezcla}** (1 L Jarabe ➔ {factor_mezcla} L Bebida)"
+    )
+
+    st.markdown("### 1. Parámetros del Lote a Producir")
     col_j1, col_j2 = st.columns(2)
     
     with col_j1:
-        sab_jarabe = st.selectbox("🥤 Producto / Sabor", TODOS_LOS_SABORES, index=0, key="jarabe_sabor")
-        fmt_jarabe = st.selectbox("🍾 Formato Envase", ["500 ml", "600 ml", "1.5 Lts", "1.75 Lts", "2.0 Lts", "2.5 Lts", "3.0 Lts"], index=1, key="jarabe_fmt")
+        cajas_target_t8 = st.number_input(
+            "📦 Cajas / Packs a Producir", 
+            value=st.session_state.packs_calculados if st.session_state.packs_calculados > 0 else 10000, 
+            step=500, 
+            key="cajas_prod_t8"
+        )
     
     with col_j2:
-        cajas_target = st.number_input("📦 Cajas / Packs Producidos", value=10000, step=500, key="jarabe_cajas")
-        unid_pack = st.number_input("📦 Unidades por Pack/Caja", value=6, min_value=1, step=1, key="jarabe_unid")
+        botellas_pack_t8 = st.number_input(
+            "📦 Botellas por Pack / Caja", 
+            value=unid_pack_defecto, 
+            min_value=1, 
+            step=1, 
+            key="bot_pack_t8"
+        )
 
-    # --- LÓGICA AUTOMÁTICA ---
-    factor_dil = FACTOR_POR_SABOR.get(sab_jarabe, 5.5)
-
-    if "500" in fmt_jarabe:
-        vol_unitario_lts = 0.500
-    elif "600" in fmt_jarabe:
-        vol_unitario_lts = 0.600
-    elif "1.5" in fmt_jarabe:
-        vol_unitario_lts = 1.500
-    elif "1.75" in fmt_jarabe:
-        vol_unitario_lts = 1.750
-    elif "2.0" in fmt_jarabe:
-        vol_unitario_lts = 2.000
-    elif "2.5" in fmt_jarabe:
-        vol_unitario_lts = 2.500
-    elif "3.0" in fmt_jarabe:
-        vol_unitario_lts = 3.000
-    else:
-        vol_unitario_lts = 0.600
-
-    vol_bebida_total_lts = cajas_target * unid_pack * vol_unitario_lts
-    jarabe_teorico_lts = vol_bebida_total_lts / factor_dil
-    agua_tratada_lts = vol_bebida_total_lts - jarabe_teorico_lts
+    # --- CÁLCULOS MATEMÁTICOS DIRECTOS ---
+    botellas_totales_t8 = cajas_target_t8 * botellas_pack_t8
+    vol_bebida_total_lts_t8 = (botellas_totales_t8 * vol_ml_lat) / 1000.0
+    
+    # Cálculo de Jarabe necesario según factor
+    jarabe_necesario_lts = vol_bebida_total_lts_t8 / factor_mezcla if factor_mezcla > 0 else 0
+    agua_tratada_lts_t8 = vol_bebida_total_lts_t8 - jarabe_necesario_lts
 
     st.markdown("---")
+    st.markdown("### 2. Jarabe y Agua Necesarios para el Lote")
 
-    # Despliegue limpio y directo en métricas
     m1, m2, m3 = st.columns(3)
-    m1.metric("🥤 Bebida Producida", f"{vol_bebida_total_lts:,.0f} Lts".replace(",", "."))
-    m2.metric("🍯 Jarabe Consumido Teórico", f"{jarabe_teorico_lts:,.1f} Lts".replace(",", "."), f"Relación 1:{factor_dil}")
-    m3.metric("💧 Agua Tratada Necesaria", f"{agua_tratada_lts:,.1f} Lts".replace(",", "."))
+    m1.metric("🥤 Bebida Total Producida", f"{formato_miles(vol_bebida_total_lts_t8)} Lts")
+    m2.metric("🍯 Jarabe Requerido", f"{jarabe_necesario_lts:,.1f} Lts".replace(",", "."), f"Factor: {factor_mezcla}")
+    m3.metric("💧 Agua Tratada", f"{agua_tratada_lts_t8:,.1f} Lts".replace(",", "."))
+
+    st.caption(
+        f"💡 **Cálculo:** Para obtener {formato_miles(cajas_target_t8)} cajas de **{sabor_nombre}** ({vol_ml_lat} ml), "
+        f"se requieren **{jarabe_necesario_lts:,.1f} Litros de Jarabe Terminado** en el estanque.".replace(",", ".")
+    )
