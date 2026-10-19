@@ -27,7 +27,6 @@ PROPORCIONES_SABORES = {
     # --- BEBIDAS REGULAR ---
     "Bilz": 7.125,                # 6.125 agua / 1 jarabe
     "Pap": 7.125,                 # 6.125 agua / 1 jarabe
-    "Kem": 7.125,                 # 6.125 agua / 1 jarabe
     "Kem piña": 7.125,            # 6.125 agua / 1 jarabe
     "Pepsi Reducida": 6.0,        # 5 agua / 1 jarabe
     "7Up": 6.0,                   # 5 agua / 1 jarabe
