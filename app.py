@@ -373,7 +373,7 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8  = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
     "🧪 Programación", 
     "🌊 Balance Final", 
     "🍾 Formatos", 
@@ -381,7 +381,8 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8  = st.tabs([
     "📚 Guía Cálculos",
     "🧫 Saneados (CIP)",
     "🔄 Evaluador de Cambio",
-    "🧪 Calculadora de Jarabe"
+    "🧪 Calculadora de Jarabe",
+    "🎨 Colores Etiquetado"
 ])
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -1113,3 +1114,68 @@ with tab8:
         f"💡 **Cálculo:** Para obtener {formato_miles(cajas_target_t8)} cajas de **{sabor_nombre}** ({vol_ml_lat} ml), "
         f"se requieren **{jarabe_necesario_lts:,.1f} Litros de Jarabe Terminado** en el estanque.".replace(",", ".")
     )
+
+# ------------------------------------------
+# PESTAÑA 9: MATRIZ DE COLORES DE ETIQUETADO
+# ------------------------------------------
+with tab9:
+    st.subheader("🎨 Pestaña 9: Matriz de Colores de Etiquetado - Línea 2")
+    st.caption("Guía de ajuste y cambio de formato para etiquetadora")
+
+    # Tabla de datos extraída del estándar
+    DATOS_COLORES = [
+        {"Color": "9.1", "Producto / Formato": "1.5 Lts Crush"},
+        {"Color": "7.1", "Producto / Formato": "1.5 Lts Carolina, Kem, Pepsi"},
+        {"Color": "11.1", "Producto / Formato": "1.75 Lts Cisne"},
+        {"Color": "10.1", "Producto / Formato": "1.5 Lts B&P"},
+        {"Color": "8.1", "Producto / Formato": "1.5 Lts Genérica"},
+        {"Color": "3.1", "Producto / Formato": "600ml Bilz, Pap, Pepsi"},
+    ]
+
+    df_colores = pd.DataFrame(DATOS_COLORES)
+
+    # ==========================================
+    # SECCIÓN 1: CONSULTA RÁPIDA VINCULADA O MANUAL
+    # ==========================================
+    st.markdown("### 🔍 1. Buscador Rápido de Código de Color")
+    
+    col_c1, col_c2 = st.columns(2)
+    with col_c1:
+        # Intenta sugerir según el formato activo de la barra lateral
+        st.info(f"📌 **Formato Activo en Barra Lateral:** {envase_nombre}")
+    
+    with col_c2:
+        filtro_prod = st.text_input("🔎 Buscar por Producto o Formato", value="", placeholder="Ej: 1.5 Lts, Pepsi, 600ml...")
+
+    # Filtrar tabla si hay búsqueda
+    if filtro_prod:
+        df_filtrado = df_colores[df_colores["Producto / Formato"].str.contains(filtro_prod, case=False, na=False)]
+    else:
+        df_filtrado = df_colores
+
+    st.markdown("---")
+
+    # ==========================================
+    # SECCIÓN 2: DESPLIEGUE DE RESULTADOS Y TABLA
+    # ==========================================
+    st.markdown("### 📋 2. Matriz de Códigos de Color")
+
+    # Mostrar como tarjetas/métricas si hay pocos resultados o búsqueda específica
+    if len(df_filtrado) < len(df_colores) and not df_filtrado.empty:
+        st.markdown("#### **Coincidencias Encontradas:**")
+        cols_res = st.columns(min(len(df_filtrado), 3))
+        for idx, row in df_filtrado.reset_index().iterrows():
+            with cols_res[idx % 3]:
+                st.metric(f"🎨 Color {row['Color']}", row["Producto / Formato"])
+        st.markdown("---")
+
+    # Vista de la tabla completa
+    st.dataframe(
+        df_colores,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.info("""
+    💡 **Nota Operativa:** Verificar que el kit de cambio de formato (estrellas, guías y tulipa) en la etiquetadora coincida con el código de color asignado a la receta antes de dar marcha al equipo.
+    """)
