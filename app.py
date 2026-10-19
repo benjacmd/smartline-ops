@@ -1209,38 +1209,40 @@ with tab9:
     st.caption("💡 **Nota Operativa:** Confirme que el grabado físico en estrellas y guías de la etiquetadora coincida con el número de código mostrado arriba antes de arrancar.")
 
 # ------------------------------------------
-# PESTAÑA 10: ENLACES Y PLANILLAS DE PLANTA
+# PESTAÑA 10: ACCESOS DIRECTOS Y PLANILLAS
 # ------------------------------------------
 with tab10:
-    st.subheader("🔗 Pestaña 10: Enlaces Directos y Google Sheets L2")
-    st.caption("Acceso rápido a planillas de control, monitoreo y documentos de operación")
+    st.subheader("🔗 Pestaña 10: Documentación y Planillas Operativas")
+    st.caption("Accesos directos a planillas Google Sheets oficiales de la Línea 2")
 
-    st.markdown("### 📊 1. Planillas de Google Sheets")
+    # Lista de enlaces oficiales (puedes agregar más agregando dicts a la lista)
+    ENLACES_DOCUMENTOS = [
+        {
+            "titulo": "📑 LUP (Lección Un Punto)",
+            "descripcion": "Planilla oficial de Lecciones de Un Punto y procedimientos rápidos.",
+            "url": "https://docs.google.com/spreadsheets/d/1sb6RJaqKpfscqjzTtskIkCO1fbwfuV-R/edit?gid=2007510824#gid=2007510824",
+            "categoria": "Capacitación / Estándares"
+        },
+        {
+            "titulo": "📋 POEV (Procedimiento Operativo)",
+            "descripcion": "Registro y estándar de Procedimiento Operativo Estándar de Ventanas.",
+            "url": "https://docs.google.com/spreadsheets/d/1lvdvCQYomaA4fi7mL7QEUmwcsCO5L7gV/edit?gid=1283503193#gid=1283503193",
+            "categoria": "Operación y Control"
+        }
+    ]
 
-    col_l1, col_l2 = st.columns(2)
+    st.markdown("### 🚀 Enlaces Directos")
 
-    with col_l1:
-        st.markdown("#### 📄 Planilla de Control 1")
-        st.write("Acceso directo al documento de gestión y registros operacionales.")
-        st.link_button(
-            "📊 Abrir Google Sheet (Vista 1)", 
-            "https://docs.google.com/spreadsheets/d/1sb6RJaqKpfscqjzTtskIkCO1fbwfuV-R/edit?gid=2007510824#gid=2007510824",
-            use_container_width=True
-        )
+    for doc in ENLACES_DOCUMENTOS:
+        with st.container():
+            col_d1, col_d2 = st.columns([3, 1])
+            with col_d1:
+                st.markdown(f"#### **{doc['titulo']}**")
+                st.write(doc["descripcion"])
+                st.caption(f"📁 Categoría: {doc['categoria']}")
+            with col_d2:
+                st.markdown("<br>", unsafe_allow_html=True)
+                st.link_button("🌐 Abrir Planilla", doc["url"], use_container_width=True, type="primary")
+            st.markdown("---")
 
-    with col_l2:
-        st.markdown("#### 📄 Planilla de Control 2")
-        st.write("Acceso directo a la planilla de seguimiento y monitoreo de línea.")
-        st.link_button(
-            "📊 Abrir Google Sheet (Vista 2)", 
-            "https://docs.google.com/spreadsheets/d/1lvdvCQYomaA4fi7mL7QEUmwcsCO5L7gV/edit?gid=1283503193#gid=1283503193",
-            use_container_width=True
-        )
-
-    st.markdown("---")
-    st.markdown("### 📌 2. Agregar más Enlaces o Carpetas")
-
-    st.info(
-        "💡 **Sugerencia:** Si quieres agregar más links (como carpetas de Drive, manuales en PDF o formularios de turno), "
-        "solo pásame la URL con el nombre que quieras asignarle y los dejamos en esta misma cuadrícula."
-    )
+    st.info("💡 **Tip:** Si necesitas agregar más accesos directos (Instructivos, Bitácoras o Registros), avísame y los sumamos a la lista.")
