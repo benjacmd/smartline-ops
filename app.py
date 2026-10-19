@@ -1122,54 +1122,24 @@ with tab9:
     st.subheader("🎨 Pestaña 9: Matriz de Colores de Etiquetado - Línea 2")
     st.caption("Guía visual de cambio de formato e identificación para la etiquetadora")
 
-    # Mapeo oficial extraído con códigos Hex de color exactos
+    # Mapeo oficial con códigos Hex de color exactos
     MATRIZ_COLORES = [
-        {
-            "Color_HEX": "#F7977A", 
-            "Nombre_Color": "Naranjo Pastel", 
-            "Código": "9.1", 
-            "Producto / Formato": "1.5 Lts Crush"
-        },
-        {
-            "Color_HEX": "#00B074", 
-            "Nombre_Color": "Verde Esmeralda", 
-            "Código": "7.1", 
-            "Producto / Formato": "1.5 Lts Carolina, Kem, Pepsi"
-        },
-        {
-            "Color_HEX": "#F8C4B4", 
-            "Nombre_Color": "Rosado Pastel", 
-            "Código": "11.1", 
-            "Producto / Formato": "1.75 Lts Cisne"
-        },
-        {
-            "Color_HEX": "#5B9BD5", 
-            "Nombre_Color": "Azul Celeste", 
-            "Código": "10.1", 
-            "Producto / Formato": "1.5 Lts B&P"
-        },
-        {
-            "Color_HEX": "#FF3333", 
-            "Nombre_Color": "Rojo Vivo", 
-            "Código": "8.1", 
-            "Producto / Formato": "1.5 Lts Generica"
-        },
-        {
-            "Color_HEX": "#B97A57", 
-            "Nombre_Color": "Café / Marrón", 
-            "Código": "3.1", 
-            "Producto / Formato": "600ml, Bilz, Pap, Pepsi"
-        },
+        {"Color_HEX": "#F7977A", "Numero": "9.1", "Producto": "1.5 Lts Crush"},
+        {"Color_HEX": "#00B074", "Numero": "7.1", "Producto": "1.5 Lts Carolina, Kem, Pepsi"},
+        {"Color_HEX": "#F8C4B4", "Numero": "11.1", "Producto": "1.75 Lts Cisne"},
+        {"Color_HEX": "#5B9BD5", "Numero": "10.1", "Producto": "1.5 Lts B&P"},
+        {"Color_HEX": "#FF3333", "Numero": "8.1", "Producto": "1.5 Lts Generica"},
+        {"Color_HEX": "#B97A57", "Numero": "3.1", "Producto": "600ml, Bilz, Pap, Pepsi"},
     ]
 
-    st.markdown("### 🔍 1. Búsqueda y Coincidencia en Planta")
+    st.markdown("### 🔍 1. Búsqueda Rápida en Planta")
     
     col_c1, col_c2 = st.columns(2)
     with col_c1:
         st.info(f"📌 **Envase Activo (Sidebar):** {envase_nombre}")
     
     with col_c2:
-        filtro_color = st.text_input("🔎 Buscar por Formato, Producto o Código (ej: 1.5, 9.1, Pepsi)", value="")
+        filtro_color = st.text_input("🔎 Buscar por Formato, Producto o Número (ej: 1.5, 9.1, Pepsi)", value="")
 
     st.markdown("---")
     st.markdown("### 📋 2. Matriz Visual de Componentes")
@@ -1177,40 +1147,34 @@ with tab9:
     # Filtrar según la búsqueda
     datos_mostrar = [
         item for item in MATRIZ_COLORES 
-        if filtro_color.lower() in item["Producto / Formato"].lower() or filtro_color.lower() in item["Código"].lower()
+        if filtro_color.lower() in item["Producto"].lower() or filtro_color.lower() in item["Numero"].lower()
     ] if filtro_color else MATRIZ_COLORES
 
-    # Despliegue en tarjetas visuales tipo bloque de color
+    # Despliegue en filas limpias
     for item in datos_mostrar:
-        col_m1, col_m2, col_m3 = st.columns([1, 1, 3])
+        col_m1, col_m2, col_m3 = st.columns([1.2, 0.8, 3])
         
         with col_m1:
-            # Renderizado de la bloque visual del color con HTML
+            # Bloque de color liso sin ningún texto encima
             st.markdown(
                 f"""
                 <div style="
                     background-color: {item['Color_HEX']};
-                    height: 45px;
+                    height: 40px;
                     border-radius: 6px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-                    font-size: 16px;">
-                    {item['Nombre_Color']}
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
                 </div>
                 """, 
                 unsafe_allow_html=True
             )
         
         with col_m2:
-            st.markdown(f"### 🏷️ **Código {item['Código']}**")
+            # Solo el número en grande y directo
+            st.markdown(f"<h3 style='margin:0; padding-top:2px;'><b>{item['Numero']}</b></h3>", unsafe_allow_html=True)
             
         with col_m3:
-            st.markdown(f"#### 🍾 **{item['Producto / Formato']}**")
+            st.markdown(f"#### **{item['Producto']}**")
             
         st.markdown("<hr style='margin: 8px 0; border-top: 1px solid #eee;'>", unsafe_allow_html=True)
 
-    st.caption("💡 **Nota Operativa:** Confirme que el grabado físico en estrellas y guías de la etiquetadora coincida con el número de código mostrado arriba antes de arrancar.")
+    st.caption("💡 **Nota Operativa:** Confirme que el grabado físico en estrellas y guías de la etiquetadora coincida con el número mostrado arriba antes de arrancar.")
