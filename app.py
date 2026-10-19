@@ -1120,62 +1120,97 @@ with tab8:
 # ------------------------------------------
 with tab9:
     st.subheader("🎨 Pestaña 9: Matriz de Colores de Etiquetado - Línea 2")
-    st.caption("Guía de ajuste y cambio de formato para etiquetadora")
+    st.caption("Guía visual de cambio de formato e identificación para la etiquetadora")
 
-    # Tabla de datos extraída del estándar
-    DATOS_COLORES = [
-        {"Color": "9.1", "Producto / Formato": "1.5 Lts Crush"},
-        {"Color": "7.1", "Producto / Formato": "1.5 Lts Carolina, Kem, Pepsi"},
-        {"Color": "11.1", "Producto / Formato": "1.75 Lts Cisne"},
-        {"Color": "10.1", "Producto / Formato": "1.5 Lts B&P"},
-        {"Color": "8.1", "Producto / Formato": "1.5 Lts Genérica"},
-        {"Color": "3.1", "Producto / Formato": "600ml Bilz, Pap, Pepsi"},
+    # Mapeo oficial extraído con códigos Hex de color exactos
+    MATRIZ_COLORES = [
+        {
+            "Color_HEX": "#F7977A", 
+            "Nombre_Color": "Naranjo Pastel", 
+            "Código": "9.1", 
+            "Producto / Formato": "1.5 Lts Crush"
+        },
+        {
+            "Color_HEX": "#00B074", 
+            "Nombre_Color": "Verde Esmeralda", 
+            "Código": "7.1", 
+            "Producto / Formato": "1.5 Lts Carolina, Kem, Pepsi"
+        },
+        {
+            "Color_HEX": "#F8C4B4", 
+            "Nombre_Color": "Rosado Pastel", 
+            "Código": "11.1", 
+            "Producto / Formato": "1.75 Lts Cisne"
+        },
+        {
+            "Color_HEX": "#5B9BD5", 
+            "Nombre_Color": "Azul Celeste", 
+            "Código": "10.1", 
+            "Producto / Formato": "1.5 Lts B&P"
+        },
+        {
+            "Color_HEX": "#FF3333", 
+            "Nombre_Color": "Rojo Vivo", 
+            "Código": "8.1", 
+            "Producto / Formato": "1.5 Lts Generica"
+        },
+        {
+            "Color_HEX": "#B97A57", 
+            "Nombre_Color": "Café / Marrón", 
+            "Código": "3.1", 
+            "Producto / Formato": "600ml, Bilz, Pap, Pepsi"
+        },
     ]
 
-    df_colores = pd.DataFrame(DATOS_COLORES)
-
-    # ==========================================
-    # SECCIÓN 1: CONSULTA RÁPIDA VINCULADA O MANUAL
-    # ==========================================
-    st.markdown("### 🔍 1. Buscador Rápido de Código de Color")
+    st.markdown("### 🔍 1. Búsqueda y Coincidencia en Planta")
     
     col_c1, col_c2 = st.columns(2)
     with col_c1:
-        # Intenta sugerir según el formato activo de la barra lateral
-        st.info(f"📌 **Formato Activo en Barra Lateral:** {envase_nombre}")
+        st.info(f"📌 **Envase Activo (Sidebar):** {envase_nombre}")
     
     with col_c2:
-        filtro_prod = st.text_input("🔎 Buscar por Producto o Formato", value="", placeholder="Ej: 1.5 Lts, Pepsi, 600ml...")
-
-    # Filtrar tabla si hay búsqueda
-    if filtro_prod:
-        df_filtrado = df_colores[df_colores["Producto / Formato"].str.contains(filtro_prod, case=False, na=False)]
-    else:
-        df_filtrado = df_colores
+        filtro_color = st.text_input("🔎 Buscar por Formato, Producto o Código (ej: 1.5, 9.1, Pepsi)", value="")
 
     st.markdown("---")
+    st.markdown("### 📋 2. Matriz Visual de Componentes")
 
-    # ==========================================
-    # SECCIÓN 2: DESPLIEGUE DE RESULTADOS Y TABLA
-    # ==========================================
-    st.markdown("### 📋 2. Matriz de Códigos de Color")
+    # Filtrar según la búsqueda
+    datos_mostrar = [
+        item for item in MATRIZ_COLORES 
+        if filtro_color.lower() in item["Producto / Formato"].lower() or filtro_color.lower() in item["Código"].lower()
+    ] if filtro_color else MATRIZ_COLORES
 
-    # Mostrar como tarjetas/métricas si hay pocos resultados o búsqueda específica
-    if len(df_filtrado) < len(df_colores) and not df_filtrado.empty:
-        st.markdown("#### **Coincidencias Encontradas:**")
-        cols_res = st.columns(min(len(df_filtrado), 3))
-        for idx, row in df_filtrado.reset_index().iterrows():
-            with cols_res[idx % 3]:
-                st.metric(f"🎨 Color {row['Color']}", row["Producto / Formato"])
-        st.markdown("---")
+    # Despliegue en tarjetas visuales tipo bloque de color
+    for item in datos_mostrar:
+        col_m1, col_m2, col_m3 = st.columns([1, 1, 3])
+        
+        with col_m1:
+            # Renderizado de la bloque visual del color con HTML
+            st.markdown(
+                f"""
+                <div style="
+                    background-color: {item['Color_HEX']};
+                    height: 45px;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    font-size: 16px;">
+                    {item['Nombre_Color']}
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
+        
+        with col_m2:
+            st.markdown(f"### 🏷️ **Código {item['Código']}**")
+            
+        with col_m3:
+            st.markdown(f"#### 🍾 **{item['Producto / Formato']}**")
+            
+        st.markdown("<hr style='margin: 8px 0; border-top: 1px solid #eee;'>", unsafe_allow_html=True)
 
-    # Vista de la tabla completa
-    st.dataframe(
-        df_colores,
-        use_container_width=True,
-        hide_index=True,
-    )
-
-    st.info("""
-    💡 **Nota Operativa:** Verificar que el kit de cambio de formato (estrellas, guías y tulipa) en la etiquetadora coincida con el código de color asignado a la receta antes de dar marcha al equipo.
-    """)
+    st.caption("💡 **Nota Operativa:** Confirme que el grabado físico en estrellas y guías de la etiquetadora coincida con el número de código mostrado arriba antes de arrancar.")
