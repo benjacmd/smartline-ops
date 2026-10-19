@@ -1185,25 +1185,18 @@ with tab9:
         col_m1, col_m2, col_m3 = st.columns([1, 1, 3])
         
         with col_m1:
-            # Renderizado de la bloque visual del color con HTML
-            st.markdown(
-                f"""
-                <div style="
-                    background-color: {item['Color_HEX']};
-                    height: 45px;
-                    border-radius: 6px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-                    font-size: 16px;">
-                    {item['Nombre_Color']}
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
+    # Bloque visual de color liso sin texto
+    st.markdown(
+        f"""
+        <div style="
+            background-color: {item['Color_HEX']};
+            height: 45px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
         
         with col_m2:
             st.markdown(f"### 🏷️ **Código {item['Código']}**")
