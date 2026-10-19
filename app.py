@@ -372,7 +372,7 @@ with st.sidebar:
 # ==========================================
 # PESTAÑAS PRINCIPALES
 # ==========================================
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
     "🧪 Programación", 
     "🌊 Balance Final", 
     "🍾 Formatos", 
@@ -381,7 +381,8 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
     "🧫 Saneados (CIP)",
     "🔄 Evaluador de Cambio",
     "🧪 Calculadora de Jarabe",
-    "🎨 Colores Etiquetado"
+    "🎨 Colores Etiquetado",
+    "🔗 Enlaces & Planillas"
 ])
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
@@ -1206,3 +1207,40 @@ with tab9:
         st.markdown("<hr style='margin: 8px 0; border-top: 1px solid #eee;'>", unsafe_allow_html=True)
 
     st.caption("💡 **Nota Operativa:** Confirme que el grabado físico en estrellas y guías de la etiquetadora coincida con el número de código mostrado arriba antes de arrancar.")
+
+# ------------------------------------------
+# PESTAÑA 10: ENLACES Y PLANILLAS DE PLANTA
+# ------------------------------------------
+with tab10:
+    st.subheader("🔗 Pestaña 10: Enlaces Directos y Google Sheets L2")
+    st.caption("Acceso rápido a planillas de control, monitoreo y documentos de operación")
+
+    st.markdown("### 📊 1. Planillas de Google Sheets")
+
+    col_l1, col_l2 = st.columns(2)
+
+    with col_l1:
+        st.markdown("#### 📄 Planilla de Control 1")
+        st.write("Acceso directo al documento de gestión y registros operacionales.")
+        st.link_button(
+            "📊 Abrir Google Sheet (Vista 1)", 
+            "https://docs.google.com/spreadsheets/d/1sb6RJaqKpfscqjzTtskIkCO1fbwfuV-R/edit?gid=2007510824#gid=2007510824",
+            use_container_width=True
+        )
+
+    with col_l2:
+        st.markdown("#### 📄 Planilla de Control 2")
+        st.write("Acceso directo a la planilla de seguimiento y monitoreo de línea.")
+        st.link_button(
+            "📊 Abrir Google Sheet (Vista 2)", 
+            "https://docs.google.com/spreadsheets/d/1lvdvCQYomaA4fi7mL7QEUmwcsCO5L7gV/edit?gid=1283503193#gid=1283503193",
+            use_container_width=True
+        )
+
+    st.markdown("---")
+    st.markdown("### 📌 2. Agregar más Enlaces o Carpetas")
+
+    st.info(
+        "💡 **Sugerencia:** Si quieres agregar más links (como carpetas de Drive, manuales en PDF o formularios de turno), "
+        "solo pásame la URL con el nombre que quieras asignarle y los dejamos en esta misma cuadrícula."
+    )
