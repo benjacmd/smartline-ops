@@ -1199,7 +1199,7 @@ with tab9:
             )
         
         with col_m2:
-            st.markdown(f"### 🏷️ **Código {item['Código']}**")
+            st.markdown(f"### 🏷️ **{item['Código']}**")
             
         with col_m3:
             st.markdown(f"#### 🍾 **{item['Producto / Formato']}**")
