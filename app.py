@@ -1158,7 +1158,7 @@ with tab9:
             "Color_HEX": "#B97A57", 
             "Nombre_Color": "Café / Marrón", 
             "Código": "3.1", 
-            "Producto / Formato": "600ml, Ripples, BGP, AXL"
+            "Producto / Formato": "600ml, Ripples, BGP, AXL, B&P"
         },
     ]
 
