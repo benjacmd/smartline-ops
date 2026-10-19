@@ -1192,7 +1192,7 @@ with tab9:
             background-color: {item['Color_HEX']};
             height: 45px;
             border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
+            box-shadow: 0 1px 8px rgba(0,0,0,0.15);">
             </div>
             """, 
             unsafe_allow_html=True
