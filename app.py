@@ -1134,7 +1134,7 @@ with tab9:
             "Color_HEX": "#00B074", 
             "Nombre_Color": "Verde Esmeralda", 
             "Código": "7.1", 
-            "Producto / Formato": "1.5 Lts Carolina, Kem, Pepsi"
+            "Producto / Formato": "1.5 Lts Carolina"
         },
         {
             "Color_HEX": "#F8C4B4", 
@@ -1158,7 +1158,7 @@ with tab9:
             "Color_HEX": "#B97A57", 
             "Nombre_Color": "Café / Marrón", 
             "Código": "3.1", 
-            "Producto / Formato": "600ml, Bilz, Pap, Pepsi"
+            "Producto / Formato": "600ml, Ripples, BGP, AXL"
         },
     ]
 
