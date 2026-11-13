@@ -47,10 +47,6 @@ PROPORCIONES_SABORES = {
     "POP Huevo": 4.0,             # 3 agua / 1 jarabe
 }
 
-LISTA_SABORES = list(PROPORCIONES_SABORES.keys()) + [
-    "Otro (Escribir manualmente)"
-]
-
 FORMATOS_LINEA_2 = {
     "500 ml Rockstar": {
         "vol_ml": 500,
@@ -231,6 +227,7 @@ def calcular_produccion_lote(
 ):
     litros_bebida = jarabe_L * factor
     botellas = (litros_bebida * 1000) / vol_ml
+    botella_medio = int(botellas // 2)
     packs = botellas / botellas_pack if botellas_pack > 0 else 0
     pallets = packs / packs_pallet if packs_pallet > 0 else 0
 
@@ -240,6 +237,7 @@ def calcular_produccion_lote(
     return {
         "litros_bebida": litros_bebida,
         "botellas": botellas,
+        "botella_medio": botella_medio,
         "packs": packs,
         "pallets": pallets,
         "horas_prod": horas_prod,
@@ -342,11 +340,11 @@ with st.sidebar:
 
     # Key dinámica según el sabor para auto-actualizar en pantalla
     factor_mezcla = st.number_input(
-    "Factor de Mezcla (Jarabe → Bebida)",
-    value=factor_defecto,
-    step=0.001,
-    format="%.3f",
-    key=f"factor_{sabor_nombre}",
+        "Factor de Mezcla (Jarabe → Bebida)",
+        value=factor_defecto,
+        step=0.001,
+        format="%.3f",
+        key=f"factor_{sabor_nombre}",
     )
 
     oee = st.number_input("Rendimiento / OEE Est. (%)", value=100.0, step=1.0)
@@ -373,17 +371,18 @@ with st.sidebar:
 # PESTAÑAS PRINCIPALES
 # ==========================================
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
-    "🧪 Programación", 
-    "🌊 Balance Final", 
-    "🍾 Formatos", 
-    "📲 WhatsApp", 
+    "🧪 Programación",
+    "🌊 Balance Final",
+    "🍾 Formatos",
+    "📲 WhatsApp",
     "📚 Guía Cálculos",
     "🧫 Saneados (CIP)",
     "🔄 Evaluador de Cambio",
     "🧪 Calculadora de Jarabe",
     "🎨 Colores Etiquetado",
-    "🔗 Enlaces & Planillas"
+    "🔗 Enlaces & Planillas",
 ])
+
 # ------------------------------------------
 # PESTAÑA 1: PROGRAMACIÓN DESDE JARABE
 # ------------------------------------------
@@ -402,8 +401,8 @@ with tab1:
                 "🧪 Jarabe Disponible en Tanque (L)", value=7000, step=500
             )
             hora_inicio = st.time_input(
-                "⏰ Hora de Inicio / Actual", 
-                value=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).time()
+                "⏰ Hora de Inicio / Actual",
+                value=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).time(),
             )
 
         with col_in2:
@@ -431,7 +430,7 @@ with tab1:
     st.markdown("---")
     st.markdown("#### 📊 2. Proyección de Producción")
 
-    kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+    kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
     with kpi1:
         st.metric(
             "🥤 Bebida Final Total",
@@ -441,19 +440,26 @@ with tab1:
         )
     with kpi2:
         st.metric(
+            "🎯 Botella del Medio",
+            f"N° {formato_miles(prod_t1['botella_medio'])}",
+            delta="50% del lote",
+            delta_color="off",
+        )
+    with kpi3:
+        st.metric(
             "📦 Packs Totales",
             formato_miles(prod_t1["packs"]),
             delta=f"{botellas_por_pack} bot/pack",
             delta_color="off",
         )
-    with kpi3:
+    with kpi4:
         st.metric(
             "🏗️ Pallets Totales",
             f"{prod_t1['pallets']:.1f}",
             delta=f"{int(packs_por_pallet)} packs/pallet",
             delta_color="off",
         )
-    with kpi4:
+    with kpi5:
         st.metric(
             "⏱️ Hora Término Est.",
             tiempo_fin.strftime("%H:%M hrs"),
@@ -511,6 +517,7 @@ with tab1:
             unsafe_allow_html=True,
         )
 
+# (Mantén aquí debajo tus bloques `with tab2:` hasta `with tab10:`)
 # ------------------------------------------
 # PESTAÑA 2: BALANCE FINAL DE CIERRE DE LOTE
 # ------------------------------------------
