@@ -265,6 +265,36 @@ def calcular_insumos_requeridos(
         "carton_pallets": math.ceil(pallets / std_carton) if std_carton else 0,
         "stretcher_rollos": math.ceil(pallets / std_stretcher) if std_stretcher else 0,
     }
+def calcular_produccion_desde_cajas(
+    cajas_target: int,
+    factor: float,
+    vol_ml: int,
+    botellas_pack: int,
+    packs_pallet: int,
+    bph_real: float,
+):
+    botellas = cajas_target * botellas_pack
+    botella_medio = int(botellas // 2)
+    litros_bebida = (botellas * vol_ml) / 1000.0
+    jarabe_req = litros_bebida / factor if factor > 0 else 0
+    agua_req = litros_bebida - jarabe_req
+    pallets = cajas_target / packs_pallet if packs_pallet > 0 else 0
+
+    horas_prod = botellas / bph_real if bph_real > 0 else 0
+    minutos_totales = int(horas_prod * 60)
+
+    return {
+        "cajas": cajas_target,
+        "botellas": botellas,
+        "botella_medio": botella_medio,
+        "litros_bebida": litros_bebida,
+        "jarabe_req": jarabe_req,
+        "agua_req": agua_req,
+        "pallets": pallets,
+        "horas_prod": horas_prod,
+        "minutos_totales": minutos_totales,
+        "duracion_fmt": f"{minutos_totales // 60}h {minutos_totales % 60}m",
+    }
 
 
 # ==========================================
@@ -378,7 +408,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
     "📚 Guía Cálculos",
     "🧫 Saneados (CIP)",
     "🔄 Evaluador de Cambio",
-    "🧪 Calculadora de Jarabe",
+    "📦 Planificación por Cajas",
     "🎨 Colores Etiquetado",
     "🔗 Enlaces & Planillas",
 ])
@@ -1055,17 +1085,15 @@ with tab7:
         """)
 
 # ------------------------------------------
-# PESTAÑA 8: CALCULADORA DIRECTA DE JARABE
+# PESTAÑA 8: PLANIFICACIÓN COMPLETA POR CAJAS
 # ------------------------------------------
 with tab8:
-    st.subheader("🧪 Pestaña 8: Cálculo Directo de Jarabe Requerido")
-    st.caption("Vinculado automáticamente con la configuración del producto en la barra lateral")
+    st.markdown("### 📦 Planificación de Lote según Cajas / Packs a Producir")
+    st.caption(
+        "Ingresa las cajas objetivo para calcular el jarabe requerido, tiempos de embotellado e insumos de bodega."
+    )
 
-    # 1. Lectura de parámetros desde la Barra Lateral
     preset_env = FORMATOS_LINEA_2.get(envase_nombre, {})
-    vol_ml_lat = preset_env.get("vol_ml", 600)
-    
-    # Detección automática de unidades por pack según formato
     if "1.5" in envase_nombre or "1.75" in envase_nombre:
         unid_pack_defecto = 6
     elif "500" in envase_nombre or "600" in envase_nombre:
@@ -1073,55 +1101,159 @@ with tab8:
     else:
         unid_pack_defecto = 6
 
-    # Muestra los datos heredados de la sidebar
-    st.info(
-        f"📌 **Configuración Activa (Barra Lateral):**\n"
-        f"* **Producto:** {sabor_nombre}\n"
-        f"* **Formato Envase:** {envase_nombre} ({vol_ml_lat} ml)\n"
-        f"* **Factor de Mezcla CCU:** **{factor_mezcla}** (1 L Jarabe ➔ {factor_mezcla} L Bebida)"
+    with st.container():
+        st.markdown("#### 📥 1. Parámetros del Lote Objetivo")
+        col_in1, col_in2 = st.columns(2)
+
+        with col_in1:
+            cajas_target_t8 = st.number_input(
+                "📦 Cajas / Packs a Producir",
+                value=PACKS_DEFECTO_INICIAL,
+                min_value=1,
+                step=500,
+                key="cajas_prod_t8",
+            )
+            hora_inicio_t8 = st.time_input(
+                "⏰ Hora de Inicio / Actual",
+                value=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).time(),
+                key="hora_inicio_t8",
+            )
+
+        with col_in2:
+            botellas_pack_t8 = st.number_input(
+                "🍾 Botellas por Pack / Caja",
+                value=unid_pack_defecto,
+                min_value=1,
+                step=1,
+                key=f"bot_pack_t8_{envase_nombre}",
+            )
+            packs_pallet_t8 = st.number_input(
+                "🏗️ Packs por Pallet",
+                value=100,
+                min_value=1,
+                step=10,
+                key="pallet_t8",
+            )
+
+    prod_t8 = calcular_produccion_desde_cajas(
+        cajas_target_t8,
+        factor_mezcla,
+        vol_ml,
+        botellas_pack_t8,
+        packs_pallet_t8,
+        bph_real,
     )
 
-    st.markdown("### 1. Parámetros del Lote a Producir")
-    col_j1, col_j2 = st.columns(2)
-    
-    with col_j1:
-        cajas_target_t8 = st.number_input(
-            "📦 Cajas / Packs a Producir", 
-            value=st.session_state.packs_calculados if st.session_state.packs_calculados > 0 else 10000, 
-            step=500, 
-            key="cajas_prod_t8"
-        )
-    
-    with col_j2:
-        botellas_pack_t8 = st.number_input(
-            "📦 Botellas por Pack / Caja", 
-            value=unid_pack_defecto, 
-            min_value=1, 
-            step=1, 
-            key="bot_pack_t8"
-        )
-
-    # --- CÁLCULOS MATEMÁTICOS DIRECTOS ---
-    botellas_totales_t8 = cajas_target_t8 * botellas_pack_t8
-    vol_bebida_total_lts_t8 = (botellas_totales_t8 * vol_ml_lat) / 1000.0
-    
-    # Cálculo de Jarabe necesario según factor
-    jarabe_necesario_lts = vol_bebida_total_lts_t8 / factor_mezcla if factor_mezcla > 0 else 0
-    agua_tratada_lts_t8 = vol_bebida_total_lts_t8 - jarabe_necesario_lts
+    tiempo_fin_t8 = datetime.combine(datetime.today(), hora_inicio_t8) + timedelta(
+        hours=prod_t8["horas_prod"]
+    )
 
     st.markdown("---")
-    st.markdown("### 2. Jarabe y Agua Necesarios para el Lote")
+    st.markdown("#### 📊 2. Requerimiento de Jarabe y Proyección de Línea")
 
-    m1, m2, m3 = st.columns(3)
-    m1.metric("🥤 Bebida Total Producida", f"{formato_miles(vol_bebida_total_lts_t8)} Lts")
-    m2.metric("🍯 Jarabe Requerido", f"{jarabe_necesario_lts:,.1f} Lts".replace(",", "."), f"Factor: {factor_mezcla}")
-    m3.metric("💧 Agua Tratada", f"{agua_tratada_lts_t8:,.1f} Lts".replace(",", "."))
+    # Fila 1: Jarabe, Bebida y Botella del Medio
+    kpi_a1, kpi_a2, kpi_a3 = st.columns(3)
+    with kpi_a1:
+        st.metric(
+            "🍯 Jarabe Requerido",
+            f"{formato_miles(round(prod_t8['jarabe_req']))} L",
+            delta=f"Exacto: {prod_t8['jarabe_req']:.1f} L | Agua: {formato_miles(round(prod_t8['agua_req']))} L",
+            delta_color="off",
+        )
+    with kpi_a2:
+        st.metric(
+            "🥤 Bebida Final Total",
+            f"{formato_miles(prod_t8['litros_bebida'])} L",
+            delta=f"{formato_miles(prod_t8['botellas'])} botellas",
+            delta_color="off",
+        )
+    with kpi_a3:
+        st.metric(
+            "🎯 Botella del Medio",
+            f"N° {formato_miles(prod_t8['botella_medio'])}",
+            delta="50% del lote",
+            delta_color="off",
+        )
 
-    st.caption(
-        f"💡 **Cálculo:** Para obtener {formato_miles(cajas_target_t8)} cajas de **{sabor_nombre}** ({vol_ml_lat} ml), "
-        f"se requieren **{jarabe_necesario_lts:,.1f} Litros de Jarabe Terminado** en el estanque.".replace(",", ".")
+    # Fila 2: Cajas, Pallets y Tiempo
+    kpi_b1, kpi_b2, kpi_b3 = st.columns(3)
+    with kpi_b1:
+        st.metric(
+            "📦 Cajas / Packs Totales",
+            formato_miles(prod_t8["cajas"]),
+            delta=f"{botellas_pack_t8} bot/pack",
+            delta_color="off",
+        )
+    with kpi_b2:
+        st.metric(
+            "🏗️ Pallets Totales",
+            f"{prod_t8['pallets']:.1f}",
+            delta=f"{int(packs_pallet_t8)} packs/pallet",
+            delta_color="off",
+        )
+    with kpi_b3:
+        st.metric(
+            "⏱️ Hora Término Est.",
+            tiempo_fin_t8.strftime("%H:%M hrs"),
+            delta=f"Duración: {prod_t8['duracion_fmt']}",
+            delta_color="normal",
+        )
+
+    st.info(
+        f"💡 **Resumen para {sabor_nombre} ({envase_nombre}):** Necesitas **{prod_t8['jarabe_req']:.1f} L de Jarabe** "
+        f"+ **{formato_miles(round(prod_t8['agua_req']))} L de Agua** (Factor {factor_mezcla}). "
+        f"A **{formato_miles(bph_real)} BPH** (OEE: {oee}%), el lote tomará **{prod_t8['duracion_fmt']}**."
     )
 
+    if st.button("📲 Enviar estas cajas a la pestaña WhatsApp", key="sync_t8_wa"):
+        st.session_state.packs_calculados = int(cajas_target_t8)
+        st.success(f"✅ {formato_miles(cajas_target_t8)} cajas enviadas a la pestaña WhatsApp.")
+
+    st.markdown("---")
+    st.markdown("#### 📋 3. Insumos y Materiales a Solicitar a Bodega")
+
+    ins_t8 = calcular_insumos_requeridos(
+        prod_t8["botellas"],
+        prod_t8["cajas"],
+        prod_t8["pallets"],
+        std_preforma_caja,
+        std_tapa_caja,
+        std_etiqueta_rollo,
+        std_film_pack_rollo,
+        std_carton_pallet,
+        std_pallet_stretcher,
+    )
+
+    ic8_1, ic8_2, ic8_3 = st.columns(3)
+    with ic8_1:
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #0d6efd;"><div class="insumo-title">🧪 Cajas de Preforma</div><div class="insumo-qty">{ins_t8["preformas_cajas"]} Cajas</div><div class="insumo-sub">Exacto: {formato_miles(prod_t8["botellas"])} un.<br>Format: {formato_miles(std_preforma_caja)} u/caja</div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #6f42c1;"><div class="insumo-title">🏷️ Rollos de Etiqueta</div><div class="insumo-qty">{ins_t8["etiquetas_rollos"]} Rollos</div><div class="insumo-sub">Format: {formato_miles(std_etiqueta_rollo)} etiquetas/rollo</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    with ic8_2:
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #198754;"><div class="insumo-title">🔘 Cajas de Tapa</div><div class="insumo-qty">{ins_t8["tapas_cajas"]} Cajas</div><div class="insumo-sub">Exacto: {formato_miles(prod_t8["botellas"])} tapas<br>Format: {formato_miles(std_tapa_caja)} u/caja</div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #fd7e14;"><div class="insumo-title">📦 Rollos Film Paquete</div><div class="insumo-qty">{ins_t8["film_rollos"]} Rollos</div><div class="insumo-sub">Format: {formato_miles(std_film_pack_rollo)} packs/rollo</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    with ic8_3:
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #20c997;"><div class="insumo-title">📜 Pallets Cartón Corrugado</div><div class="insumo-qty">{ins_t8["carton_pallets"]} Pallet(s)</div><div class="insumo-sub">({int(prod_t8["pallets"])} planchas totales)</div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div class="insumo-card" style="border-left-color: #d63384;"><div class="insumo-title">🌀 Film Envolvedora (Stretch)</div><div class="insumo-qty">{ins_t8["stretcher_rollos"]} Rollos</div><div class="insumo-sub">Format: {std_pallet_stretcher} pallets/rollo</div></div>',
+            unsafe_allow_html=True,
+        )
 # ------------------------------------------
 # PESTAÑA 9: MATRIZ DE COLORES DE ETIQUETADO
 # ------------------------------------------
